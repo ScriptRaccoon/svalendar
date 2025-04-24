@@ -9,7 +9,7 @@
 			<li><a href="/register">Register</a></li>
 			<li><a href="/login">Login</a></li>
 		{:else}
-			<li><a href="/app">App</a></li>
+			<li><a href="/app/dashboard">Dashboard</a></li>
 			<li><a href="/logout" data-sveltekit-preload-data="off">Logout</a></li>
 		{/if}
 	</ul>

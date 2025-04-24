@@ -5,7 +5,7 @@ export const db = createClient({
 	authToken: ''
 });
 
-export async function query<T>(sql: string, args: string[]) {
+export async function query<T>(sql: string, args: any[]) {
 	try {
 		const { rows } = await db.execute(sql, args);
 		return { rows: rows as T[], err: null };
