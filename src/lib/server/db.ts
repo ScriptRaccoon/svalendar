@@ -5,6 +5,8 @@ export const db = createClient({
 	authToken: ''
 });
 
+db.execute('PRAGMA foreign_keys = ON');
+
 export async function query<T>(sql: string, args: any[]) {
 	try {
 		const { rows } = await db.execute(sql, args);
