@@ -16,20 +16,22 @@ export const actions: Actions = {
 			return fail(400, { error: 'Name is required.', name });
 		}
 
-		const { rows, err } = await query<{ password_hash: string }>(
-			'SELECT password_hash FROM users WHERE name = ?',
+		const { rows, err } = await query<{ id: number; password_hash: string }>(
+			'SELECT id, password_hash FROM users WHERE name = ?',
 			[name]
 		);
 		if (err) {
 			return fail(500, { error: 'Database error.', name });
 		}
 
-		const is_valid = rows.length > 0 && (await bcrypt.compare(password!, rows[0].password_hash));
+		const { password_hash, id } = rows[0];
+
+		const is_valid = rows.length > 0 && (await bcrypt.compare(password!, password_hash));
 		if (!is_valid) {
 			return fail(400, { error: 'Invalid name or password.', name });
 		}
 
-		const token = jwt.sign({ name }, JWT_SECRET);
+		const token = jwt.sign({ id, name }, JWT_SECRET);
 
 		event.cookies.set('jwt', token, {
 			httpOnly: true,
