@@ -35,10 +35,14 @@
 
 <h2>Delete</h2>
 
-<form method="POST" action="?/delete">
-	<button>Delete</button>
-	<p>Warning: This cannot be undone!</p>
-</form>
+{#if calendar.is_default}
+	<p>The default calendar cannot be deleted.</p>
+{:else}
+	<form method="POST" action="?/delete">
+		<button>Delete</button>
+		<p>Warning: This cannot be undone!</p>
+	</form>
+{/if}
 
 <h2>Backup</h2>
 
