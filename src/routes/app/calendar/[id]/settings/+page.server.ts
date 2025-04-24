@@ -11,11 +11,15 @@ export const load: PageServerLoad = async (event) => {
 
 	const sql = `
     SELECT
-        id, name
+        calendars.id,
+		calendars.name,
+		users.default_calendar_id = calendars.id AS is_default
     FROM
         calendars
+	INNER JOIN
+		users ON calendars.user_id = users.id
     WHERE
-        id = ? AND user_id = ?
+        calendars.id = ? AND user_id = ?
     `;
 
 	const args = [calendar_id, user.id];
@@ -73,5 +77,28 @@ export const actions: Actions = {
 		if (err) return fail(500, { error: 'Database error.' });
 
 		redirect(302, '/app/dashboard');
+	},
+
+	setdefault: async (event) => {
+		const user = event.locals.user;
+		if (!user) error(401, 'Unauthorized');
+
+		const calendar_id = event.params.id;
+
+		const sql = `
+		UPDATE
+			users
+		SET
+			default_calendar_id = ?
+		WHERE
+			id = ?
+		`;
+
+		const args = [calendar_id, user.id];
+
+		const { err } = await query(sql, args);
+		if (err) return fail(500, { error: 'Database error.' });
+
+		redirect(302, `/app/calendar/${calendar_id}`);
 	}
 };
