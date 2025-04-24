@@ -39,10 +39,9 @@ export const actions: Actions = {
 
 		const password_hash = await bcrypt.hash(password!, 10);
 
-		const { err } = await query('INSERT INTO users (name, password_hash) VALUES (?, ?)', [
-			name!,
-			password_hash
-		]);
+		const sql_user = 'INSERT INTO users (name, password_hash) VALUES (?, ?) RETURNING id';
+
+		const { rows, err } = await query<{ id: number }>(sql_user, [name!, password_hash]);
 
 		if (err) {
 			console.error(err);
@@ -51,6 +50,20 @@ export const actions: Actions = {
 			}
 
 			return fail(500, { error: 'Database error.', name });
+		}
+
+		if (!rows.length) return fail(500, { error: 'Database error.', name });
+
+		const { id } = rows[0];
+
+		const sql_calendar = 'INSERT INTO calendars (name, user_id) VALUES (?, ?) RETURNING id';
+
+		const { rows: calendars } = await query<{ id: number }>(sql_calendar, ['Default', id]);
+
+		if (calendars?.length) {
+			const calendar_id = calendars[0].id;
+
+			await query('UPDATE users SET default_calendar_id = ? WHERE id = ?', [calendar_id, id]);
 		}
 
 		return { success: true, name };

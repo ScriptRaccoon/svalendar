@@ -3,7 +3,9 @@ CREATE TABLE IF NOT EXISTS users (
     name TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_login TIMESTAMP
+    last_login TIMESTAMP,
+    default_calendar_id INTEGER,
+    FOREIGN KEY (default_calendar_id) REFERENCES calendars (id)
 );
 
 CREATE TABLE IF NOT EXISTS calendars (
@@ -11,7 +13,7 @@ CREATE TABLE IF NOT EXISTS calendars (
     name TEXT NOT NULL,
     user_id INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_user_id ON calendars (user_id);
@@ -26,7 +28,7 @@ CREATE TABLE IF NOT EXISTS events (
     location TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     color TEXT NOT NULL,
-    FOREIGN KEY (calendar_id) REFERENCES calendars (id)
+    FOREIGN KEY (calendar_id) REFERENCES calendars (id) ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_calendar_id ON events (calendar_id);

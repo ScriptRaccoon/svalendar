@@ -24,10 +24,14 @@ export const actions: Actions = {
 			return fail(500, { error: 'Database error.', name });
 		}
 
+		if (!rows.length) {
+			return fail(400, { error: 'Invalid name or password.', name });
+		}
+
 		const { password_hash, id } = rows[0];
 
-		const is_valid = rows.length > 0 && (await bcrypt.compare(password!, password_hash));
-		if (!is_valid) {
+		const is_correct = await bcrypt.compare(password!, password_hash);
+		if (!is_correct) {
 			return fail(400, { error: 'Invalid name or password.', name });
 		}
 
