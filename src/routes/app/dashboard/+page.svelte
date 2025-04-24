@@ -6,6 +6,19 @@
 
 <p>Hey, {data.user?.name}!</p>
 
+{#if data.calendars.length > 0}
+	<h2>List of Calendars</h2>
+	<ul>
+		{#each data.calendars as calendar}
+			<li>
+				<a href="/app/calendar/{calendar.id}">
+					{calendar.name}
+				</a>
+			</li>
+		{/each}
+	</ul>
+{/if}
+
 <h2>Create New Calendar</h2>
 <form action="?/createcalendar" method="POST">
 	<div>

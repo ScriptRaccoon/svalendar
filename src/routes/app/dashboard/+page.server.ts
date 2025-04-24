@@ -1,6 +1,30 @@
 import { error, fail, redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import { query } from '$lib/server/db';
+import type { CalendarBasic } from '$lib/server/types';
+
+export const load: PageServerLoad = async (event) => {
+	const user = event.locals.user;
+	if (!user) error(401, 'Unauthorized');
+
+	const sql = `
+	SELECT
+		id, name, color
+	FROM
+		calendars
+	WHERE
+		user_id = ?
+	ORDER BY
+		name ASC
+	`;
+
+	const args = [user.id];
+	const { rows, err } = await query<CalendarBasic>(sql, args);
+
+	if (err) error(500, 'Database error.');
+
+	return { calendars: rows };
+};
 
 export const actions: Actions = {
 	createcalendar: async (event) => {
