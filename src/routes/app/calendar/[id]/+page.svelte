@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EventPreview from '$lib/components/EventPreview.svelte';
 	import type { CalendarEvent } from '$lib/server/types';
 	import { format, addDays } from 'date-fns'; // ???
 
@@ -53,10 +54,16 @@
 	<button onclick={increment_day}><strong>+</strong></button>
 </menu>
 
-{#each events as event (event.id)}
-	<!-- TODO: proper styling etc. -->
-	<div>
-		{event.title} ({event.start_time} &ndash; {event.end_time})
-		<a href="/app/calendar/{calendar.id}/event/{event.id}">Edit</a>
-	</div>
-{/each}
+<div class="events">
+	{#each events as event, index (event.id)}
+		{@const next_start_time = index < events.length - 1 ? events[index + 1].start_time : null}
+
+		<EventPreview {event} {next_start_time} />
+	{/each}
+</div>
+
+<style>
+	.events {
+		margin-bottom: 2rem;
+	}
+</style>
