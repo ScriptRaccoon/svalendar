@@ -1,6 +1,7 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { query } from '$lib/server/db';
+import type { CalendarBasic } from '$lib/server/types';
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user;
@@ -10,7 +11,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const sql = `
     SELECT
-        name, color
+        id, name
     FROM
         calendars
     WHERE
@@ -19,7 +20,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const args = [calendar_id, user.id];
 
-	const { rows, err } = await query<{ name: string; color: string }>(sql, args);
+	const { rows, err } = await query<CalendarBasic>(sql, args);
 
 	if (err) {
 		error(500, 'Database error.');
@@ -29,12 +30,7 @@ export const load: PageServerLoad = async (event) => {
 		error(404, 'Calendar not found.');
 	}
 
-	const { name, color } = rows[0];
 	return {
-		calendar: {
-			id: calendar_id,
-			name,
-			color
-		}
+		calendar: rows[0]
 	};
 };

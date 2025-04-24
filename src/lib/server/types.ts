@@ -3,4 +3,4 @@ export type UserLocals = {
 	name: string;
 };
 
-export type CalendarBasic = { id: number; name: string; color: string };
+export type CalendarBasic = { id: number; name: string };

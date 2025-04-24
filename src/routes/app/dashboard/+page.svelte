@@ -26,11 +26,6 @@
 		<input type="text" id="name" name="name" required />
 	</div>
 
-	<div>
-		<label for="color">Color</label>
-		<input type="color" id="color" name="color" required />
-	</div>
-
 	<button>Create Calendar</button>
 </form>
 
