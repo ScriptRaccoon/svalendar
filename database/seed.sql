@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS users (name TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL);
+
+CREATE TABLE IF NOT EXISTS event (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT,
+    start_time TEXT NOT NULL,
+    end_time TEXT NOT NULL,
+    location TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    color TEXT NOT NULL
+)
