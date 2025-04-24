@@ -1,24 +1,9 @@
-import { z } from 'zod';
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import { get_error_messages } from '$lib/server/utils';
-import { db, query } from '$lib/server/db';
+import { query } from '$lib/server/db';
 import bcrypt from 'bcryptjs';
-
-const password_schema = z
-	.string()
-	.min(6, {
-		message: 'Password must be at least 6 characters long.'
-	})
-	.max(50, {
-		message: 'Password must be at most 50 characters long.'
-	})
-	.regex(/\d/, {
-		message: 'Password must contain at least one number.'
-	})
-	.regex(/[a-zA-Z]/, {
-		message: 'Password must contain at least one letter.'
-	});
+import { password_schema } from '$lib/server/schemas';
 
 export const actions: Actions = {
 	default: async (event) => {
@@ -44,7 +29,6 @@ export const actions: Actions = {
 		const { rows, err } = await query<{ id: number }>(sql_user, [name!, password_hash]);
 
 		if (err) {
-			console.error(err);
 			if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
 				return fail(400, { error: 'User with that name already exists.', name });
 			}

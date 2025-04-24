@@ -1,8 +1,6 @@
-import { z } from 'zod';
 import type { Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import { get_error_messages } from '$lib/server/utils';
-import { db, query } from '$lib/server/db';
+import { query } from '$lib/server/db';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '$env/static/private';
