@@ -1,7 +1,8 @@
 <script lang="ts">
 	let { data } = $props();
+	let calendar = $derived(data.calendar);
 </script>
 
-<h1>Calendar Page</h1>
+<h1>Calendar {calendar.name}</h1>
 
-<pre>{JSON.stringify(data.calendar)}</pre>
+<a href="/app/calendar/{calendar.id}/settings">Settings</a>

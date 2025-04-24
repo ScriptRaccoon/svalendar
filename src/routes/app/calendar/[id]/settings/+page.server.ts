@@ -1,0 +1,77 @@
+import { error, fail, redirect } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types';
+import { query } from '$lib/server/db';
+import type { CalendarBasic } from '$lib/server/types';
+
+export const load: PageServerLoad = async (event) => {
+	const user = event.locals.user;
+	if (!user) error(401, 'Unauthorized');
+
+	const calendar_id = event.params.id;
+
+	const sql = `
+    SELECT
+        id, name
+    FROM
+        calendars
+    WHERE
+        id = ? AND user_id = ?
+    `;
+
+	const args = [calendar_id, user.id];
+	const { rows, err } = await query<CalendarBasic>(sql, args);
+
+	if (err) error(500, 'Database error.');
+	if (!rows.length) error(404, 'Calendar not found.');
+
+	return { calendar: rows[0] };
+};
+
+export const actions: Actions = {
+	rename: async (event) => {
+		const user = event.locals.user;
+		if (!user) error(401, 'Unauthorized');
+
+		const form_data = await event.request.formData();
+		const calendar_id = event.params.id;
+		const name = form_data.get('name') as string | null;
+
+		if (!name) return fail(400, { error: 'Name is required.', name });
+
+		const sql = `
+        UPDATE
+            calendars
+        SET
+            name = ?
+        WHERE
+            id = ? AND user_id = ?
+        `;
+
+		const args = [name, calendar_id, user.id];
+
+		const { err } = await query(sql, args);
+		if (err) return fail(500, { error: 'Database error.', name });
+
+		redirect(302, `/app/calendar/${calendar_id}`);
+	},
+	delete: async (event) => {
+		const user = event.locals.user;
+		if (!user) error(401, 'Unauthorized');
+
+		const calendar_id = event.params.id;
+
+		const sql = `
+        DELETE FROM
+            calendars
+        WHERE
+            id = ? AND user_id = ?
+        `;
+
+		const args = [calendar_id, user.id];
+
+		const { err } = await query(sql, args);
+		if (err) return fail(500, { error: 'Database error.' });
+
+		redirect(302, '/app/dashboard');
+	}
+};
