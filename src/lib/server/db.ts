@@ -10,6 +10,7 @@ export async function query<T>(sql: string, args: any[]) {
 		const { rows } = await db.execute(sql, args);
 		return { rows: rows as T[], err: null };
 	} catch (err) {
+		console.error(err);
 		return { rows: null, err: err as LibsqlError };
 	}
 }

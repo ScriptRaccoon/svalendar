@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS calendars (
 
 CREATE INDEX IF NOT EXISTS idx_user_id ON calendars (user_id);
 
-CREATE TABLE IF NOT EXISTS event (
+CREATE TABLE IF NOT EXISTS events (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     calendar_id INTEGER NOT NULL,
     title TEXT NOT NULL,
@@ -29,4 +29,4 @@ CREATE TABLE IF NOT EXISTS event (
     FOREIGN KEY (calendar_id) REFERENCES calendars (id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_calendar_id ON event (calendar_id);
+CREATE INDEX IF NOT EXISTS idx_calendar_id ON events (calendar_id);
