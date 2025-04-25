@@ -1,21 +1,23 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { EVENTS_COLORS_DICTIONARY } from '$lib/config';
-	import type { CalendarEvent } from '$lib/server/types';
-	import { format, differenceInMinutes } from 'date-fns';
+	import { page } from '$app/state'
+	import { EVENTS_COLORS_DICTIONARY } from '$lib/config'
+	import type { CalendarEvent } from '$lib/server/types'
+	import { format, differenceInMinutes } from 'date-fns'
 
 	type Props = {
-		event: CalendarEvent;
-		next_start_time: string | null;
-	};
+		event: CalendarEvent
+		next_start_time: string | null
+	}
 
-	let { event, next_start_time }: Props = $props();
+	let { event, next_start_time }: Props = $props()
 
-	let length_in_minutes = $derived(differenceInMinutes(event.end_time, event.start_time));
+	let length_in_minutes = $derived(
+		differenceInMinutes(event.end_time, event.start_time)
+	)
 
 	let minutes_to_next = $derived(
 		next_start_time ? differenceInMinutes(next_start_time, event.end_time) : 0
-	);
+	)
 </script>
 
 <a

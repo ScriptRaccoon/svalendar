@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { EVENT_COLORS } from '$lib/config';
+	import { EVENT_COLORS } from '$lib/config'
 
 	type Props = {
-		title: string;
-		description: string;
-		start_time: string;
-		end_time: string;
-		location: string;
-		color: string;
-	};
+		title: string
+		description: string
+		start_time: string
+		end_time: string
+		location: string
+		color: string
+	}
 
 	let {
 		title,
@@ -17,7 +17,7 @@
 		end_time,
 		location,
 		color: current_color
-	}: Props = $props();
+	}: Props = $props()
 </script>
 
 <div class="input-group">
@@ -32,12 +32,24 @@
 
 <div class="input-group">
 	<label for="start_time">Start Time*</label>
-	<input type="datetime-local" id="start_time" name="start_time" value={start_time} required />
+	<input
+		type="datetime-local"
+		id="start_time"
+		name="start_time"
+		value={start_time}
+		required
+	/>
 </div>
 
 <div class="input-group">
 	<label for="end_time">End Time*</label>
-	<input type="datetime-local" id="end_time" name="end_time" value={end_time} required />
+	<input
+		type="datetime-local"
+		id="end_time"
+		name="end_time"
+		value={end_time}
+		required
+	/>
 </div>
 
 <div class="input-group">
@@ -56,7 +68,11 @@
 				value={color.id}
 				checked={color.id === current_color}
 			/>
-			<label class="color" style:--color={color.value} for="c_{color.id}" aria-label={color.id}
+			<label
+				class="color"
+				style:--color={color.value}
+				for="c_{color.id}"
+				aria-label={color.id}
 			></label>
 		{/each}
 	</div>

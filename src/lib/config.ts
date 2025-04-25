@@ -9,12 +9,12 @@ export const EVENT_COLORS = [
 	{ id: 'violet', value: 'hsl(280deg, 80%, 40%)' },
 	{ id: 'pink', value: 'hsl(320deg, 80%, 40%)' }
 ] as const satisfies readonly {
-	id: string;
-	value: string;
-}[];
+	id: string
+	value: string
+}[]
 
 export const EVENTS_COLORS_DICTIONARY = Object.fromEntries(
 	EVENT_COLORS.map((color) => [color.id, color.value])
-) as Record<string, string>;
+) as Record<string, string>
 
-export const COLOR_IDS = EVENT_COLORS.map((color) => color.id) as [string, ...string[]];
+export const COLOR_IDS = EVENT_COLORS.map((color) => color.id) as [string, ...string[]]

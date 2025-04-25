@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { page } from '$app/state';
+	import { page } from '$app/state'
 
-	let { form } = $props();
+	let { form } = $props()
 
-	let confirm_deletion = $state(false);
+	let confirm_deletion = $state(false)
 
 	function ask_for_confirmation() {
-		confirm_deletion = true;
+		confirm_deletion = true
 	}
 
 	function cancel_deletion() {
-		confirm_deletion = false;
+		confirm_deletion = false
 	}
 </script>
 
@@ -42,7 +42,12 @@
 
 		<div class="input-group">
 			<label for="confirm_password">Confirm Password</label>
-			<input type="password" name="confirm_password" id="confirm_password" required />
+			<input
+				type="password"
+				name="confirm_password"
+				id="confirm_password"
+				required
+			/>
 		</div>
 		<button class="button" type="submit">Update Password</button>
 	</form>
@@ -55,7 +60,9 @@
 		<div>
 			{#if confirm_deletion}
 				<button class="button danger" type="submit">Delete Account</button>
-				<button class="button" type="button" onclick={cancel_deletion}>Cancel</button>
+				<button class="button" type="button" onclick={cancel_deletion}
+					>Cancel</button
+				>
 			{:else}
 				<button class="button danger" type="button" onclick={ask_for_confirmation}
 					>Delete Account</button

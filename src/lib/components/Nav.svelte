@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/state';
+	import { page } from '$app/state'
 	import {
 		faCog,
 		faHome,
@@ -7,8 +7,8 @@
 		faSignIn,
 		faSignOut,
 		faUserPlus
-	} from '@fortawesome/free-solid-svg-icons';
-	import Fa from 'svelte-fa';
+	} from '@fortawesome/free-solid-svg-icons'
+	import Fa from 'svelte-fa'
 </script>
 
 <nav>

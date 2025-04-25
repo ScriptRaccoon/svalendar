@@ -1,23 +1,27 @@
 <script lang="ts">
-	import IconLink from '$lib/components/IconLink.svelte';
-	import { faXmark } from '@fortawesome/free-solid-svg-icons';
+	import IconLink from '$lib/components/IconLink.svelte'
+	import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
-	let { data, form } = $props();
-	let calendar = $derived(data.calendar);
-	let confirm_deletion = $state(false);
+	let { data, form } = $props()
+	let calendar = $derived(data.calendar)
+	let confirm_deletion = $state(false)
 
 	function ask_for_confirmation() {
-		confirm_deletion = true;
+		confirm_deletion = true
 	}
 
 	function cancel_deletion() {
-		confirm_deletion = false;
+		confirm_deletion = false
 	}
 </script>
 
 <header>
 	<h1>Settings</h1>
-	<IconLink href="/app/calendar/{calendar.id}" aria_label="back to calendar" icon={faXmark} />
+	<IconLink
+		href="/app/calendar/{calendar.id}"
+		aria_label="back to calendar"
+		icon={faXmark}
+	/>
 </header>
 
 <section class="section">
@@ -38,13 +42,13 @@
 
 	{#if calendar.is_default}
 		<p>
-			This is your default calendar. This means it will be shown by default after login. The default
-			calendar also cannot be deleted.
+			This is your default calendar. This means it will be shown by default after
+			login. The default calendar also cannot be deleted.
 		</p>
 	{:else}
 		<p>
-			Currently this is not your default calendar. This means it will not be shown by default after
-			login, but it is available in the dashbard.
+			Currently this is not your default calendar. This means it will not be shown
+			by default after login, but it is available in the dashbard.
 		</p>
 
 		<form method="POST" action="?/setdefault">
@@ -60,12 +64,19 @@
 		<form method="POST" action="?/delete">
 			{#if confirm_deletion}
 				<button type="submit" class="button danger">Delete</button>
-				<button type="button" class="button" onclick={cancel_deletion}>Cancel</button>
+				<button type="button" class="button" onclick={cancel_deletion}
+					>Cancel</button
+				>
 			{:else}
-				<button type="button" class="button danger" onclick={ask_for_confirmation}>Delete</button>
+				<button type="button" class="button danger" onclick={ask_for_confirmation}
+					>Delete</button
+				>
 			{/if}
 			{#if confirm_deletion}
-				<p>Are you sure? All the data inside the calendar will be deleted permanently.</p>
+				<p>
+					Are you sure? All the data inside the calendar will be deleted
+					permanently.
+				</p>
 			{/if}
 		</form>
 	</section>

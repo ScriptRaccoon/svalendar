@@ -1,5 +1,5 @@
 <script lang="ts">
-	let { form, data } = $props();
+	let { form, data } = $props()
 </script>
 
 <h1>Dashboard</h1>

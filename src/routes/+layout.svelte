@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Nav from '$lib/components/Nav.svelte';
-	import './app.css';
+	import Nav from '$lib/components/Nav.svelte'
+	import './app.css'
 
-	let { children } = $props();
+	let { children } = $props()
 </script>
 
 <div class="wrapper">

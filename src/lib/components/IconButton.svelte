@@ -1,15 +1,15 @@
 <script lang="ts">
-	import Fa from 'svelte-fa';
-	import { type IconDefinition as Icon1 } from '@fortawesome/free-solid-svg-icons';
-	import { type IconDefinition as Icon2 } from '@fortawesome/free-regular-svg-icons';
+	import Fa from 'svelte-fa'
+	import { type IconDefinition as Icon1 } from '@fortawesome/free-solid-svg-icons'
+	import { type IconDefinition as Icon2 } from '@fortawesome/free-regular-svg-icons'
 
 	type Props = {
-		aria_label: string;
-		icon: Icon1 | Icon2;
-		onclick: () => void;
-	};
+		aria_label: string
+		icon: Icon1 | Icon2
+		onclick: () => void
+	}
 
-	let { aria_label, icon, onclick }: Props = $props();
+	let { aria_label, icon, onclick }: Props = $props()
 </script>
 
 <button aria-label={aria_label} {onclick}>
