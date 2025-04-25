@@ -1,11 +1,14 @@
 <script lang="ts">
+	import CloseLink from '$lib/components/CloseLink.svelte';
+
 	let { data, form } = $props();
 	let event = $derived(data.event);
 </script>
 
-<h1>Edit Event</h1>
-
-<a href="/app/calendar/{data.calendar_id}">Back to calendar</a>
+<header>
+	<h1>Edit Event</h1>
+	<CloseLink href="/app/calendar/{data.calendar_id}" aria_label="back to calendar" />
+</header>
 
 <form method="POST" action="?/update">
 	<div>
@@ -51,3 +54,11 @@
 {#if form?.error}
 	<p>{form.error}</p>
 {/if}
+
+<style>
+	header {
+		display: flex;
+		justify-content: space-between;
+		align-items: start;
+	}
+</style>
