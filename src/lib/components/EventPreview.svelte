@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import type { CalendarEvent } from '$lib/server/types';
-	import { format, differenceInMinutes } from 'date-fns'; // ????
+	import { format, differenceInMinutes } from 'date-fns';
 
 	type Props = {
 		event: CalendarEvent;

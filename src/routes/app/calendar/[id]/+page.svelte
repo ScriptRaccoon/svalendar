@@ -1,7 +1,7 @@
 <script lang="ts">
 	import EventPreview from '$lib/components/EventPreview.svelte';
 	import type { CalendarEvent } from '$lib/server/types';
-	import { format, addDays } from 'date-fns'; // ???
+	import { format, addDays } from 'date-fns';
 
 	let { data } = $props();
 

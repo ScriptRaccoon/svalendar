@@ -1,5 +1,5 @@
 import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from './[date]/$types';
+import type { RequestHandler } from './$types';
 import { query } from '$lib/server/db';
 import type { CalendarEvent } from '$lib/server/types';
 import { z } from 'zod';
