@@ -52,7 +52,8 @@ h2 {
 
 input,
 button,
-select {
+select,
+textarea {
 	font: inherit;
 	color: inherit;
 	border: none;
@@ -88,16 +89,23 @@ button:focus-visible {
 		font-weight: 500;
 	}
 
-	input {
+	input,
+	textarea {
 		width: 100%;
 		padding: 0.25rem 0.5rem;
 		outline: 1px solid var(--outline-color);
 		border-radius: 0.25rem;
 	}
 
-	input:focus-visible {
+	textarea:focus-visible,
+	:focus-visible {
 		outline: 1px solid var(--secondary-font-color);
 		background-color: var(--highlight-color);
+	}
+
+	textarea {
+		resize: vertical;
+		height: 3rem;
 	}
 }
 

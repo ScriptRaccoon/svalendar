@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EventInput from '$lib/components/EventInput.svelte';
 	import IconLink from '$lib/components/IconLink.svelte';
 	import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
@@ -11,44 +12,22 @@
 </header>
 
 <form method="POST">
-	<div>
-		<label for="title">Title*</label>
-		<input type="text" id="title" name="title" value={form?.title} required />
-	</div>
-	<div>
-		<label for="description">Description</label>
-		<textarea id="description" name="description">{form?.description}</textarea>
-	</div>
-	<div>
-		<label for="start_time">Start Time*</label>
-		<input
-			type="datetime-local"
-			id="start_time"
-			name="start_time"
-			value={form?.start_time}
-			required
-		/>
-	</div>
-	<div>
-		<label for="end_time">End Time*</label>
-		<input type="datetime-local" id="end_time" name="end_time" value={form?.end_time} required />
-	</div>
-	<div>
-		<label for="location">Location</label>
-		<input type="text" id="location" name="location" value={form?.location} />
-	</div>
-	<div>
-		<label for="color">Color*</label>
-		<input type="color" id="color" name="color" value={form?.color} required />
-	</div>
+	<EventInput
+		title={form?.title ?? ''}
+		description={form?.description ?? ''}
+		start_time={form?.start_time ?? ''}
+		end_time={form?.end_time ?? ''}
+		location={form?.location ?? ''}
+		color={form?.color ?? ''}
+	/>
 
-	<button type="submit">Create Event</button>
+	<p>Fields marked with * are required.</p>
+
+	<button class="button" type="submit">Create Event</button>
 </form>
 
-<p>Fields marked with * are required.</p>
-
 {#if form?.error}
-	<p>{form.error}</p>
+	<p class="error">{form.error}</p>
 {/if}
 
 <style>

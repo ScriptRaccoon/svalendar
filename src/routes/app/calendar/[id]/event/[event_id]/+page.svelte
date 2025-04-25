@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EventInput from '$lib/components/EventInput.svelte';
 	import IconLink from '$lib/components/IconLink.svelte';
 	import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,52 +13,30 @@
 </header>
 
 <form method="POST" action="?/update">
-	<div>
-		<label for="title">Title*</label>
-		<input type="text" id="title" name="title" value={event.title} required />
-	</div>
-	<div>
-		<label for="description">Description</label>
-		<textarea id="description" name="description">{event.description}</textarea>
-	</div>
-	<div>
-		<label for="start_time">Start Time*</label>
-		<input
-			type="datetime-local"
-			id="start_time"
-			name="start_time"
-			value={event.start_time}
-			required
-		/>
-	</div>
-	<div>
-		<label for="end_time">End Time*</label>
-		<input type="datetime-local" id="end_time" name="end_time" value={event.end_time} required />
-	</div>
-	<div>
-		<label for="location">Location</label>
-		<input type="text" id="location" name="location" value={event.location} />
-	</div>
-	<div>
-		<label for="color">Color*</label>
-		<input type="color" id="color" name="color" value={event.color} required />
-	</div>
+	<EventInput
+		title={event.title}
+		description={event.description}
+		start_time={event.start_time}
+		end_time={event.end_time}
+		location={event.location}
+		color={event.color}
+	/>
 
-	<button type="submit">Update Event</button>
-</form>
+	<p>Fields marked with * are required.</p>
 
-<p>Fields marked with * are required.</p>
-
-<form method="POST" action="?/delete">
-	<button type="submit">Delete Event</button>
+	<menu>
+		<button class="button" type="submit">Update Event</button>
+		<button class="button danger" type="submit" formaction="?/delete">Delete Event</button>
+	</menu>
 </form>
 
 {#if form?.error}
-	<p>{form.error}</p>
+	<p class="error">{form.error}</p>
 {/if}
 
 <style>
-	header {
+	header,
+	menu {
 		display: flex;
 		justify-content: space-between;
 		align-items: start;
