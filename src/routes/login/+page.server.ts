@@ -4,11 +4,23 @@ import { query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { JWT_SECRET } from '$env/static/private'
+import { RateLimiter } from '$lib/server/rate-limiter'
+
+const login_rate_limiter = new RateLimiter(5, 60 * 1000) // 5 attempts per minute
 
 export const actions: Actions = {
 	default: async (event) => {
 		const form_data = await event.request.formData()
 		const name = form_data.get('name') as string | null
+
+		const ip = event.getClientAddress()
+		if (login_rate_limiter.is_rate_limited(ip)) {
+			return fail(429, {
+				error: 'Too many requests. Please try again later.',
+				name
+			})
+		}
+
 		const password = form_data.get('password') as string | null
 		if (!name) {
 			return fail(400, { error: 'Name is required.', name })
@@ -32,6 +44,8 @@ export const actions: Actions = {
 		if (!is_correct) {
 			return fail(400, { error: 'Invalid name or password.', name })
 		}
+
+		login_rate_limiter.clear(ip)
 
 		const token = jwt.sign({ id, name }, JWT_SECRET)
 
