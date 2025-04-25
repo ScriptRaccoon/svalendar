@@ -18,7 +18,7 @@ export const actions: Actions = {
 		const start_time = form_data.get('start_time') as string;
 		const end_time = form_data.get('end_time') as string;
 		const location = form_data.get('location') as string;
-		const color = form_data.get('color') as string;
+		const color = form_data.get('color') as string | null;
 
 		const fields = {
 			title,

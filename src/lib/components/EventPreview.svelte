@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { EVENTS_COLORS_DICTIONARY } from '$lib/config';
 	import type { CalendarEvent } from '$lib/server/types';
 	import { format, differenceInMinutes } from 'date-fns';
 
@@ -20,7 +21,7 @@
 <a
 	class="event"
 	href={`${page.url.pathname}/event/${event.id}`}
-	style="--color: {event.color}; --mins: {length_in_minutes}"
+	style="--color: {EVENTS_COLORS_DICTIONARY[event.color]}; --mins: {length_in_minutes}"
 >
 	<div class="title">
 		{event.title}
