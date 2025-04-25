@@ -7,7 +7,9 @@
 
 <div class="wrapper">
 	<Header />
-	{@render children?.()}
+	<main>
+		{@render children?.()}
+	</main>
 </div>
 
 <style>
