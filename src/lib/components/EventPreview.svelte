@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/state'
 	import { EVENTS_COLORS_DICTIONARY } from '$lib/config'
 	import type { CalendarEvent } from '$lib/server/types'
 	import { format, differenceInMinutes } from 'date-fns'
@@ -7,9 +6,10 @@
 	type Props = {
 		event: CalendarEvent
 		next_start_time: string | null
+		calendar_id: number
 	}
 
-	let { event, next_start_time }: Props = $props()
+	let { event, next_start_time, calendar_id }: Props = $props()
 
 	let length_in_minutes = $derived(
 		differenceInMinutes(event.end_time, event.start_time)
@@ -22,7 +22,7 @@
 
 <a
 	class="event"
-	href={`${page.url.pathname}/event/${event.id}`}
+	href={`/app/calendar/${calendar_id}/event/${event.id}`}
 	style="--color: {EVENTS_COLORS_DICTIONARY[event.color]}; --mins: {length_in_minutes}"
 >
 	<div class="title">

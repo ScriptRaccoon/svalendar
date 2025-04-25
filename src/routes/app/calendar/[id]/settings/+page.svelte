@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ColorPicker from '$lib/components/ColorPicker.svelte'
-	import IconLink from '$lib/components/IconLink.svelte'
+	import IconButton from '$lib/components/IconButton.svelte'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 	let { data, form } = $props()
@@ -18,8 +18,8 @@
 
 <header>
 	<h1>Settings</h1>
-	<IconLink
-		href="/app/calendar/{calendar.id}"
+	<IconButton
+		onclick={() => history.back()}
 		aria_label="back to calendar"
 		icon={faXmark}
 	/>

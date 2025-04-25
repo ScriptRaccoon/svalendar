@@ -4,6 +4,7 @@ import { query } from '$lib/server/db'
 import { date_schema } from '$lib/server/schemas'
 import { add_seconds } from '$lib/server/utils'
 import { COLOR_IDS } from '$lib/config'
+import { format } from 'date-fns'
 
 export const load: PageServerLoad = async (event) => {
 	const calendar_id = event.params.id
@@ -79,6 +80,7 @@ export const actions: Actions = {
 		const { err } = await query(sql, args)
 		if (err) return fail(500, { error: 'Database error.', ...fields })
 
-		redirect(302, `/app/calendar/${calendar_id}`)
+		const date = format(start_time, 'yyyy-MM-dd')
+		redirect(302, `/app/calendar/${calendar_id}/${date}`)
 	}
 }

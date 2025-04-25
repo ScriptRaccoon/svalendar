@@ -8,6 +8,7 @@ import { redirect } from '@sveltejs/kit'
 import { add_seconds } from '$lib/server/utils'
 import { COLOR_IDS } from '$lib/config'
 import { date_schema } from '$lib/server/schemas'
+import { format } from 'date-fns'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -110,7 +111,8 @@ export const actions: Actions = {
 		const { err } = await query(sql, args)
 		if (err) return fail(500, { error: 'Database error.', ...fields })
 
-		redirect(302, `/app/calendar/${calendar_id}`)
+		const date = format(start_time, 'yyyy-MM-dd')
+		redirect(302, `/app/calendar/${calendar_id}/${date}`)
 	},
 
 	delete: async (event) => {
@@ -131,6 +133,10 @@ export const actions: Actions = {
 		const args = [event_id, user.id]
 		const { err } = await query(sql, args)
 		if (err) return fail(500, { error: 'Database error.' })
-		redirect(302, `/app/calendar/${calendar_id}`)
+
+		const form_data = await event.request.formData()
+		const start_time = add_seconds(form_data.get('start_time') as string)
+		const date = format(start_time, 'yyyy-MM-dd')
+		redirect(302, `/app/calendar/${calendar_id}/${date}`)
 	}
 }
