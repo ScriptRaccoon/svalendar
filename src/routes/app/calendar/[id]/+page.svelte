@@ -1,7 +1,9 @@
 <script lang="ts">
 	import EventPreview from '$lib/components/EventPreview.svelte';
 	import type { CalendarEvent } from '$lib/server/types';
+	import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 	import { format, addDays } from 'date-fns';
+	import Fa from 'svelte-fa';
 
 	let { data } = $props();
 
@@ -47,11 +49,15 @@
 <br />
 <a href="/app/calendar/{calendar.id}/event/new">New Event</a>
 
-<h2>Today, {today.toLocaleDateString()}</h2>
+<h2>{today.toLocaleDateString()}</h2>
 
 <menu>
-	<button onclick={decrement_day}><strong>-</strong></button>
-	<button onclick={increment_day}><strong>+</strong></button>
+	<button onclick={decrement_day}>
+		<Fa icon={faCaretLeft} />
+	</button>
+	<button onclick={increment_day}>
+		<Fa icon={faCaretRight} />
+	</button>
 </menu>
 
 <div class="events">
