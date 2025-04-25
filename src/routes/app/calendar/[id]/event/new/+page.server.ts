@@ -33,6 +33,10 @@ export const actions: Actions = {
 			return fail(400, { error: 'Fill in the required fields.', ...fields });
 		}
 
+		if (new Date(start_time) >= new Date(end_time)) {
+			return fail(400, { error: 'End time must be after start time.', ...fields });
+		}
+
 		const sql = `
         INSERT INTO
             events (title, description, start_time, end_time, location, color, calendar_id)

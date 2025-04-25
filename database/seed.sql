@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS events (
     title TEXT NOT NULL,
     description TEXT,
     start_time TEXT NOT NULL,
-    end_time TEXT NOT NULL,
+    end_time TEXT NOT NULL CHECK (end_time > start_time),
     location TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     color TEXT NOT NULL,
