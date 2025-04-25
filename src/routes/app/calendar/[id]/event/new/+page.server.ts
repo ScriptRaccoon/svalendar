@@ -18,12 +18,13 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
+		const calendar_id = event.params.id
+
 		const form_data = await event.request.formData()
 		const title = form_data.get('title') as string
 		const description = form_data.get('description') as string
 		const start_time = add_seconds(form_data.get('start_time') as string)
 		const end_time = add_seconds(form_data.get('end_time') as string)
-
 		const location = form_data.get('location') as string
 		const color = form_data.get('color') as string | null
 
@@ -64,13 +65,12 @@ export const actions: Actions = {
         RETURNING id
         `
 
-		const calendar_id = event.params.id
 		const args = [
 			title,
-			description,
+			description || null,
 			start_time,
 			end_time,
-			location,
+			location || null,
 			color,
 			calendar_id
 		]

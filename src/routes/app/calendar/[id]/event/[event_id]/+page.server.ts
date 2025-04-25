@@ -98,10 +98,10 @@ export const actions: Actions = {
 
 		const args = [
 			title,
-			description,
+			description || null,
 			start_time,
 			end_time,
-			location,
+			location || null,
 			color,
 			event_id,
 			user.id
