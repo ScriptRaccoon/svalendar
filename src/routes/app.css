@@ -118,6 +118,15 @@ button:focus-visible {
 	margin-bottom: 2rem;
 }
 
+.list {
+	margin-block: 1rem;
+	padding-left: 1.25rem;
+
+	li {
+		margin-block: 0.5rem;
+	}
+}
+
 /* utilities */
 
 .no-bullets {
