@@ -1,5 +1,6 @@
 <script lang="ts">
-	import CloseLink from '$lib/components/CloseLink.svelte';
+	import IconLink from '$lib/components/IconLink.svelte';
+	import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 	let { data, form } = $props();
 	let event = $derived(data.event);
@@ -7,7 +8,7 @@
 
 <header>
 	<h1>Edit Event</h1>
-	<CloseLink href="/app/calendar/{data.calendar_id}" aria_label="back to calendar" />
+	<IconLink href="/app/calendar/{data.calendar_id}" aria_label="back to calendar" icon={faXmark} />
 </header>
 
 <form method="POST" action="?/update">

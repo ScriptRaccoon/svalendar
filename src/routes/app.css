@@ -59,6 +59,26 @@ select {
 	background: none;
 }
 
+button {
+	cursor: pointer;
+}
+
+button:focus-visible {
+	outline: 2px solid var(--secondary-font-color);
+	outline-offset: 2px;
+}
+
+.button {
+	background-color: var(--button-color);
+	color: white;
+	padding: 0.3rem 0.8rem;
+	border-radius: 0.25rem;
+
+	&.danger {
+		background-color: var(--button-danger-color);
+	}
+}
+
 .input-group {
 	margin-bottom: 1rem;
 
@@ -78,23 +98,6 @@ select {
 	input:focus-visible {
 		outline: 1px solid var(--secondary-font-color);
 		background-color: var(--highlight-color);
-	}
-}
-
-.button {
-	background-color: var(--button-color);
-	color: white;
-	padding: 0.3rem 0.8rem;
-	border-radius: 0.25rem;
-	cursor: pointer;
-
-	&:focus-visible {
-		outline: 2px solid var(--secondary-font-color);
-		outline-offset: 2px;
-	}
-
-	&.danger {
-		background-color: var(--button-danger-color);
 	}
 }
 

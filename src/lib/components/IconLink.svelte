@@ -1,17 +1,19 @@
 <script lang="ts">
-	import { faXmark } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
+	import { type IconDefinition as Icon1 } from '@fortawesome/free-solid-svg-icons';
+	import { type IconDefinition as Icon2 } from '@fortawesome/free-regular-svg-icons';
 
 	type Props = {
 		href: string;
 		aria_label: string;
+		icon: Icon1 | Icon2;
 	};
 
-	let { href, aria_label }: Props = $props();
+	let { href, aria_label, icon }: Props = $props();
 </script>
 
 <a {href} aria-label={aria_label}>
-	<Fa icon={faXmark} scale={1.25} />
+	<Fa {icon} scale={1.25} />
 </a>
 
 <style>
@@ -20,7 +22,7 @@
 		border-radius: 50%;
 		width: 2rem;
 		height: 2rem;
-		display: flex;
+		display: inline-flex;
 		justify-content: center;
 		align-items: center;
 		color: var(--secondary-font-color);

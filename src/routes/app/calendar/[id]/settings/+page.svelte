@@ -1,7 +1,6 @@
 <script lang="ts">
-	import CloseLink from '$lib/components/CloseLink.svelte';
+	import IconLink from '$lib/components/IconLink.svelte';
 	import { faXmark } from '@fortawesome/free-solid-svg-icons';
-	import Fa from 'svelte-fa';
 
 	let { data, form } = $props();
 	let calendar = $derived(data.calendar);
@@ -18,7 +17,7 @@
 
 <header>
 	<h1>Settings</h1>
-	<CloseLink href="/app/calendar/{calendar.id}" aria_label="back to calendar" />
+	<IconLink href="/app/calendar/{calendar.id}" aria_label="back to calendar" icon={faXmark} />
 </header>
 
 <section class="section">

@@ -1,7 +1,9 @@
 <script lang="ts">
 	import EventPreview from '$lib/components/EventPreview.svelte';
+	import IconButton from '$lib/components/IconButton.svelte';
+	import IconLink from '$lib/components/IconLink.svelte';
 	import type { CalendarEvent } from '$lib/server/types';
-	import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+	import { faCaretLeft, faCaretRight, faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
 	import { format, addDays } from 'date-fns';
 	import Fa from 'svelte-fa';
 
@@ -37,28 +39,25 @@
 	}
 </script>
 
-<h1>Calendar {calendar.name}</h1>
+<header>
+	<h1>Calendar {calendar.name}</h1>
+	<menu>
+		<IconLink href="/app/calendar/{calendar.id}/settings" aria_label="Settings" icon={faCog} />
+		<IconLink href="/app/calendar/{calendar.id}/event/new" aria_label="New Event" icon={faPlus} />
+	</menu>
+</header>
 
 {#if error_message}
-	<p>
-		{error_message}
-	</p>
+	<p class="error">{error_message}</p>
 {/if}
 
-<a href="/app/calendar/{calendar.id}/settings">Settings</a>
-<br />
-<a href="/app/calendar/{calendar.id}/event/new">New Event</a>
-
-<h2>{today.toLocaleDateString()}</h2>
-
-<menu>
-	<button onclick={decrement_day}>
-		<Fa icon={faCaretLeft} />
-	</button>
-	<button onclick={increment_day}>
-		<Fa icon={faCaretRight} />
-	</button>
-</menu>
+<header>
+	<h2>{today.toLocaleDateString()}</h2>
+	<menu>
+		<IconButton icon={faCaretLeft} aria_label="decrement day" onclick={decrement_day} />
+		<IconButton icon={faCaretRight} aria_label="increment day" onclick={increment_day} />
+	</menu>
+</header>
 
 <div class="events">
 	{#each events as event, index (event.id)}
@@ -69,7 +68,19 @@
 </div>
 
 <style>
+	header {
+		display: flex;
+		justify-content: space-between;
+		align-items: start;
+	}
+
+	header menu {
+		display: flex;
+		gap: 0.5rem;
+	}
+
 	.events {
+		margin-top: 1rem;
 		margin-bottom: 2rem;
 	}
 </style>
