@@ -21,7 +21,7 @@
 </script>
 
 <header>
-	<h1>Calendar {calendar.name}</h1>
+	<h2>Calendar {calendar.name}</h2>
 	<menu>
 		<IconLink
 			href="/app/calendar/{calendar.id}/settings"
@@ -37,7 +37,7 @@
 </header>
 
 <header>
-	<h2>{new Date(today).toLocaleDateString()}</h2>
+	<h3>{new Date(today).toLocaleDateString()}</h3>
 	<menu>
 		<IconLink
 			href="/app/calendar/{calendar.id}/{yesterday}"

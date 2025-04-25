@@ -8,7 +8,7 @@
 </script>
 
 <header>
-	<h1>Edit Event</h1>
+	<h2>Edit Event</h2>
 	<IconButton
 		onclick={() => history.back()}
 		aria_label="back to calendar"

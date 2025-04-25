@@ -2,12 +2,12 @@
 	let { form, data } = $props()
 </script>
 
-<h1>Dashboard</h1>
+<h2>Dashboard</h2>
 
 <p>Hey, {data.user?.name}!</p>
 
 <section class="section">
-	<h2>List of Calendars</h2>
+	<h3>List of Calendars</h3>
 	<ul class="no-bullets">
 		{#each data.calendars as calendar}
 			<li>
@@ -20,7 +20,7 @@
 </section>
 
 <section class="section">
-	<h2>Create Calendar</h2>
+	<h3>Create Calendar</h3>
 	<form action="?/createcalendar" method="POST">
 		<div class="input-group">
 			<label for="name">Name</label>

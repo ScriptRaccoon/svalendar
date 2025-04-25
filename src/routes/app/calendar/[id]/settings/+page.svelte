@@ -17,7 +17,7 @@
 </script>
 
 <header>
-	<h1>Settings</h1>
+	<h2>Settings</h2>
 	<IconButton
 		onclick={() => history.back()}
 		aria_label="back to calendar"
@@ -26,7 +26,7 @@
 </header>
 
 <section class="section">
-	<h2>Appearance</h2>
+	<h3>Appearance</h3>
 
 	<form method="POST" action="?/edit">
 		<div class="input-group">
@@ -41,7 +41,7 @@
 </section>
 
 <section class="section">
-	<h2>Default</h2>
+	<h3>Default</h3>
 
 	{#if calendar.is_default}
 		<p>
@@ -62,7 +62,7 @@
 
 {#if !calendar.is_default}
 	<section class="section">
-		<h2>Danger Zone</h2>
+		<h3>Danger Zone</h3>
 
 		<form method="POST" action="?/delete">
 			{#if confirm_deletion}

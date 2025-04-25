@@ -14,10 +14,10 @@
 	}
 </script>
 
-<h1>Account</h1>
+<h2>Account</h2>
 
 <section class="section">
-	<h2>Account Details</h2>
+	<h3>Account Details</h3>
 
 	<form method="POST" action="?/name" class="mb2">
 		<div class="input-group">
@@ -54,7 +54,7 @@
 </section>
 
 <section class="section">
-	<h2>Danger Zone</h2>
+	<h3>Danger Zone</h3>
 
 	<form method="POST" action="?/delete">
 		<div>

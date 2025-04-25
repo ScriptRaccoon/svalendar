@@ -9,7 +9,7 @@
 	--secondary-font-color: #444;
 	--outline-color: #aaa;
 	--error-color: red;
-	--button-color: rgb(15, 125, 15);
+	--primary-color: rgb(15, 125, 15);
 	--button-danger-color: rgb(179, 14, 14);
 	--highlight-color: #f8f8f8;
 }
@@ -35,18 +35,19 @@ p {
 	margin-block: 1rem;
 }
 
-h1,
 h2,
 h3 {
 	font-weight: 600;
 	line-height: 1.2;
 }
 
-h1 {
+h2 {
+	font-size: 1.75rem;
 	margin-bottom: 1rem;
 }
 
-h2 {
+h3 {
+	font-size: 1.25rem;
 	margin-bottom: 0.5rem;
 }
 
@@ -70,7 +71,7 @@ button:focus-visible {
 }
 
 .button {
-	background-color: var(--button-color);
+	background-color: var(--primary-color);
 	color: white;
 	padding: 0.3rem 0.8rem;
 	border-radius: 0.25rem;
