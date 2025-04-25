@@ -10,11 +10,11 @@
 		faPlus
 	} from '@fortawesome/free-solid-svg-icons'
 	import { format, addDays } from 'date-fns'
-	import Fa from 'svelte-fa'
 
 	let { data } = $props()
 
 	const calendar = data.calendar
+	const calendar_url = `/app/calendar/${calendar.id}`
 
 	let events = $state<CalendarEvent[]>(data.events)
 	let today = $state<Date>(data.today)
@@ -47,13 +47,9 @@
 <header>
 	<h1>Calendar {calendar.name}</h1>
 	<menu>
+		<IconLink href="{calendar_url}/settings" aria_label="Settings" icon={faCog} />
 		<IconLink
-			href="/app/calendar/{calendar.id}/settings"
-			aria_label="Settings"
-			icon={faCog}
-		/>
-		<IconLink
-			href="/app/calendar/{calendar.id}/event/new"
+			href="{calendar_url}/event/new?date={format(today, 'yyyy-MM-dd')}"
 			aria_label="New Event"
 			icon={faPlus}
 		/>
