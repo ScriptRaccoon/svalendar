@@ -2,6 +2,7 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
 import type { Calendar } from '$lib/server/types'
+import { COLOR_IDS } from '$lib/config'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -13,6 +14,7 @@ export const load: PageServerLoad = async (event) => {
     SELECT
         calendars.id,
 		calendars.name,
+		calendars.default_color,
 		users.default_calendar_id = calendars.id AS is_default
     FROM
         calendars
@@ -32,26 +34,32 @@ export const load: PageServerLoad = async (event) => {
 }
 
 export const actions: Actions = {
-	rename: async (event) => {
+	edit: async (event) => {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
 		const form_data = await event.request.formData()
 		const calendar_id = event.params.id
 		const name = form_data.get('name') as string | null
+		const color = form_data.get('color') as string | null
 
 		if (!name) return fail(400, { error: 'Name is required.', name })
+		if (!color) return fail(400, { error: 'Color is required.', name })
+
+		if (!COLOR_IDS.includes(color)) {
+			return fail(400, { error: 'Invalid color.', name })
+		}
 
 		const sql = `
         UPDATE
             calendars
         SET
-            name = ?
+            name = ?, default_color = ?
         WHERE
             id = ? AND user_id = ?
         `
 
-		const args = [name, calendar_id, user.id]
+		const args = [name, color, calendar_id, user.id]
 
 		const { err } = await query(sql, args)
 		if (err) return fail(500, { error: 'Database error.', name })

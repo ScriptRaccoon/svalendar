@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ColorPicker from '$lib/components/ColorPicker.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
@@ -25,15 +26,17 @@
 </header>
 
 <section class="section">
-	<h2>Rename</h2>
+	<h2>Appearance</h2>
 
-	<form method="POST" action="?/rename">
+	<form method="POST" action="?/edit">
 		<div class="input-group">
 			<label for="name">Name</label>
 			<input type="text" id="name" name="name" required value={calendar.name} />
 		</div>
 
-		<button class="button">Rename</button>
+		<ColorPicker label="Default Color" current_color={calendar.default_color} />
+
+		<button class="button">Update</button>
 	</form>
 </section>
 

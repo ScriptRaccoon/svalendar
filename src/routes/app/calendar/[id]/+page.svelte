@@ -18,6 +18,7 @@
 
 	let events = $state<CalendarEvent[]>(data.events)
 	let today = $state<Date>(data.today)
+	let today_str = $derived(format(today, 'yyyy-MM-dd'))
 
 	let error_message = $state('')
 
@@ -32,7 +33,6 @@
 	}
 
 	async function update_events() {
-		const today_str = format(today, 'yyyy-MM-dd')
 		const tomorrow_str = format(addDays(today, 1), 'yyyy-MM-dd')
 		const url = `/api/events/${calendar.id}?start_date=${today_str}&end_date=${tomorrow_str}`
 		const res = await fetch(url)
@@ -49,7 +49,7 @@
 	<menu>
 		<IconLink href="{calendar_url}/settings" aria_label="Settings" icon={faCog} />
 		<IconLink
-			href="{calendar_url}/event/new?date={format(today, 'yyyy-MM-dd')}"
+			href="{calendar_url}/event/new?date={today_str}&color={calendar.default_color}"
 			aria_label="New Event"
 			icon={faPlus}
 		/>

@@ -16,7 +16,8 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendar_id = event.params.id
 
-	const sql = 'SELECT id, name FROM calendars WHERE id = ? AND user_id = ?'
+	const sql =
+		'SELECT id, name, default_color FROM calendars WHERE id = ? AND user_id = ?'
 	const args = [calendar_id, user.id]
 
 	const { rows: calendars, err: err_calendars } = await query<CalendarBasic>(sql, args)

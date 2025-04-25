@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS calendars (
     name TEXT NOT NULL,
     user_id INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    default_color TEXT DEFAULT "blue",
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 

@@ -3,7 +3,7 @@ export type UserLocals = {
 	name: string
 }
 
-export type CalendarBasic = { id: number; name: string }
+export type CalendarBasic = { id: number; name: string; default_color: string }
 
 export type Calendar = CalendarBasic & { is_default: number }
 

@@ -10,7 +10,8 @@ export const load: PageServerLoad = async (event) => {
 	const selected_date = event.url.searchParams.get('date')
 	const start_time = selected_date ? `${selected_date}T09:00` : null
 	const end_time = selected_date ? `${selected_date}T10:00` : null
-	return { calendar_id, start_time, end_time }
+	const color = event.url.searchParams.get('color')
+	return { calendar_id, start_time, end_time, color }
 }
 
 export const actions: Actions = {

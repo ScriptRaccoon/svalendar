@@ -22,7 +22,7 @@
 		start_time={form?.start_time ?? data.start_time ?? ''}
 		end_time={form?.end_time ?? data.end_time ?? ''}
 		location={form?.location ?? ''}
-		color={form?.color ?? ''}
+		color={form?.color ?? data.color ?? ''}
 	/>
 
 	<p>Fields marked with * are required.</p>
