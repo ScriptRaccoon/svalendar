@@ -15,4 +15,7 @@ export const password_schema = z
 		message: 'Password must contain at least one letter.'
 	})
 
-export const date_schema = z.string().datetime({ local: true })
+// don't use Zod's .datetime() because that expects seconds
+export const datetime_schema = z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, {
+	message: 'Invalid datetime format (expected YYYY-MM-DDTHH:MM)'
+})
