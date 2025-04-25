@@ -52,14 +52,18 @@
 	</menu>
 </header>
 
-<div class="events">
-	{#each events as event, index (event.id)}
-		{@const next_start_time =
-			index < events.length - 1 ? events[index + 1].start_time : null}
+{#if events.length > 0}
+	<div class="events">
+		{#each events as event, index (event.id)}
+			{@const next_start_time =
+				index < events.length - 1 ? events[index + 1].start_time : null}
 
-		<EventPreview {event} {next_start_time} calendar_id={calendar.id} />
-	{/each}
-</div>
+			<EventPreview {event} {next_start_time} calendar_id={calendar.id} />
+		{/each}
+	</div>
+{:else}
+	<p>No events for this date.</p>
+{/if}
 
 <style>
 	header {
