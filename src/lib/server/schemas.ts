@@ -14,3 +14,5 @@ export const password_schema = z
 	.regex(/[a-zA-Z]/, {
 		message: 'Password must contain at least one letter.'
 	});
+
+export const date_schema = z.string().datetime({ local: true });

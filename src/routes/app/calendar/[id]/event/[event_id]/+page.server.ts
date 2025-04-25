@@ -5,6 +5,9 @@ import type { CalendarEvent } from '$lib/server/types';
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
+import { add_seconds } from '$lib/server/utils';
+import { COLOR_IDS } from '$lib/config';
+import { date_schema } from '$lib/server/schemas';
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user;
@@ -43,8 +46,8 @@ export const actions: Actions = {
 		const form_data = await event.request.formData();
 		const title = form_data.get('title') as string;
 		const description = form_data.get('description') as string;
-		const start_time = form_data.get('start_time') as string;
-		const end_time = form_data.get('end_time') as string;
+		const start_time = add_seconds(form_data.get('start_time') as string);
+		const end_time = add_seconds(form_data.get('end_time') as string);
 		const location = form_data.get('location') as string;
 		const color = form_data.get('color') as string;
 
@@ -63,6 +66,18 @@ export const actions: Actions = {
 
 		if (new Date(start_time) >= new Date(end_time)) {
 			return fail(400, { error: 'End time must be after start time.', ...fields });
+		}
+
+		if (!COLOR_IDS.includes(color)) {
+			return fail(400, { error: 'Invalid color.', ...fields });
+		}
+
+		if (!date_schema.safeParse(start_time).success) {
+			return fail(400, { error: 'Invalid start time.', ...fields });
+		}
+
+		if (!date_schema.safeParse(end_time).success) {
+			return fail(400, { error: 'Invalid end time.', ...fields });
 		}
 
 		const sql = `

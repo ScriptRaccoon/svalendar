@@ -16,3 +16,5 @@ export const EVENT_COLORS = [
 export const EVENTS_COLORS_DICTIONARY = Object.fromEntries(
 	EVENT_COLORS.map((color) => [color.id, color.value])
 ) as Record<string, string>;
+
+export const COLOR_IDS = EVENT_COLORS.map((color) => color.id) as [string, ...string[]];
