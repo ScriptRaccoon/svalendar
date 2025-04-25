@@ -16,47 +16,61 @@
 
 <h1>Account</h1>
 
-<form method="POST" action="?/name">
-	<div>
-		<label for="name">Name</label>
-		<input type="text" id="name" name="name" required value={form?.name ?? page.data.user?.name} />
-	</div>
+<section class="section">
+	<h2>Account Details</h2>
 
-	<button type="submit">Update Name</button>
-</form>
+	<form method="POST" action="?/name" class="mb2">
+		<div class="input-group">
+			<label for="name">Name</label>
+			<input
+				type="text"
+				id="name"
+				name="name"
+				required
+				value={form?.name ?? page.data.user?.name}
+			/>
+		</div>
 
-<form method="POST" action="?/password">
-	<div>
-		<label for="password">Password</label>
-		<input type="password" name="password" id="password" required />
-	</div>
+		<button class="button" type="submit">Update Name</button>
+	</form>
 
-	<div>
-		<label for="confirm_password">Confirm Password</label>
-		<input type="password" name="confirm_password" id="confirm_password" required />
-	</div>
-	<button type="submit">Update Password</button>
-</form>
+	<form method="POST" action="?/password">
+		<div class="input-group">
+			<label for="password">Password</label>
+			<input type="password" name="password" id="password" required />
+		</div>
 
-<h2>Danger Zone</h2>
+		<div class="input-group">
+			<label for="confirm_password">Confirm Password</label>
+			<input type="password" name="confirm_password" id="confirm_password" required />
+		</div>
+		<button class="button" type="submit">Update Password</button>
+	</form>
+</section>
 
-<form method="POST" action="?/delete">
-	<div>
+<section class="section">
+	<h2>Danger Zone</h2>
+
+	<form method="POST" action="?/delete">
+		<div>
+			{#if confirm_deletion}
+				<button class="button danger" type="submit">Delete Account</button>
+				<button class="button" type="button" onclick={cancel_deletion}>Cancel</button>
+			{:else}
+				<button class="button danger" type="button" onclick={ask_for_confirmation}
+					>Delete Account</button
+				>
+			{/if}
+		</div>
+
 		{#if confirm_deletion}
-			<button type="submit">Delete Account</button>
-			<button type="button" onclick={cancel_deletion}>Cancel</button>
-		{:else}
-			<button type="button" onclick={ask_for_confirmation}>Delete Account</button>
+			<p>This action cannot be undone! Are you sure? All data will be lost.</p>
 		{/if}
-	</div>
-
-	{#if confirm_deletion}
-		<p>This action cannot be undone! Are you sure? All data will be lost.</p>
-	{/if}
-</form>
+	</form>
+</section>
 
 {#if form?.error}
-	<p>{form.error}</p>
+	<p class="error">{form.error}</p>
 {/if}
 
 {#if form?.message}

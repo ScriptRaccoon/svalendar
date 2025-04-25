@@ -1,27 +1,19 @@
 <script lang="ts">
-	let { data, children } = $props();
+	import Nav from '$lib/components/Nav.svelte';
+	import './app.css';
+
+	let { children } = $props();
 </script>
 
-<nav>
-	<ul>
-		{#if !data.user}
-			<li><a href="/">Home</a></li>
-			<li><a href="/register">Register</a></li>
-			<li><a href="/login">Login</a></li>
-		{:else}
-			<li><a href="/app/dashboard">Dashboard</a></li>
-			<li><a href="/account">Account</a></li>
-			<li><a href="/logout" data-sveltekit-preload-data="off">Logout</a></li>
-		{/if}
-	</ul>
-</nav>
-
-{@render children?.()}
+<div class="wrapper">
+	<Nav />
+	{@render children?.()}
+</div>
 
 <style>
-	ul {
-		display: flex;
-		list-style: none;
-		gap: 0.5rem;
+	.wrapper {
+		padding-inline: 0.75rem;
+		max-width: 42rem;
+		margin-inline: auto;
 	}
 </style>
