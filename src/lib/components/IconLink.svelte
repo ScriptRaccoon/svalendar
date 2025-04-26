@@ -7,13 +7,14 @@
 		href: string
 		aria_label: string
 		icon: Icon1 | Icon2
+		scale?: number
 	}
 
-	let { href, aria_label, icon }: Props = $props()
+	let { href, aria_label, icon, scale = 1.25 }: Props = $props()
 </script>
 
 <a {href} aria-label={aria_label}>
-	<Fa {icon} scale={1.25} />
+	<Fa {icon} {scale} />
 </a>
 
 <style>

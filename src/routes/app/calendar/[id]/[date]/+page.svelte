@@ -27,6 +27,7 @@
 			href="/app/calendar/{calendar.id}/settings"
 			aria_label="Settings"
 			icon={faCog}
+			scale={1}
 		/>
 		<IconLink
 			href="/app/calendar/{calendar.id}/event/new?date={today}&color={calendar.default_color}"
