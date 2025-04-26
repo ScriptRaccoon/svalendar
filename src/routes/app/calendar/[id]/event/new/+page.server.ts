@@ -63,8 +63,6 @@ export const actions: Actions = {
 		const encrypted_description_data = encrypt(description)
 		const encrypted_location_data = encrypt(location)
 
-		console.info(encrypted_description_data)
-
 		const sql = `
         INSERT INTO
             events (calendar_id,
