@@ -4,6 +4,7 @@ import { get_error_messages } from '$lib/server/utils'
 import { query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import { password_schema } from '$lib/server/schemas'
+import { DEFAULT_COLOR } from '$lib/config'
 
 export const actions: Actions = {
 	default: async (event) => {
@@ -48,12 +49,10 @@ export const actions: Actions = {
 		const { id } = rows[0]
 
 		const sql_calendar =
-			'INSERT INTO calendars (name, user_id) VALUES (?, ?) RETURNING id'
+			'INSERT INTO calendars (name, user_id, default_color) VALUES (?, ?, ?) RETURNING id'
+		const args = ['Default', id, DEFAULT_COLOR]
 
-		const { rows: calendars } = await query<{ id: number }>(sql_calendar, [
-			'Default',
-			id
-		])
+		const { rows: calendars } = await query<{ id: number }>(sql_calendar, args)
 
 		if (calendars?.length) {
 			const calendar_id = calendars[0].id

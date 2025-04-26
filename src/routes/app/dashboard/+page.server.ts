@@ -2,6 +2,7 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
 import type { CalendarBasic } from '$lib/server/types'
+import { DEFAULT_COLOR } from '$lib/config'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -38,13 +39,13 @@ export const actions: Actions = {
 
 		const sql = `
         INSERT INTO
-            calendars (name, user_id)
+            calendars (name, user_id, default_color)
         VALUES
-            (?, ?)
+            (?, ?, ?)
         RETURNING id as calendar_id
         `
 
-		const args = [name, user.id]
+		const args = [name, user.id, DEFAULT_COLOR]
 
 		const { rows, err } = await query<{ calendar_id: number }>(sql, args)
 

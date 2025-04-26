@@ -18,3 +18,5 @@ export const EVENTS_COLORS_DICTIONARY = Object.fromEntries(
 ) as Record<string, string>
 
 export const COLOR_IDS = EVENT_COLORS.map((color) => color.id) as [string, ...string[]]
+
+export const DEFAULT_COLOR = 'blue'
