@@ -33,9 +33,15 @@ CREATE TABLE IF NOT EXISTS events (
     location_tag TEXT NOT NULL,
     start_time TEXT NOT NULL,
     end_time TEXT NOT NULL CHECK (end_time > start_time),
+    start_date TEXT GENERATED ALWAYS AS (substr (start_time, 1, 10)) STORED,
+    end_date TEXT GENERATED ALWAYS AS (substr (end_time, 1, 10)) STORED,
     color TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (calendar_id) REFERENCES calendars (id) ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_calendar_id ON events (calendar_id);
+
+CREATE INDEX IF NOT EXISTS idx_start_date ON events (start_date);
+
+CREATE INDEX IF NOT EXISTS idx_end_date ON events (end_date);

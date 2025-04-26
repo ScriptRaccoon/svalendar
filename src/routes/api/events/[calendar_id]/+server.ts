@@ -37,8 +37,8 @@ export const GET: RequestHandler = async (event) => {
         events
     WHERE
         calendar_id = ?
-        AND start_time <= ?
-        AND end_time >= ?
+        AND start_date <= ?
+        AND end_date >= ?
     ORDER BY
         start_time ASC
     `
