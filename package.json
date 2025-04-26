@@ -13,7 +13,8 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check .",
 		"db:seed": "cd database && sqlite3 main.db < seed.sql",
-		"db:shell": "cd database && sqlite3 main.db"
+		"db:shell": "cd database && sqlite3 main.db",
+		"key": "tsx scripts/key.ts"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-netlify": "^5.0.0",
