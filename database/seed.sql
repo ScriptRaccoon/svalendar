@@ -28,13 +28,13 @@ CREATE TABLE IF NOT EXISTS events (
     description_encrypted TEXT NOT NULL,
     description_iv TEXT NOT NULL,
     description_tag TEXT NOT NULL,
-    start_time TEXT NOT NULL,
-    end_time TEXT NOT NULL CHECK (end_time > start_time),
     location_encrypted TEXT NOT NULL,
     location_iv TEXT NOT NULL,
     location_tag TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    start_time TEXT NOT NULL,
+    end_time TEXT NOT NULL CHECK (end_time > start_time),
     color TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (calendar_id) REFERENCES calendars (id) ON DELETE CASCADE
 );
 

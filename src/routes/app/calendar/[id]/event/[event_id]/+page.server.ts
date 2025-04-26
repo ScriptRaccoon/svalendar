@@ -102,11 +102,11 @@ export const actions: Actions = {
                 description_encrypted = ?,
 				description_iv = ?,
 				description_tag = ?,
-                start_time = ?,
-                end_time = ?,
                 location_encrypted = ?,
 				location_iv = ?,
 				location_tag = ?,
+                start_time = ?,
+                end_time = ?,
                 color = ?
         WHERE
             id = ?
@@ -122,11 +122,11 @@ export const actions: Actions = {
 			encrypted_description_data.data,
 			encrypted_description_data.iv,
 			encrypted_description_data.tag,
-			start_time,
-			end_time,
 			encrypted_location_data.data,
 			encrypted_location_data.iv,
 			encrypted_location_data.tag,
+			start_time,
+			end_time,
 			color,
 			event_id,
 			user.id

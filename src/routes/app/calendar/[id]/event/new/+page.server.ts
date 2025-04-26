@@ -67,30 +67,30 @@ export const actions: Actions = {
 
 		const sql = `
         INSERT INTO
-            events (title_encrypted, title_iv, title_tag,
+            events (calendar_id,
+			title_encrypted, title_iv, title_tag,
 			description_encrypted, description_iv, description_tag,		
-			start_time, end_time,
 			location_encrypted, location_iv, location_tag,
-			color, calendar_id)
+			start_time, end_time, color)
         VALUES
             (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         RETURNING id
         `
 
 		const args = [
+			calendar_id,
 			encrypted_title_data.data,
 			encrypted_title_data.iv,
 			encrypted_title_data.tag,
 			encrypted_description_data.data,
 			encrypted_description_data.iv,
 			encrypted_description_data.tag,
-			start_time,
-			end_time,
 			encrypted_location_data.data,
 			encrypted_location_data.iv,
 			encrypted_location_data.tag,
-			color,
-			calendar_id
+			start_time,
+			end_time,
+			color
 		]
 
 		const { err } = await query(sql, args)
