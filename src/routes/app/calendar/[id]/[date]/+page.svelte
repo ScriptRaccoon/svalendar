@@ -80,6 +80,5 @@
 
 	.events {
 		margin-top: 1rem;
-		margin-bottom: 2rem;
 	}
 </style>
