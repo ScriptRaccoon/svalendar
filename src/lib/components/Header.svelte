@@ -58,7 +58,7 @@
 		font-size: 1.5rem;
 		font-weight: 400;
 		line-height: initial;
-		color: var(--primary-color);
+		color: var(--title-color);
 		letter-spacing: 1px;
 	}
 

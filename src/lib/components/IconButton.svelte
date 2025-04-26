@@ -18,7 +18,7 @@
 
 <style>
 	button {
-		background-color: #eee;
+		background-color: var(--icon-bg-color);
 		cursor: pointer;
 		border-radius: 50%;
 		width: 2rem;
@@ -26,6 +26,5 @@
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
-		color: var(--secondary-font-color);
 	}
 </style>

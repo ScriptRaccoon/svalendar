@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state'
+	import { theme } from '$lib/states.svelte.js'
 
 	let { form } = $props()
 
@@ -51,6 +52,11 @@
 		</div>
 		<button class="button" type="submit">Update Password</button>
 	</form>
+</section>
+
+<section class="section">
+	<h3>Appearance</h3>
+	<button class="button" onclick={theme.toggle}>Toggle Theme</button>
 </section>
 
 <section class="section">
