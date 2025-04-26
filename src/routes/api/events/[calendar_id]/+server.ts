@@ -1,8 +1,9 @@
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { query } from '$lib/server/db'
-import type { CalendarEvent } from '$lib/server/types'
+import type { CalendarEvent, CalendarEventEncrypted } from '$lib/server/types'
 import { z } from 'zod'
+import { decrypt_calendar_event } from '$lib/server/utils'
 
 export const GET: RequestHandler = async (event) => {
 	const user = event.locals.user
@@ -27,7 +28,11 @@ export const GET: RequestHandler = async (event) => {
 
 	const sql = `
     SELECT
-        id, title, description, start_time, end_time, location, color
+        id,
+		title_encrypted, title_iv, title_tag,
+		description_encrypted, description_iv, description_tag,
+		location_encrypted, location_iv, location_tag,
+		start_time, end_time, color
     FROM
         events
     WHERE
@@ -40,8 +45,10 @@ export const GET: RequestHandler = async (event) => {
 
 	const args = [calendar_id, end_date, start_date]
 
-	const { rows: events, err } = await query<CalendarEvent>(sql, args)
+	const { rows, err } = await query<CalendarEventEncrypted>(sql, args)
 	if (err) error(500, 'Database error.')
+
+	const events: CalendarEvent[] = rows.map(decrypt_calendar_event)
 
 	return json(events)
 }

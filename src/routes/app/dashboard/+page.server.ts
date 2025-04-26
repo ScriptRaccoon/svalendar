@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
-import type { Calendar, CalendarBasic } from '$lib/server/types'
+import type { CalendarBasic } from '$lib/server/types'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user

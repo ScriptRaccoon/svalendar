@@ -4,6 +4,7 @@ import { query } from '$lib/server/db'
 import { datetime_schema } from '$lib/server/schemas'
 import { COLOR_IDS } from '$lib/config'
 import { format } from 'date-fns'
+import { encrypt } from '$lib/server/encryption'
 
 export const load: PageServerLoad = async (event) => {
 	const calendar_id = event.params.id
@@ -58,20 +59,36 @@ export const actions: Actions = {
 			return fail(400, { error: 'Invalid end time.', ...fields })
 		}
 
+		const encrypted_title_data = encrypt(title)
+		const encrypted_description_data = encrypt(description)
+		const encrypted_location_data = encrypt(location)
+
+		console.info(encrypted_description_data)
+
 		const sql = `
         INSERT INTO
-            events (title, description, start_time, end_time, location, color, calendar_id)
+            events (title_encrypted, title_iv, title_tag,
+			description_encrypted, description_iv, description_tag,		
+			start_time, end_time,
+			location_encrypted, location_iv, location_tag,
+			color, calendar_id)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         RETURNING id
         `
 
 		const args = [
-			title,
-			description || null,
+			encrypted_title_data.data,
+			encrypted_title_data.iv,
+			encrypted_title_data.tag,
+			encrypted_description_data.data,
+			encrypted_description_data.iv,
+			encrypted_description_data.tag,
 			start_time,
 			end_time,
-			location || null,
+			encrypted_location_data.data,
+			encrypted_location_data.iv,
+			encrypted_location_data.tag,
 			color,
 			calendar_id
 		]

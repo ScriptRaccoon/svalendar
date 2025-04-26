@@ -1,13 +1,15 @@
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
-import type { CalendarEvent } from '$lib/server/types'
+import type { CalendarEvent, CalendarEventEncrypted } from '$lib/server/types'
 import type { Actions } from './$types'
 import { fail } from '@sveltejs/kit'
 import { redirect } from '@sveltejs/kit'
 import { COLOR_IDS } from '$lib/config'
 import { datetime_schema } from '$lib/server/schemas'
 import { format } from 'date-fns'
+import { decrypt_calendar_event } from '$lib/server/utils'
+import { encrypt } from '$lib/server/encryption'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -18,7 +20,11 @@ export const load: PageServerLoad = async (event) => {
 
 	const sql = `
     SELECT
-        id, title, description, start_time, end_time, location, color
+        id,
+		title_encrypted, title_iv, title_tag,
+		description_encrypted, description_iv, description_tag,
+		location_encrypted, location_iv, location_tag,
+		start_time, end_time, color
     FROM
         events
     WHERE
@@ -29,10 +35,13 @@ export const load: PageServerLoad = async (event) => {
 
 	const args = [event_id, user.id]
 
-	const { rows, err } = await query<CalendarEvent>(sql, args)
+	const { rows, err } = await query<CalendarEventEncrypted>(sql, args)
 	if (err) error(500, 'Database error.')
 	if (!rows.length) error(404, 'Event not found.')
-	return { calendar_id, event: rows[0] }
+
+	const calendar_event = decrypt_calendar_event(rows[0])
+
+	return { calendar_id, event: calendar_event }
 }
 
 export const actions: Actions = {
@@ -80,14 +89,24 @@ export const actions: Actions = {
 			return fail(400, { error: 'Invalid end time.', ...fields })
 		}
 
+		const encrypted_title_data = encrypt(title)
+		const encrypted_description_data = encrypt(description)
+		const encrypted_location_data = encrypt(location)
+
 		const sql = `
         UPDATE events
             SET
-                title = ?,
-                description = ?,
+                title_encrypted = ?,
+				title_iv = ?,
+				title_tag = ?,
+                description_encrypted = ?,
+				description_iv = ?,
+				description_tag = ?,
                 start_time = ?,
                 end_time = ?,
-                location = ?,
+                location_encrypted = ?,
+				location_iv = ?,
+				location_tag = ?,
                 color = ?
         WHERE
             id = ?
@@ -97,11 +116,17 @@ export const actions: Actions = {
         `
 
 		const args = [
-			title,
-			description || null,
+			encrypted_title_data.data,
+			encrypted_title_data.iv,
+			encrypted_title_data.tag,
+			encrypted_description_data.data,
+			encrypted_description_data.iv,
+			encrypted_description_data.tag,
 			start_time,
 			end_time,
-			location || null,
+			encrypted_location_data.data,
+			encrypted_location_data.iv,
+			encrypted_location_data.tag,
 			color,
 			event_id,
 			user.id
