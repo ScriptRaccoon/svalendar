@@ -144,6 +144,14 @@ button:focus-visible {
 	}
 }
 
+pre {
+	background-color: black;
+	color: greenyellow;
+	padding: 0.5rem;
+	border-radius: 0.25rem;
+	overflow: auto;
+}
+
 /* utilities */
 
 .no-bullets {

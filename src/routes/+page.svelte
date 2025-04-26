@@ -1,3 +1,7 @@
+<script lang="ts">
+	import sample from './sample.json'
+</script>
+
 <h2>Welcome to Svalendar</h2>
 
 <section class="section" aria-label="introduction">
@@ -26,7 +30,7 @@
 			>.
 		</li>
 		<li>
-			<strong>No Vendor Lock-In:</strong> Unlike other calendar apps, Svalendar doesn’t
+			<strong>No Vendor Lock-In:</strong> Unlike other calendar apps, Svalendar doesn't
 			tie you to Google, Microsoft, or any other platform. Your data stays with you.
 		</li>
 		<li>
@@ -53,10 +57,34 @@
 </section>
 
 <section class="section">
+	<h3>Your Data is Secure</h3>
+
+	<p>
+		At Svalendar, we take your privacy seriously. That's why the titles, descriptions,
+		and locations of all your calendar events are encrypted before they are stored in
+		the database. This means that even if someone were to access the database, they
+		wouldn't be able to read your event details without the encryption keys.
+	</p>
+
+	<details>
+		<summary>Show me!</summary>
+		<div>
+			<p>
+				For example, a calendar entry titled <i>"Prepare divorce"</i>, described
+				by <i>"It's time to say goodbye ..."</i>, and the location
+				<i>"Home Office"</i>, will be saved like this in the database:
+			</p>
+			<pre>{JSON.stringify(sample, null, 4)}</pre>
+			<p>As you can see, the title, description, and location are all encrypted.</p>
+		</div>
+	</details>
+</section>
+
+<section class="section">
 	<h3>Technology Behind Svalendar</h3>
 
 	<p>
-		Svalendar is crafted using modern web technologies. It’s built with <strong
+		Svalendar is crafted using modern web technologies. It's built with <strong
 			>SvelteKit</strong
 		>, a cutting-edge framework for building fast and lightweight web applications.
 		For data storage, we use <strong>SQLite</strong>, a reliable and efficient
