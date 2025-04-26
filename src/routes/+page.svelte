@@ -6,40 +6,38 @@
 
 <section class="section" aria-label="introduction">
 	<p>
-		Svalendar is a modern, open-source calendar app designed to help you organize your
-		life without relying on big tech platforms like Google or Microsoft. Whether
-		you're managing your personal schedule, planning events, or coordinating with
-		others, Svalendar offers a simple and privacy-focused solution that works
-		seamlessly across devices.
+		Svalendar is an open-source calendar app designed to help you organize your life.
+		It provides a simple and privacy-focused way to manage your schedule across
+		devices.
 	</p>
 </section>
 
 <section class="section">
-	<h3>Why Choose Svalendar?</h3>
+	<h3>Features</h3>
 
 	<ul class="list">
 		<li>
-			<strong>Mobile-Friendly:</strong> Svalendar is fully responsive and works beautifully
-			on mobile devices, tablets, and desktops.
+			<strong>Mobile-Friendly:</strong> The app is fully responsive and works well on
+			mobile devices, tablets, and desktops.
 		</li>
 		<li>
-			<strong>Open Source:</strong> Built with transparency in mind, Svalendar is
-			open source. You can view the code, contribute, or even host it yourself.
+			<strong>Open Source:</strong> The code is open for anyone to view, contribute
+			to, or host themselves.
 			<a href="http://github.com/ScriptRaccoon/svalendar" target="_blank"
-				>Check out our GitHub repository</a
+				>View the GitHub repository</a
 			>.
 		</li>
 		<li>
-			<strong>No Vendor Lock-In:</strong> Unlike other calendar apps, Svalendar doesn't
-			tie you to Google, Microsoft, or any other platform. Your data stays with you.
+			<strong>No Vendor Lock-In:</strong> The app does not depend on services like Google
+			or Microsoft, so your data stays under your control.
 		</li>
 		<li>
-			<strong>Backup to JSON:</strong> Easily back up your calendars to a JSON file,
-			giving you full control over your data.
+			<strong>Backup to JSON:</strong> Calendars can be backed up to a JSON file for
+			easy data portability.
 		</li>
 		<li>
-			<strong>Multiple Calendars:</strong> Create and manage multiple calendars to keep
-			your personal, work, and shared schedules separate and organized.
+			<strong>Multiple Calendars:</strong> Create and manage separate calendars for different
+			purposes.
 		</li>
 	</ul>
 </section>
@@ -48,63 +46,57 @@
 	<h3>Privacy and Simplicity</h3>
 
 	<p>
-		Svalendar is built with privacy and simplicity at its core. By avoiding
-		third-party integrations and unnecessary client-side JavaScript, we ensure that
-		your data remains secure and your experience is fast and efficient. The app works
-		mostly without client-side JavaScript, thanks to the power of SvelteKit's form
-		actions.
+		The app avoids third-party integrations and unnecessary client-side JavaScript,
+		ensuring a fast and secure experience. Most functionality works without
+		client-side JavaScript, thanks to SvelteKit's form actions.
 	</p>
 </section>
 
 <section class="section">
-	<h3>Your Data is Secure</h3>
+	<h3>Data Security</h3>
 
 	<p>
-		At Svalendar, we take your privacy seriously. That's why the titles, descriptions,
-		and locations of all your calendar events are encrypted before they are stored in
-		the database. This means that even if someone were to access the database, they
-		wouldn't be able to read your event details without the encryption keys.
+		The titles, descriptions, and locations of all calendar events are encrypted in
+		the database. This means that even if someone gains access to the database, they
+		cannot read your event details without the encryption keys.
 	</p>
 
 	<details>
-		<summary>Show me!</summary>
+		<summary>Show me an example</summary>
 		<div>
 			<p>
-				For example, a calendar entry titled <i>"Prepare divorce"</i>, described
-				by <i>"It's time to say goodbye ..."</i>, and the location
-				<i>"Home Office"</i>, will be saved like this in the database:
+				For example, a calendar entry titled <i>"Prepare dinner"</i>, described as
+				<i>"Cook pasta for family"</i>, and located at <i>"Home Kitchen"</i>, will
+				be saved in the database similar to this:
 			</p>
 			<pre>{JSON.stringify(sample, null, 4)}</pre>
-			<p>As you can see, the title, description, and location are all encrypted.</p>
+			<p>The title, description, and location are all encrypted.</p>
 		</div>
 	</details>
 </section>
 
 <section class="section">
-	<h3>Technology Behind Svalendar</h3>
+	<h3>Technology</h3>
 
 	<p>
-		Svalendar is crafted using modern web technologies. It's built with <strong
-			>SvelteKit</strong
-		>, a cutting-edge framework for building fast and lightweight web applications.
-		For data storage, we use <strong>SQLite</strong>, a reliable and efficient
-		database that ensures your data is always accessible. This combination allows
-		Svalendar to deliver a smooth experience while keeping the technical complexity
-		minimal.
+		This app is built with <strong>SvelteKit</strong>, a modern framework for creating
+		fast and lightweight web applications. It uses <strong>SQLite</strong> for data storage,
+		ensuring reliability and simplicity. The combination of these technologies allows the
+		app to function efficiently without unnecessary complexity.
 	</p>
 </section>
 
 <section class="section">
-	<h3>Get Started Today</h3>
+	<h3>Get Started</h3>
 
 	<p>
-		Ready to take control of your schedule? <a href="/register">Register</a> now and
-		start using Svalendar to organize your life. Already have an account?
-		<a href="/login">Log in</a> to access your calendars.
+		You can <a href="/register">register</a> to create an account and start organizing
+		your schedule. If you already have an account, <a href="/login">log in</a> to access
+		your calendars.
 	</p>
 
 	<p>
-		Join the growing community of users who value simplicity, privacy, and control.
-		With Svalendar, your schedule is truly yours.
+		This app is designed for those who value simplicity, privacy, and control over
+		their data.
 	</p>
 </section>
