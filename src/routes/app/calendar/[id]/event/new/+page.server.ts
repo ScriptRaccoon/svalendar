@@ -4,7 +4,8 @@ import { query } from '$lib/server/db'
 import { datetime_schema } from '$lib/server/schemas'
 import { COLOR_IDS } from '$lib/config'
 import { format } from 'date-fns'
-import { encrypt } from '$lib/server/encryption'
+import { decrypt, encrypt } from '$lib/server/encryption'
+import type { EventTitleEncrypted } from '$lib/server/types'
 
 export const load: PageServerLoad = async (event) => {
 	const calendar_id = event.params.id
@@ -57,6 +58,39 @@ export const actions: Actions = {
 
 		if (!datetime_schema.safeParse(end_time).success) {
 			return fail(400, { error: 'Invalid end time.', ...fields })
+		}
+
+		const sql_overlap = `
+		SELECT
+			title_encrypted, title_iv, title_tag
+		FROM
+			events
+		WHERE
+			calendar_id = ?
+			AND end_time > ?
+			AND start_time < ?
+		LIMIT 1
+		`
+
+		const args_overlap = [calendar_id, start_time, end_time]
+		const { rows: overlap_rows, err: overlap_err } = await query<EventTitleEncrypted>(
+			sql_overlap,
+			args_overlap
+		)
+
+		if (overlap_err) return fail(500, { error: 'Database error.', ...fields })
+		if (overlap_rows.length) {
+			const overlap = overlap_rows[0]
+			const title_overlap = decrypt({
+				data: overlap.title_encrypted,
+				iv: overlap.title_iv,
+				tag: overlap.title_tag
+			})
+
+			return fail(400, {
+				error: `Time overlaps with another event (${title_overlap}).`,
+				...fields
+			})
 		}
 
 		const encrypted_title_data = encrypt(title)

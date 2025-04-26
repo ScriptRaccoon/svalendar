@@ -32,3 +32,8 @@ export type CalendarEventEncrypted = {
 	location_tag: string
 	color: string
 }
+
+export type EventTitleEncrypted = Pick<
+	CalendarEventEncrypted,
+	'title_encrypted' | 'title_iv' | 'title_tag'
+>
