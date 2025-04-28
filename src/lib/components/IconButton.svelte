@@ -1,4 +1,8 @@
 <script lang="ts">
+	/**
+	 * @deprecated
+	 * We only need the IconLink for now.
+	 */
 	import Fa from 'svelte-fa'
 	import { type IconDefinition as Icon1 } from '@fortawesome/free-solid-svg-icons'
 	import { type IconDefinition as Icon2 } from '@fortawesome/free-regular-svg-icons'

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import EventInput from '$lib/components/EventInput.svelte'
-	import IconButton from '$lib/components/IconButton.svelte'
+	import IconLink from '$lib/components/IconLink.svelte'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 	let { form, data } = $props()
@@ -8,8 +8,8 @@
 
 <header>
 	<h2>New Event</h2>
-	<IconButton
-		onclick={() => history.back()}
+	<IconLink
+		href={`/app/calendar/${data.calendar_id}/${data.selected_date}`}
 		aria_label="back to calendar"
 		icon={faXmark}
 	/>
