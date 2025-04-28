@@ -5,6 +5,7 @@ import { query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import { password_schema } from '$lib/server/schemas'
 import { DEFAULT_COLOR } from '$lib/config'
+import sql from 'sql-template-tag'
 
 export const actions: Actions = {
 	default: async (event) => {
@@ -28,13 +29,12 @@ export const actions: Actions = {
 
 		const password_hash = await bcrypt.hash(password!, 10)
 
-		const sql_user =
-			'INSERT INTO users (name, password_hash) VALUES (?, ?) RETURNING id'
+		const user_query = sql`
+		INSERT INTO users (name, password_hash)
+		VALUES (${name}, ${password_hash})
+		RETURNING id`
 
-		const { rows, err } = await query<{ id: number }>(sql_user, [
-			name!,
-			password_hash
-		])
+		const { rows, err } = await query<{ id: number }>(user_query)
 
 		if (err) {
 			if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
@@ -48,19 +48,20 @@ export const actions: Actions = {
 
 		const { id } = rows[0]
 
-		const sql_calendar =
-			'INSERT INTO calendars (name, user_id, default_color) VALUES (?, ?, ?) RETURNING id'
-		const args = ['Default', id, DEFAULT_COLOR]
+		const calendar_query = sql`
+		INSERT INTO calendars (name, user_id, default_color)
+		VALUES ('Default', ${id}, ${DEFAULT_COLOR})
+		RETURNING id`
 
-		const { rows: calendars } = await query<{ id: number }>(sql_calendar, args)
+		const { rows: calendars } = await query<{ id: number }>(calendar_query)
 
 		if (calendars?.length) {
-			const calendar_id = calendars[0].id
+			const default_query = sql`
+			UPDATE users
+			SET default_calendar_id = ${calendars[0].id}
+			WHERE id = ${id}`
 
-			await query('UPDATE users SET default_calendar_id = ? WHERE id = ?', [
-				calendar_id,
-				id
-			])
+			await query(default_query)
 		}
 
 		return { success: true, name }

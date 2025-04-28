@@ -4,6 +4,7 @@ import { query } from '$lib/server/db'
 import type { CalendarBasic, CalendarEvent } from '$lib/server/types'
 
 import { format, addDays } from 'date-fns'
+import sql from 'sql-template-tag'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -14,18 +15,12 @@ export const load: PageServerLoad = async (event) => {
 	const today = event.params.date
 	const tomorrow = format(addDays(today, 1), 'yyyy-MM-dd')
 
-	const sql = `
-	SELECT
-		id, name, default_color
-	FROM
-		calendars
-	WHERE
-		id = ? AND user_id = ?
-	`
+	const calendars_query = sql`
+	SELECT id, name, default_color
+	FROM calendars
+	WHERE id = ${calendar_id} AND user_id = ${user.id}`
 
-	const args = [calendar_id, user.id]
-
-	const { rows: calendars, err } = await query<CalendarBasic>(sql, args)
+	const { rows: calendars, err } = await query<CalendarBasic>(calendars_query)
 	if (err) error(500, 'Database error.')
 	if (!calendars.length) error(404, 'Calendar not found.')
 

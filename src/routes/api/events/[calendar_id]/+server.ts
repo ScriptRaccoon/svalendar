@@ -4,6 +4,7 @@ import { query } from '$lib/server/db'
 import type { CalendarEvent, CalendarEventEncrypted } from '$lib/server/types'
 import { z } from 'zod'
 import { decrypt_calendar_event } from '$lib/server/utils'
+import sql from 'sql-template-tag'
 
 export const GET: RequestHandler = async (event) => {
 	const user = event.locals.user
@@ -26,7 +27,7 @@ export const GET: RequestHandler = async (event) => {
 		error(400, 'Invalid end_date format')
 	}
 
-	const sql = `
+	const events_query = sql`
     SELECT
         id,
 		title_encrypted, title_iv, title_tag,
@@ -36,16 +37,14 @@ export const GET: RequestHandler = async (event) => {
     FROM
         events
     WHERE
-        calendar_id = ?
-        AND start_date <= ?
-        AND end_date >= ?
+        calendar_id = ${calendar_id}
+        AND start_date <= ${end_date}
+        AND end_date >= ${start_date}
     ORDER BY
         start_time ASC
-    `
+	`
 
-	const args = [calendar_id, end_date, start_date]
-
-	const { rows, err } = await query<CalendarEventEncrypted>(sql, args)
+	const { rows, err } = await query<CalendarEventEncrypted>(events_query)
 	if (err) error(500, 'Database error.')
 
 	const events: CalendarEvent[] = rows.map(decrypt_calendar_event)

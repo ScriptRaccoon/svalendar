@@ -3,24 +3,19 @@ import type { Actions, PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
 import type { CalendarBasic } from '$lib/server/types'
 import { DEFAULT_COLOR } from '$lib/config'
+import sql from 'sql-template-tag'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
 	if (!user) error(401, 'Unauthorized')
 
-	const sql = `
-	SELECT
-		id, name
-	FROM
-		calendars
-	WHERE
-		user_id = ?
-	ORDER BY
-		name ASC
-	`
+	const calendars_query = sql`
+	SELECT id, name
+	FROM calendars
+	WHERE user_id = ${user.id}
+	ORDER BY name ASC`
 
-	const args = [user.id]
-	const { rows, err } = await query<CalendarBasic>(sql, args)
+	const { rows, err } = await query<CalendarBasic>(calendars_query)
 
 	if (err) error(500, 'Database error.')
 
@@ -37,17 +32,12 @@ export const actions: Actions = {
 
 		if (!name) return fail(400, { error: 'Name is required.', name })
 
-		const sql = `
-        INSERT INTO
-            calendars (name, user_id, default_color)
-        VALUES
-            (?, ?, ?)
-        RETURNING id as calendar_id
-        `
+		const insert_query = sql`
+        INSERT INTO calendars (name, user_id, default_color)
+        VALUES (${name}, ${user.id}, ${DEFAULT_COLOR})
+        RETURNING id as calendar_id`
 
-		const args = [name, user.id, DEFAULT_COLOR]
-
-		const { rows, err } = await query<{ calendar_id: number }>(sql, args)
+		const { rows, err } = await query<{ calendar_id: number }>(insert_query)
 
 		if (err) return fail(500, { error: 'Database error.', name })
 

@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
 import type { Calendar } from '$lib/server/types'
 import { COLOR_IDS } from '$lib/config'
+import sql from 'sql-template-tag'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -10,7 +11,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendar_id = event.params.id
 
-	const sql = `
+	const calendars_query = sql`
     SELECT
         calendars.id,
 		calendars.name,
@@ -21,11 +22,10 @@ export const load: PageServerLoad = async (event) => {
 	INNER JOIN
 		users ON calendars.user_id = users.id
     WHERE
-        calendars.id = ? AND user_id = ?
+        calendars.id = ${calendar_id} AND user_id = ${user.id}
     `
 
-	const args = [calendar_id, user.id]
-	const { rows, err } = await query<Calendar>(sql, args)
+	const { rows, err } = await query<Calendar>(calendars_query)
 
 	if (err) error(500, 'Database error.')
 	if (!rows.length) error(404, 'Calendar not found.')
@@ -50,18 +50,12 @@ export const actions: Actions = {
 			return fail(400, { error: 'Invalid color.', name })
 		}
 
-		const sql = `
-        UPDATE
-            calendars
-        SET
-            name = ?, default_color = ?
-        WHERE
-            id = ? AND user_id = ?
-        `
+		const update_query = sql`
+        UPDATE calendars
+        SET name = ${name}, default_color = ${color}
+        WHERE id = ${calendar_id} AND user_id = ${user.id}`
 
-		const args = [name, color, calendar_id, user.id]
-
-		const { err } = await query(sql, args)
+		const { err } = await query(update_query)
 		if (err) return fail(500, { error: 'Database error.', name })
 
 		redirect(302, `/app/calendar/${calendar_id}`)
@@ -72,16 +66,11 @@ export const actions: Actions = {
 
 		const calendar_id = event.params.id
 
-		const sql = `
-        DELETE FROM
-            calendars
-        WHERE
-            id = ? AND user_id = ?
-        `
+		const delete_query = sql`
+        DELETE FROM calendars
+        WHERE id = ${calendar_id} AND user_id = ${user.id}`
 
-		const args = [calendar_id, user.id]
-
-		const { err } = await query(sql, args)
+		const { err } = await query(delete_query)
 		if (err) return fail(500, { error: 'Database error.' })
 
 		redirect(302, '/app/dashboard')
@@ -93,18 +82,12 @@ export const actions: Actions = {
 
 		const calendar_id = event.params.id
 
-		const sql = `
-		UPDATE
-			users
-		SET
-			default_calendar_id = ?
-		WHERE
-			id = ?
-		`
+		const default_query = sql`
+		UPDATE users
+		SET default_calendar_id = ${calendar_id}
+		WHERE id = ${user.id}`
 
-		const args = [calendar_id, user.id]
-
-		const { err } = await query(sql, args)
+		const { err } = await query(default_query)
 		if (err) return fail(500, { error: 'Database error.' })
 
 		redirect(302, `/app/calendar/${calendar_id}`)

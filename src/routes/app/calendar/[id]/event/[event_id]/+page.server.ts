@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
-import type { CalendarEvent, CalendarEventEncrypted } from '$lib/server/types'
+import type { CalendarEventEncrypted } from '$lib/server/types'
 import type { Actions } from './$types'
 import { fail } from '@sveltejs/kit'
 import { redirect } from '@sveltejs/kit'
@@ -12,6 +12,7 @@ import { decrypt_calendar_event } from '$lib/server/utils'
 import { encrypt } from '$lib/server/encryption'
 import type { EventTitleEncrypted } from '$lib/server/types'
 import { decrypt } from '$lib/server/encryption'
+import sql from 'sql-template-tag'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -20,7 +21,7 @@ export const load: PageServerLoad = async (event) => {
 	const calendar_id = event.params.id
 	const event_id = event.params.event_id
 
-	const sql = `
+	const event_query = sql`
     SELECT
         id,
 		title_encrypted, title_iv, title_tag,
@@ -30,14 +31,12 @@ export const load: PageServerLoad = async (event) => {
     FROM
         events
     WHERE
-        id = ? AND calendar_id IN (
-            SELECT id FROM calendars WHERE user_id = ?
+        id = ${event_id} AND calendar_id IN (
+            SELECT id FROM calendars WHERE user_id = ${user.id}
         )
     `
 
-	const args = [event_id, user.id]
-
-	const { rows, err } = await query<CalendarEventEncrypted>(sql, args)
+	const { rows, err } = await query<CalendarEventEncrypted>(event_query)
 	if (err) error(500, 'Database error.')
 	if (!rows.length) error(404, 'Event not found.')
 
@@ -91,24 +90,21 @@ export const actions: Actions = {
 			return fail(400, { error: 'Invalid end time.', ...fields })
 		}
 
-		const sql_overlap = `
+		const overlap_query = sql`
 		SELECT
 			title_encrypted, title_iv, title_tag
 		FROM
 			events
 		WHERE
-			calendar_id = ?
-			AND end_time > ?
-			AND start_time < ?
-			AND id != ?
+			calendar_id = ${calendar_id}
+			AND end_time > ${start_time}
+			AND start_time < ${end_time}
+			AND id != ${event_id}
 		LIMIT 1
 		`
 
-		const args_overlap = [calendar_id, start_time, end_time, event_id]
-		const { rows: overlap_rows, err: overlap_err } = await query<EventTitleEncrypted>(
-			sql_overlap,
-			args_overlap
-		)
+		const { rows: overlap_rows, err: overlap_err } =
+			await query<EventTitleEncrypted>(overlap_query)
 
 		if (overlap_err) return fail(500, { error: 'Database error.', ...fields })
 		if (overlap_rows.length) {
@@ -129,46 +125,29 @@ export const actions: Actions = {
 		const encrypted_description_data = encrypt(description)
 		const encrypted_location_data = encrypt(location)
 
-		const sql = `
+		const events_query = sql`
         UPDATE events
             SET
-                title_encrypted = ?,
-				title_iv = ?,
-				title_tag = ?,
-                description_encrypted = ?,
-				description_iv = ?,
-				description_tag = ?,
-                location_encrypted = ?,
-				location_iv = ?,
-				location_tag = ?,
-                start_time = ?,
-                end_time = ?,
-                color = ?
+                title_encrypted = ${encrypted_title_data.data},
+				title_iv = ${encrypted_title_data.iv},
+				title_tag = ${encrypted_title_data.tag},
+                description_encrypted = ${encrypted_description_data.data},
+				description_iv = ${encrypted_description_data.iv},
+				description_tag = ${encrypted_description_data.tag},
+                location_encrypted = ${encrypted_location_data.data},
+				location_iv = ${encrypted_location_data.iv},
+				location_tag = ${encrypted_location_data.tag},
+                start_time = ${start_time},
+                end_time = ${end_time},
+                color = ${color}
         WHERE
-            id = ?
+            id = ${event_id}
             AND calendar_id IN (
-                SELECT id FROM calendars WHERE user_id = ?
+                SELECT id FROM calendars WHERE user_id = ${user.id}
             )
         `
 
-		const args = [
-			encrypted_title_data.data,
-			encrypted_title_data.iv,
-			encrypted_title_data.tag,
-			encrypted_description_data.data,
-			encrypted_description_data.iv,
-			encrypted_description_data.tag,
-			encrypted_location_data.data,
-			encrypted_location_data.iv,
-			encrypted_location_data.tag,
-			start_time,
-			end_time,
-			color,
-			event_id,
-			user.id
-		]
-
-		const { err } = await query(sql, args)
+		const { err } = await query(events_query)
 		if (err) return fail(500, { error: 'Database error.', ...fields })
 
 		const date = format(start_time, 'yyyy-MM-dd')
@@ -181,17 +160,17 @@ export const actions: Actions = {
 		const calendar_id = event.params.id
 		const event_id = event.params.event_id
 
-		const sql = `
+		const delete_query = sql`
         DELETE FROM
             events
         WHERE
-            id = ?
+            id = ${event_id}
             AND calendar_id IN (
-                SELECT id FROM calendars WHERE user_id = ?
+                SELECT id FROM calendars WHERE user_id = ${user.id}
             )
         `
-		const args = [event_id, user.id]
-		const { err } = await query(sql, args)
+
+		const { err } = await query(delete_query)
 		if (err) return fail(500, { error: 'Database error.' })
 
 		const form_data = await event.request.formData()

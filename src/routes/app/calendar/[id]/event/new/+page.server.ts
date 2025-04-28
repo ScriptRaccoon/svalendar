@@ -6,6 +6,7 @@ import { COLOR_IDS } from '$lib/config'
 import { format } from 'date-fns'
 import { decrypt, encrypt } from '$lib/server/encryption'
 import type { EventTitleEncrypted } from '$lib/server/types'
+import sql from 'sql-template-tag'
 
 export const load: PageServerLoad = async (event) => {
 	const calendar_id = event.params.id
@@ -60,23 +61,20 @@ export const actions: Actions = {
 			return fail(400, { error: 'Invalid end time.', ...fields })
 		}
 
-		const sql_overlap = `
+		const overlap_query = sql`
 		SELECT
 			title_encrypted, title_iv, title_tag
 		FROM
 			events
 		WHERE
-			calendar_id = ?
-			AND end_time > ?
-			AND start_time < ?
+			calendar_id = ${calendar_id}
+			AND end_time > ${start_time}
+			AND start_time < ${end_time}
 		LIMIT 1
 		`
 
-		const args_overlap = [calendar_id, start_time, end_time]
-		const { rows: overlap_rows, err: overlap_err } = await query<EventTitleEncrypted>(
-			sql_overlap,
-			args_overlap
-		)
+		const { rows: overlap_rows, err: overlap_err } =
+			await query<EventTitleEncrypted>(overlap_query)
 
 		if (overlap_err) return fail(500, { error: 'Database error.', ...fields })
 		if (overlap_rows.length) {
@@ -97,35 +95,29 @@ export const actions: Actions = {
 		const encrypted_description_data = encrypt(description)
 		const encrypted_location_data = encrypt(location)
 
-		const sql = `
-        INSERT INTO
-            events (calendar_id,
+		const insert_query = sql`
+        INSERT INTO events
+			(calendar_id,
 			title_encrypted, title_iv, title_tag,
 			description_encrypted, description_iv, description_tag,		
 			location_encrypted, location_iv, location_tag,
 			start_time, end_time, color)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (${calendar_id},
+			${encrypted_title_data.data},
+			${encrypted_title_data.iv},
+			${encrypted_title_data.tag},
+			${encrypted_description_data.data},
+			${encrypted_description_data.iv},
+			${encrypted_description_data.tag},
+			${encrypted_location_data.data},
+			${encrypted_location_data.iv},
+			${encrypted_location_data.tag},
+			${start_time}, ${end_time}, ${color})
         RETURNING id
         `
 
-		const args = [
-			calendar_id,
-			encrypted_title_data.data,
-			encrypted_title_data.iv,
-			encrypted_title_data.tag,
-			encrypted_description_data.data,
-			encrypted_description_data.iv,
-			encrypted_description_data.tag,
-			encrypted_location_data.data,
-			encrypted_location_data.iv,
-			encrypted_location_data.tag,
-			start_time,
-			end_time,
-			color
-		]
-
-		const { err } = await query(sql, args)
+		const { err } = await query(insert_query)
 		if (err) return fail(500, { error: 'Database error.', ...fields })
 
 		const date = format(start_time, 'yyyy-MM-dd')

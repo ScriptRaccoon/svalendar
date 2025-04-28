@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { JWT_SECRET } from '$env/static/private'
 import { RateLimiter } from '$lib/server/rate-limiter'
+import sql from 'sql-template-tag'
 
 const login_rate_limiter = new RateLimiter(5, 60 * 1000) // 5 attempts per minute
 
@@ -26,10 +27,15 @@ export const actions: Actions = {
 			return fail(400, { error: 'Name is required.', name })
 		}
 
+		const password_query = sql`
+		SELECT id, password_hash
+		FROM users
+		WHERE name = ${name}`
+
 		const { rows, err } = await query<{ id: number; password_hash: string }>(
-			'SELECT id, password_hash FROM users WHERE name = ?',
-			[name]
+			password_query
 		)
+
 		if (err) {
 			return fail(500, { error: 'Database error.', name })
 		}
@@ -56,9 +62,12 @@ export const actions: Actions = {
 			secure: true
 		})
 
-		await query(`UPDATE users SET last_login = datetime('now') WHERE name = ?`, [
-			name
-		])
+		const login_query = sql`
+		UPDATE users
+		SET last_login = datetime('now')
+		WHERE name = ${name}`
+
+		await query(login_query)
 
 		redirect(302, '/app/calendar')
 	}

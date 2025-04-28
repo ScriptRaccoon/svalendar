@@ -4,6 +4,7 @@ import { password_schema } from '$lib/server/schemas'
 import { get_error_messages } from '$lib/server/utils'
 import { query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
+import sql from 'sql-template-tag'
 
 export const actions: Actions = {
 	name: async (event) => {
@@ -16,10 +17,12 @@ export const actions: Actions = {
 
 		if (!name) return fail(400, { name: 'Name is required.' })
 
-		const sql = `UPDATE users SET name = ? WHERE id = ?`
-		const args = [name, user.id]
+		const name_query = sql`
+		UPDATE users
+		SET name = ${name}
+		WHERE id = ${user.id}`
 
-		const { err } = await query(sql, args)
+		const { err } = await query(name_query)
 
 		if (err) {
 			if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
@@ -54,10 +57,12 @@ export const actions: Actions = {
 
 		const password_hash = await bcrypt.hash(password!, 10)
 
-		const sql = `UPDATE users SET password_hash = ? WHERE id = ?`
-		const args = [password_hash, user.id]
+		const password_query = sql`
+		UPDATE users
+		SET password_hash = ${password_hash}
+		WHERE id = ${user.id}`
 
-		const { err } = await query(sql, args)
+		const { err } = await query(password_query)
 
 		if (err) return fail(500, { error: 'Database error.' })
 
@@ -71,10 +76,11 @@ export const actions: Actions = {
 		event.cookies.delete('jwt', { path: '/' })
 		delete event.locals.user
 
-		const sql = `DELETE FROM users WHERE id = ?`
-		const args = [user.id]
+		const delete_query = sql`
+		DELETE FROM users
+		WHERE id = ${user.id}`
 
-		const { err } = await query(sql, args)
+		const { err } = await query(delete_query)
 		if (err) return fail(500, { error: 'Database error.' })
 
 		redirect(302, '/')
