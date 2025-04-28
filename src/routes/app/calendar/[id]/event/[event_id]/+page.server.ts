@@ -23,7 +23,9 @@ export const load: PageServerLoad = async (event) => {
 		title_encrypted, title_iv, title_tag,
 		description_encrypted, description_iv, description_tag,
 		location_encrypted, location_iv, location_tag,
-		start_time, end_time, color
+		start_time, end_time,
+		start_date, end_date,
+		color
     FROM
         events
     WHERE

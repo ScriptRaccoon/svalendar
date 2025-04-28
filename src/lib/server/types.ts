@@ -12,9 +12,11 @@ export type CalendarEvent = {
 	calendar_id: number
 	title: string
 	description: string
+	location: string
 	start_time: string
 	end_time: string
-	location: string
+	start_date: string
+	end_date: string
 	color: string
 }
 
@@ -27,11 +29,13 @@ export type CalendarEventEncrypted = {
 	description_encrypted: string
 	description_iv: string
 	description_tag: string
-	start_time: string
-	end_time: string
 	location_encrypted: string
 	location_iv: string
 	location_tag: string
+	start_time: string
+	end_time: string
+	start_date: string
+	end_date: string
 	color: string
 }
 

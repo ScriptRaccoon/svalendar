@@ -89,9 +89,15 @@ export async function get_validated_event(
 }
 
 export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarEvent {
+	const { id, calendar_id, start_time, end_time, start_date, end_date, color } = event
 	return {
-		id: event.id,
-		calendar_id: event.calendar_id,
+		id,
+		calendar_id,
+		start_time,
+		end_time,
+		start_date,
+		end_date,
+		color,
 		title: decrypt({
 			data: event.title_encrypted,
 			iv: event.title_iv,
@@ -106,9 +112,6 @@ export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarE
 			data: event.location_encrypted,
 			iv: event.location_iv,
 			tag: event.location_tag
-		}),
-		start_time: event.start_time,
-		end_time: event.end_time,
-		color: event.color
+		})
 	}
 }
