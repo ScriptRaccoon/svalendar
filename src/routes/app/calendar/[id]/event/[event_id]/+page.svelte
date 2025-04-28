@@ -18,12 +18,12 @@
 
 <form method="POST" action="?/update">
 	<EventInput
-		title={event.title}
-		description={event.description}
-		start_time={event.start_time}
-		end_time={event.end_time}
-		location={event.location}
-		color={event.color}
+		title={form?.title ?? event.title}
+		description={form?.description ?? event.description}
+		start_time={form?.start_time ?? event.start_time}
+		end_time={form?.end_time ?? event.end_time}
+		location={form?.location ?? event.location}
+		color={form?.color ?? event.color}
 	/>
 
 	<p>Fields marked with * are required.</p>
