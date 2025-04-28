@@ -3,7 +3,6 @@ import type { PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
 import type { CalendarBasic, CalendarEvent } from '$lib/server/types'
 
-import { format, addDays } from 'date-fns'
 import sql from 'sql-template-tag'
 
 export const load: PageServerLoad = async (event) => {
