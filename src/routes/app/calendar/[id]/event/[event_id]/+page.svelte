@@ -5,6 +5,8 @@
 
 	let { data, form } = $props()
 	let event = $derived(data.event)
+
+	$inspect('event', event)
 </script>
 
 <header>

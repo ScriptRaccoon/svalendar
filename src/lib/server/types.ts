@@ -9,6 +9,7 @@ export type Calendar = CalendarBasic & { is_default: number }
 
 export type CalendarEvent = {
 	id: number
+	calendar_id: number
 	title: string
 	description: string
 	start_time: string
@@ -19,6 +20,7 @@ export type CalendarEvent = {
 
 export type CalendarEventEncrypted = {
 	id: number
+	calendar_id: number
 	title_encrypted: string
 	title_iv: string
 	title_tag: string

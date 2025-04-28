@@ -91,6 +91,7 @@ export async function get_validated_event(
 export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarEvent {
 	return {
 		id: event.id,
+		calendar_id: event.calendar_id,
 		title: decrypt({
 			data: event.title_encrypted,
 			iv: event.title_iv,

@@ -19,7 +19,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const event_query = sql`
     SELECT
-        id,
+        id, calendar_id,
 		title_encrypted, title_iv, title_tag,
 		description_encrypted, description_iv, description_tag,
 		location_encrypted, location_iv, location_tag,
