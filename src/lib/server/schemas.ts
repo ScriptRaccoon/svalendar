@@ -1,5 +1,17 @@
 import { z } from 'zod'
 
+export const name_schema = z
+	.string()
+	.min(1, {
+		message: 'Name cannot be empty.'
+	})
+	.max(50, {
+		message: 'Name must be at most 50 characters long.'
+	})
+	.regex(/^[a-zA-Z0-9_-]+$/, {
+		message: 'Name can only contain letters, numbers, underscores, and dashes.'
+	})
+
 export const password_schema = z
 	.string()
 	.min(6, {

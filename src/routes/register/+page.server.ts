@@ -3,7 +3,7 @@ import { fail } from '@sveltejs/kit'
 import { get_error_messages } from '$lib/server/utils'
 import { query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
-import { password_schema } from '$lib/server/schemas'
+import { name_schema, password_schema } from '$lib/server/schemas'
 import { DEFAULT_COLOR } from '$lib/config'
 import sql from 'sql-template-tag'
 
@@ -13,6 +13,15 @@ export const actions: Actions = {
 		const name = form_data.get('name') as string | null
 		const password = form_data.get('password') as string | null
 		const confirm_password = form_data.get('confirm_password') as string | null
+
+		const name_validation = name_schema.safeParse(name)
+
+		if (name_validation.error) {
+			return fail(400, {
+				error: get_error_messages(name_validation.error),
+				name
+			})
+		}
 
 		const password_validation = password_schema.safeParse(password)
 

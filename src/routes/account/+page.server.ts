@@ -1,6 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions } from './$types'
-import { password_schema } from '$lib/server/schemas'
+import { name_schema, password_schema } from '$lib/server/schemas'
 import { get_error_messages } from '$lib/server/utils'
 import { query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
@@ -15,7 +15,11 @@ export const actions: Actions = {
 
 		const name = form_data.get('name') as string | null
 
-		if (!name) return fail(400, { name: 'Name is required.' })
+		const name_validation = name_schema.safeParse(name)
+
+		if (name_validation.error) {
+			return fail(400, { error: get_error_messages(name_validation.error), name })
+		}
 
 		const name_query = sql`
 		UPDATE users
@@ -33,7 +37,7 @@ export const actions: Actions = {
 		}
 
 		if (event.locals.user) {
-			event.locals.user.name = name
+			event.locals.user.name = name!
 		}
 
 		return { name, message: 'Name updated successfully.' }
