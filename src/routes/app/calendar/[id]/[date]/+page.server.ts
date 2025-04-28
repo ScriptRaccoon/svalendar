@@ -13,7 +13,6 @@ export const load: PageServerLoad = async (event) => {
 	const calendar_id = event.params.id
 
 	const today = event.params.date
-	const tomorrow = format(addDays(today, 1), 'yyyy-MM-dd')
 
 	const calendars_query = sql`
 	SELECT id, name, default_color
@@ -24,7 +23,7 @@ export const load: PageServerLoad = async (event) => {
 	if (err) error(500, 'Database error.')
 	if (!calendars.length) error(404, 'Calendar not found.')
 
-	const url = `/api/events/${calendar_id}?start_date=${today}&end_date=${tomorrow}`
+	const url = `/api/events/${calendar_id}?start_date=${today}&end_date=${today}`
 
 	const res = await event.fetch(url)
 	if (!res.ok) error(500, 'Failed to fetch events from API')
