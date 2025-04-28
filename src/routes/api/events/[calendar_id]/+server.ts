@@ -3,14 +3,14 @@ import type { RequestHandler } from './$types'
 import { query } from '$lib/server/db'
 import type { CalendarEvent, CalendarEventEncrypted } from '$lib/server/types'
 import { z } from 'zod'
-import { decrypt_calendar_event } from '$lib/server/utils'
 import sql from 'sql-template-tag'
+import { decrypt_calendar_event } from '$lib/server/events'
 
 export const GET: RequestHandler = async (event) => {
 	const user = event.locals.user
 	if (!user) error(401, 'Unauthorized')
 
-	const calendar_id = event.params.calendar_id
+	const calendar_id = Number(event.params.calendar_id)
 
 	const start_date = event.url.searchParams.get('start_date')
 	const end_date = event.url.searchParams.get('end_date')

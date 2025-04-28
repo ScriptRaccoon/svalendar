@@ -9,8 +9,7 @@ export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
 	if (!user) error(401, 'Unauthorized')
 
-	const calendar_id = event.params.id
-
+	const calendar_id = Number(event.params.id)
 	const today = event.params.date
 
 	const calendars_query = sql`

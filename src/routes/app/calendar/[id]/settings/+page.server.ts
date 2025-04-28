@@ -9,7 +9,7 @@ export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
 	if (!user) error(401, 'Unauthorized')
 
-	const calendar_id = event.params.id
+	const calendar_id = Number(event.params.id)
 
 	const calendars_query = sql`
     SELECT
@@ -39,7 +39,7 @@ export const actions: Actions = {
 		if (!user) error(401, 'Unauthorized')
 
 		const form_data = await event.request.formData()
-		const calendar_id = event.params.id
+		const calendar_id = Number(event.params.id)
 		const name = form_data.get('name') as string | null
 		const color = form_data.get('color') as string | null
 
@@ -64,7 +64,7 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		const calendar_id = event.params.id
+		const calendar_id = Number(event.params.id)
 
 		const delete_query = sql`
         DELETE FROM calendars
@@ -80,7 +80,7 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		const calendar_id = event.params.id
+		const calendar_id = Number(event.params.id)
 
 		const default_query = sql`
 		UPDATE users
