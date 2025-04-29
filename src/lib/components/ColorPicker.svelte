@@ -4,9 +4,10 @@
 	type Props = {
 		current_color: string | null
 		label: string
+		readonly: boolean
 	}
 
-	let { label, current_color }: Props = $props()
+	let { label, current_color, readonly }: Props = $props()
 </script>
 
 <div class="colors-container">
@@ -19,6 +20,7 @@
 				name="color"
 				value={color.id}
 				checked={color.id === current_color}
+				disabled={readonly}
 			/>
 			<label
 				class="color"

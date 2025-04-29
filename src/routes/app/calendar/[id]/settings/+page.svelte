@@ -35,7 +35,11 @@
 			<input type="text" id="name" name="name" required value={calendar.name} />
 		</div>
 
-		<ColorPicker label="Default Color" current_color={calendar.default_color} />
+		<ColorPicker
+			label="Default Color"
+			current_color={calendar.default_color}
+			readonly={false}
+		/>
 
 		<button class="button">Update</button>
 	</form>

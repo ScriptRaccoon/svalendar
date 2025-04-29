@@ -10,10 +10,9 @@
 		event: CalendarEvent
 		next_start_time: string | null
 		calendar_id: number
-		readonly: boolean
 	}
 
-	let { event, next_start_time, calendar_id, readonly }: Props = $props()
+	let { event, next_start_time, calendar_id }: Props = $props()
 
 	let length_in_minutes = $derived(
 		differenceInMinutes(event.end_time, event.start_time)
@@ -24,10 +23,9 @@
 	)
 </script>
 
-<svelte:element
-	this={readonly ? 'div' : 'a'}
+<a
 	class="event"
-	href={readonly ? undefined : `/app/calendar/${calendar_id}/event/${event.id}`}
+	href={`/app/calendar/${calendar_id}/event/${event.id}`}
 	style="--color: {EVENTS_COLORS_DICTIONARY[event.color]}; --mins: {length_in_minutes}"
 >
 	<div class="header">
@@ -46,7 +44,7 @@
 		{format(event.start_time, 'HH:mm')} &ndash;
 		{format(event.end_time, 'HH:mm')}
 	</div>
-</svelte:element>
+</a>
 
 {#if minutes_to_next > 0}
 	<div class="spacer" style="--mins: {minutes_to_next}"></div>

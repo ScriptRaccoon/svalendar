@@ -19,7 +19,7 @@ export const load: PageServerLoad = async (event) => {
 	const event_id = Number(event.params.event_id)
 
 	const permission_level = await get_permission(calendar_id, user.id)
-	if (!permission_level || permission_level == 'read') {
+	if (!permission_level) {
 		throw error(403, 'Permission denied.')
 	}
 
@@ -44,7 +44,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendar_event = decrypt_calendar_event(rows[0])
 
-	return { calendar_id, event: calendar_event }
+	return { calendar_id, event: calendar_event, permission_level }
 }
 
 export const actions: Actions = {

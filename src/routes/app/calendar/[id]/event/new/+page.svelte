@@ -23,6 +23,7 @@
 		end_time={form?.end_time ?? data.end_time ?? ''}
 		location={form?.location ?? ''}
 		color={form?.color ?? data.color ?? ''}
+		readonly={false}
 	/>
 
 	<p>Fields marked with * are required.</p>

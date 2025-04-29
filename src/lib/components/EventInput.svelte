@@ -8,6 +8,7 @@
 		end_time: string
 		location: string
 		color: string
+		readonly: boolean
 	}
 
 	let {
@@ -16,18 +17,19 @@
 		start_time,
 		end_time,
 		location,
-		color: current_color
+		color: current_color,
+		readonly
 	}: Props = $props()
 </script>
 
 <div class="input-group">
 	<label for="title">Title*</label>
-	<input type="text" id="title" name="title" value={title} required />
+	<input type="text" id="title" name="title" value={title} required {readonly} />
 </div>
 
 <div class="input-group">
 	<label for="description">Description</label>
-	<textarea id="description" name="description">{description}</textarea>
+	<textarea id="description" name="description" {readonly}>{description}</textarea>
 </div>
 
 <div class="input-group">
@@ -37,6 +39,7 @@
 		id="start_time"
 		name="start_time"
 		value={start_time}
+		{readonly}
 		required
 	/>
 </div>
@@ -48,13 +51,14 @@
 		id="end_time"
 		name="end_time"
 		value={end_time}
+		{readonly}
 		required
 	/>
 </div>
 
 <div class="input-group">
 	<label for="location">Location</label>
-	<input type="text" id="location" name="location" value={location} />
+	<input type="text" id="location" name="location" value={location} {readonly} />
 </div>
 
-<ColorPicker label="Color*" {current_color} />
+<ColorPicker label="Color" {current_color} {readonly} />

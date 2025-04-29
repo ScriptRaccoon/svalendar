@@ -68,12 +68,7 @@
 			{@const next_start_time =
 				index < events.length - 1 ? events[index + 1].start_time : null}
 
-			<EventPreview
-				{event}
-				{next_start_time}
-				calendar_id={calendar.id}
-				readonly={calendar.permission_level == 'read'}
-			/>
+			<EventPreview {event} {next_start_time} calendar_id={calendar.id} />
 		{/each}
 	</div>
 {:else}

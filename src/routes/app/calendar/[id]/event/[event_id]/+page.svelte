@@ -6,11 +6,13 @@
 	let { data, form } = $props()
 	let event = $derived(data.event)
 
-	$inspect('event', event)
+	let title = $derived(
+		data.permission_level === 'read' ? 'Event Details' : 'Edit Event'
+	)
 </script>
 
 <header>
-	<h2>Edit Event</h2>
+	<h2>{title}</h2>
 	<IconLink
 		href={`/app/calendar/${event.calendar_id}/${event.start_date}`}
 		aria_label="back to calendar"
@@ -26,16 +28,19 @@
 		end_time={form?.end_time ?? event.end_time}
 		location={form?.location ?? event.location}
 		color={form?.color ?? event.color}
+		readonly={data.permission_level === 'read'}
 	/>
 
-	<p>Fields marked with * are required.</p>
+	{#if data.permission_level !== 'read'}
+		<p>Fields marked with * are required.</p>
 
-	<menu>
-		<button class="button" type="submit">Update Event</button>
-		<button class="button danger" type="submit" formaction="?/delete"
-			>Delete Event</button
-		>
-	</menu>
+		<menu>
+			<button class="button" type="submit">Update Event</button>
+			<button class="button danger" type="submit" formaction="?/delete"
+				>Delete Event</button
+			>
+		</menu>
+	{/if}
 </form>
 
 {#if form?.error}
