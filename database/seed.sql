@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (default_calendar_id) REFERENCES calendars (id)
 );
 
+CREATE INDEX IF NOT EXISTS idx_name ON users (name);
+
 CREATE TABLE IF NOT EXISTS calendars (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
