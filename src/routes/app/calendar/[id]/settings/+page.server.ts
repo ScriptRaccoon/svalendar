@@ -63,7 +63,7 @@ export const actions: Actions = {
 		const update_query = sql`
         UPDATE calendars
         SET name = ${name}, default_color = ${color}
-        WHERE id = ${calendar_id} AND user_id = ${user.id}`
+        WHERE id = ${calendar_id}`
 
 		const { err } = await query(update_query)
 		if (err) return fail(500, { error: 'Database error.', name })
@@ -79,7 +79,7 @@ export const actions: Actions = {
 
 		const delete_query = sql`
         DELETE FROM calendars
-        WHERE id = ${calendar_id} AND user_id = ${user.id}`
+        WHERE id = ${calendar_id}`
 
 		const { err } = await query(delete_query)
 		if (err) return fail(500, { error: 'Database error.' })
