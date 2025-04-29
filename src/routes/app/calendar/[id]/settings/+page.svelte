@@ -107,7 +107,7 @@
 {/if}
 
 {#if form?.error}
-	<p>{form.error}</p>
+	<p class="error">{form.error}</p>
 {/if}
 
 <style>
