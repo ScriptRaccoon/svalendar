@@ -71,7 +71,8 @@ h3 {
 input,
 button,
 select,
-textarea {
+textarea,
+select {
 	font: inherit;
 	color: inherit;
 	border: none;
@@ -108,15 +109,17 @@ button:focus-visible {
 	}
 
 	input,
-	textarea {
+	textarea,
+	select {
 		width: 100%;
 		padding: 0.25rem 0.5rem;
 		outline: 1px solid var(--outline-color);
 		border-radius: 0.25rem;
 	}
 
+	input:focus-visible,
 	textarea:focus-visible,
-	:focus-visible {
+	select:focus-visible {
 		outline: 1px solid var(--secondary-font-color);
 		background-color: var(--highlight-color);
 	}
