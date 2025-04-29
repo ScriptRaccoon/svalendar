@@ -1,3 +1,5 @@
+import { faCalendar, faEye, faPenToSquare } from '@fortawesome/free-regular-svg-icons'
+
 export const EVENT_COLORS = [
 	{ id: 'red', value: 'hsl(0deg, 70%, 40%)' },
 	{ id: 'orange', value: 'hsl(35deg, 100%, 45%)' },
@@ -20,3 +22,9 @@ export const EVENTS_COLORS_DICTIONARY = Object.fromEntries(
 export const COLOR_IDS = EVENT_COLORS.map((color) => color.id) as [string, ...string[]]
 
 export const DEFAULT_COLOR = 'blue'
+
+export const PERMISSION_ICONS = {
+	read: faEye,
+	write: faPenToSquare,
+	owner: faCalendar
+} as const

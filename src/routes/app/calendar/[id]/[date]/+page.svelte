@@ -22,20 +22,29 @@
 
 <header>
 	<h2>Calendar {calendar.name}</h2>
+
 	<menu>
-		<IconLink
-			href="/app/calendar/{calendar.id}/settings"
-			aria_label="Settings"
-			icon={faCog}
-			scale={1}
-		/>
-		<IconLink
-			href="/app/calendar/{calendar.id}/event/new?date={today}&color={calendar.default_color}"
-			aria_label="New Event"
-			icon={faPlus}
-		/>
+		{#if calendar.permission_level === 'owner'}
+			<IconLink
+				href="/app/calendar/{calendar.id}/settings"
+				aria_label="Settings"
+				icon={faCog}
+				scale={1}
+			/>
+		{/if}
+		{#if calendar.permission_level === 'owner' || calendar.permission_level === 'write'}
+			<IconLink
+				href="/app/calendar/{calendar.id}/event/new?date={today}&color={calendar.default_color}"
+				aria_label="New Event"
+				icon={faPlus}
+			/>
+		{/if}
 	</menu>
 </header>
+
+{#if calendar.permission_level !== 'owner'}
+	<p class="rights">You have {calendar.permission_level} rights for this calendar.</p>
+{/if}
 
 <header>
 	<h3>{new Date(today).toLocaleDateString()}</h3>
@@ -59,7 +68,12 @@
 			{@const next_start_time =
 				index < events.length - 1 ? events[index + 1].start_time : null}
 
-			<EventPreview {event} {next_start_time} calendar_id={calendar.id} />
+			<EventPreview
+				{event}
+				{next_start_time}
+				calendar_id={calendar.id}
+				readonly={calendar.permission_level == 'read'}
+			/>
 		{/each}
 	</div>
 {:else}
@@ -76,6 +90,11 @@
 	header menu {
 		display: flex;
 		gap: 0.5rem;
+	}
+
+	.rights {
+		margin-top: -0.75rem;
+		color: var(--secondary-font-color);
 	}
 
 	.events {

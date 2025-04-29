@@ -39,9 +39,9 @@ export const actions: Actions = {
 		const password_hash = await bcrypt.hash(password!, 10)
 
 		const user_query = sql`
-		INSERT INTO users (name, password_hash)
-		VALUES (${name}, ${password_hash})
-		RETURNING id`
+			INSERT INTO users (name, password_hash)
+			VALUES (${name}, ${password_hash})
+			RETURNING id`
 
 		const { rows, err } = await query<{ id: number }>(user_query)
 
@@ -58,19 +58,37 @@ export const actions: Actions = {
 		const { id } = rows[0]
 
 		const calendar_query = sql`
-		INSERT INTO calendars (name, user_id, default_color)
-		VALUES ('Default', ${id}, ${DEFAULT_COLOR})
-		RETURNING id`
+			INSERT INTO calendars (name, default_color)
+			VALUES ('Default', ${DEFAULT_COLOR})
+			RETURNING id as calendar_id`
 
-		const { rows: calendars } = await query<{ id: number }>(calendar_query)
+		const { rows: calendars } = await query<{ calendar_id: number }>(calendar_query)
 
-		if (calendars?.length) {
-			const default_query = sql`
+		if (!calendars?.length) {
+			return fail(500, { error: 'Database error.', name })
+		}
+
+		const { calendar_id } = calendars[0]
+
+		const set_default_query = sql`
 			UPDATE users
-			SET default_calendar_id = ${calendars[0].id}
+			SET default_calendar_id = ${calendar_id}
 			WHERE id = ${id}`
 
-			await query(default_query)
+		const { err: default_err } = await query(set_default_query)
+
+		if (default_err) {
+			return fail(500, { error: 'Database error.', name })
+		}
+
+		const owner_query = sql`
+			INSERT INTO calendar_permissions (user_id, calendar_id, permission_level)
+			VALUES (${id}, ${calendar_id}, 'owner')`
+
+		const { err: owner_err } = await query(owner_query)
+
+		if (owner_err) {
+			return fail(500, { error: 'Database error.', name })
 		}
 
 		return { success: true, name }

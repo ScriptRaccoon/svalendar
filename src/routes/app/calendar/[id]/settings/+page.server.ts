@@ -13,16 +13,19 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendars_query = sql`
     SELECT
-        calendars.id,
-		calendars.name,
-		calendars.default_color,
-		users.default_calendar_id = calendars.id AS is_default
+        c.id,
+		c.name,
+		c.default_color,
+		cp.permission_level,
+		u.default_calendar_id = c.id AS is_default
     FROM
-        calendars
+		calendar_permissions cp
 	INNER JOIN
-		users ON calendars.user_id = users.id
+		calendars c ON c.id = cp.calendar_id
+	INNER JOIN
+		users u ON cp.user_id = u.id
     WHERE
-        calendars.id = ${calendar_id} AND user_id = ${user.id}
+        c.id = ${calendar_id} AND cp.user_id = ${user.id}
     `
 
 	const { rows, err } = await query<Calendar>(calendars_query)
@@ -30,11 +33,18 @@ export const load: PageServerLoad = async (event) => {
 	if (err) error(500, 'Database error.')
 	if (!rows.length) error(404, 'Calendar not found.')
 
-	return { calendar: rows[0] }
+	const calendar = rows[0]
+
+	if (calendar.permission_level !== 'owner') {
+		error(403, 'Permission denied.')
+	}
+
+	return { calendar }
 }
 
 export const actions: Actions = {
 	edit: async (event) => {
+		// TODO: check permissions here as well ...
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
@@ -61,6 +71,7 @@ export const actions: Actions = {
 		redirect(302, `/app/calendar/${calendar_id}`)
 	},
 	delete: async (event) => {
+		// TODO: check permissions here as well ...
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
@@ -77,6 +88,7 @@ export const actions: Actions = {
 	},
 
 	setdefault: async (event) => {
+		// TODO: check permissions here as well ...
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 

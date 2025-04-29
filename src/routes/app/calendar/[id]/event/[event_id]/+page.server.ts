@@ -9,6 +9,7 @@ import { format } from 'date-fns'
 import { encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
 import { decrypt_calendar_event, get_validated_event } from '$lib/server/events'
+import { get_permission } from '$lib/server/permission'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -16,6 +17,11 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendar_id = Number(event.params.id)
 	const event_id = Number(event.params.event_id)
+
+	const permission_level = await get_permission(calendar_id, user.id)
+	if (!permission_level || permission_level == 'read') {
+		throw error(403, 'Permission denied.')
+	}
 
 	const event_query = sql`
     SELECT
@@ -29,9 +35,7 @@ export const load: PageServerLoad = async (event) => {
     FROM
         events
     WHERE
-        id = ${event_id} AND calendar_id IN (
-            SELECT id FROM calendars WHERE user_id = ${user.id}
-        )
+        id = ${event_id}
     `
 
 	const { rows, err } = await query<CalendarEventEncrypted>(event_query)
@@ -50,6 +54,11 @@ export const actions: Actions = {
 
 		const calendar_id = Number(event.params.id)
 		const event_id = Number(event.params.event_id)
+
+		const permission_level = await get_permission(calendar_id, user.id)
+		if (!permission_level || permission_level == 'read') {
+			throw error(403, 'Permission denied.')
+		}
 
 		const form_data = await event.request.formData()
 
@@ -84,9 +93,6 @@ export const actions: Actions = {
                 color = ${fields.color}
         WHERE
             id = ${event_id}
-            AND calendar_id IN (
-                SELECT id FROM calendars WHERE user_id = ${user.id}
-            )
 		`
 
 		const { err } = await query(events_query)
@@ -99,18 +105,18 @@ export const actions: Actions = {
 	delete: async (event) => {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
+
 		const calendar_id = Number(event.params.id)
 		const event_id = Number(event.params.event_id)
 
+		const permission_level = await get_permission(calendar_id, user.id)
+		if (!permission_level || permission_level == 'read') {
+			throw error(403, 'Permission denied.')
+		}
+
 		const delete_query = sql`
-        DELETE FROM
-            events
-        WHERE
-            id = ${event_id}
-            AND calendar_id IN (
-                SELECT id FROM calendars WHERE user_id = ${user.id}
-            )
-        `
+        DELETE FROM events
+        WHERE id = ${event_id}`
 
 		const { err } = await query(delete_query)
 		if (err) return fail(500, { error: 'Database error.' })

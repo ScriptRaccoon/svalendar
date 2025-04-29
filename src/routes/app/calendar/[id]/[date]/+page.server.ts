@@ -2,7 +2,6 @@ import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
 import type { CalendarBasic, CalendarEvent } from '$lib/server/types'
-
 import sql from 'sql-template-tag'
 
 export const load: PageServerLoad = async (event) => {
@@ -13,13 +12,22 @@ export const load: PageServerLoad = async (event) => {
 	const today = event.params.date
 
 	const calendars_query = sql`
-	SELECT id, name, default_color
-	FROM calendars
-	WHERE id = ${calendar_id} AND user_id = ${user.id}`
+	SELECT
+		c.id, c.name, c.default_color, cp.permission_level
+	FROM
+		calendar_permissions cp
+	INNER JOIN
+		calendars c ON c.id = cp.calendar_id
+	WHERE
+		c.id = ${calendar_id}
+		AND cp.user_id = ${user.id}`
 
 	const { rows: calendars, err } = await query<CalendarBasic>(calendars_query)
+
 	if (err) error(500, 'Database error.')
 	if (!calendars.length) error(404, 'Calendar not found.')
+
+	const calendar = calendars[0]
 
 	const url = `/api/events/${calendar_id}?start_date=${today}&end_date=${today}`
 
@@ -28,5 +36,5 @@ export const load: PageServerLoad = async (event) => {
 
 	const events: CalendarEvent[] = await res.json()
 
-	return { calendar: calendars[0], events, today }
+	return { calendar, events, today }
 }

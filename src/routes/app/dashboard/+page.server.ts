@@ -10,10 +10,17 @@ export const load: PageServerLoad = async (event) => {
 	if (!user) error(401, 'Unauthorized')
 
 	const calendars_query = sql`
-	SELECT id, name
-	FROM calendars
-	WHERE user_id = ${user.id}
-	ORDER BY name ASC`
+	SELECT
+		c.id, c.name, cp.permission_level
+	FROM
+		calendar_permissions AS cp
+	INNER JOIN
+		calendars c ON c.id = cp.calendar_id
+	WHERE
+		cp.user_id = ${user.id}
+	ORDER BY
+		name ASC
+	`
 
 	const { rows, err } = await query<CalendarBasic>(calendars_query)
 
@@ -23,7 +30,7 @@ export const load: PageServerLoad = async (event) => {
 }
 
 export const actions: Actions = {
-	createcalendar: async (event) => {
+	create_calendar: async (event) => {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
@@ -33,9 +40,13 @@ export const actions: Actions = {
 		if (!name) return fail(400, { error: 'Name is required.', name })
 
 		const insert_query = sql`
-        INSERT INTO calendars (name, user_id, default_color)
-        VALUES (${name}, ${user.id}, ${DEFAULT_COLOR})
-        RETURNING id as calendar_id`
+        INSERT INTO
+			calendars (name, default_color)
+        VALUES
+			(${name}, ${DEFAULT_COLOR})
+        RETURNING
+			id as calendar_id
+		`
 
 		const { rows, err } = await query<{ calendar_id: number }>(insert_query)
 
@@ -44,6 +55,16 @@ export const actions: Actions = {
 		if (!rows.length) return fail(500, { error: 'Database error.', name })
 
 		const { calendar_id } = rows[0]
+
+		const owner_query = sql`
+		INSERT INTO
+			calendar_permissions (calendar_id, user_id, permission_level)
+		VALUES
+			(${calendar_id}, ${user.id}, 'owner')
+		`
+
+		const { err: err_owner } = await query(owner_query)
+		if (err_owner) return fail(500, { error: 'Database error.', name })
 
 		redirect(302, `/app/calendar/${calendar_id}`)
 	}

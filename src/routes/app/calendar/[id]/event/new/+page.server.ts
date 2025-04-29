@@ -5,9 +5,14 @@ import { format } from 'date-fns'
 import { encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
 import { get_validated_event } from '$lib/server/events'
+import type { CalendarBasic } from '$lib/server/types'
 
 export const load: PageServerLoad = async (event) => {
+	const user = event.locals.user
+	if (!user) error(401, 'Unauthorized')
+
 	const calendar_id = Number(event.params.id)
+
 	const selected_date = event.url.searchParams.get('date')
 	const start_time = selected_date ? `${selected_date}T09:00` : null
 	const end_time = selected_date ? `${selected_date}T10:00` : null
@@ -21,6 +26,19 @@ export const actions: Actions = {
 		if (!user) error(401, 'Unauthorized')
 
 		const calendar_id = Number(event.params.id)
+
+		const permission_query = sql`
+		SELECT permission_level
+		FROM calendar_permissions cp
+		WHERE cp.user_id = ${user.id} AND cp.calendar_id = ${calendar_id}`
+
+		const { rows: permission_rows } = await query<{
+			permission_level: CalendarBasic['permission_level']
+		}>(permission_query)
+
+		if (!permission_rows?.length || permission_rows[0].permission_level == 'read') {
+			error(403, 'Permission denied.')
+		}
 
 		const form_data = await event.request.formData()
 

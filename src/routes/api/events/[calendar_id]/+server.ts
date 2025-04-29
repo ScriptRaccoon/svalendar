@@ -5,12 +5,18 @@ import type { CalendarEvent, CalendarEventEncrypted } from '$lib/server/types'
 import { z } from 'zod'
 import sql from 'sql-template-tag'
 import { decrypt_calendar_event } from '$lib/server/events'
+import { get_permission } from '$lib/server/permission'
 
 export const GET: RequestHandler = async (event) => {
 	const user = event.locals.user
 	if (!user) error(401, 'Unauthorized')
 
 	const calendar_id = Number(event.params.calendar_id)
+
+	const permission_level = await get_permission(calendar_id, user.id)
+	if (!permission_level) {
+		error(403, 'Permission denied.')
+	}
 
 	const start_date = event.url.searchParams.get('start_date')
 	const end_date = event.url.searchParams.get('end_date')
