@@ -4,9 +4,13 @@ import type { CalendarBasic } from './types'
 
 export async function get_permission(calendar_id: number, user_id: number) {
 	const permission_query = sql`
-    SELECT permission_level
-    FROM calendar_permissions cp
-    WHERE cp.user_id = ${user_id} AND cp.calendar_id = ${calendar_id}`
+    SELECT
+        permission_level
+    FROM
+        calendar_permissions cp
+    WHERE
+        cp.user_id = ${user_id}
+        AND cp.calendar_id = ${calendar_id}`
 
 	const { rows } = await query<{
 		permission_level: CalendarBasic['permission_level']
