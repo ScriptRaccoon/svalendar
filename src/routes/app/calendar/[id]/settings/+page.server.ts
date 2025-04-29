@@ -16,14 +16,11 @@ export const load: PageServerLoad = async (event) => {
         c.id,
 		c.name,
 		c.default_color,
-		cp.permission_level,
-		u.default_calendar_id = c.id AS is_default
+		cp.permission_level
     FROM
 		calendar_permissions cp
 	INNER JOIN
 		calendars c ON c.id = cp.calendar_id
-	INNER JOIN
-		users u ON cp.user_id = u.id
     WHERE
         c.id = ${calendar_id} AND cp.user_id = ${user.id}
     `
@@ -85,24 +82,6 @@ export const actions: Actions = {
 		if (err) return fail(500, { error: 'Database error.' })
 
 		redirect(302, '/app/dashboard')
-	},
-
-	setdefault: async (event) => {
-		// TODO: check permissions here as well ...
-		const user = event.locals.user
-		if (!user) error(401, 'Unauthorized')
-
-		const calendar_id = Number(event.params.id)
-
-		const default_query = sql`
-		UPDATE users
-		SET default_calendar_id = ${calendar_id}
-		WHERE id = ${user.id}`
-
-		const { err } = await query(default_query)
-		if (err) return fail(500, { error: 'Database error.' })
-
-		redirect(302, `/app/calendar/${calendar_id}`)
 	},
 
 	create_share: async (event) => {

@@ -70,17 +70,6 @@ export const actions: Actions = {
 
 		const { calendar_id } = calendars[0]
 
-		const set_default_query = sql`
-			UPDATE users
-			SET default_calendar_id = ${calendar_id}
-			WHERE id = ${id}`
-
-		const { err: default_err } = await query(set_default_query)
-
-		if (default_err) {
-			return fail(500, { error: 'Database error.', name })
-		}
-
 		const owner_query = sql`
 			INSERT INTO calendar_permissions (user_id, calendar_id, permission_level)
 			VALUES (${id}, ${calendar_id}, 'owner')`

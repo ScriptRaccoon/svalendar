@@ -41,26 +41,6 @@
 </section>
 
 <section class="section">
-	<h3>Default</h3>
-
-	{#if calendar.is_default}
-		<p>
-			This is your default calendar. This means it will be shown by default after
-			login. The default calendar also cannot be deleted.
-		</p>
-	{:else}
-		<p>
-			Currently this is not your default calendar. This means it will not be shown
-			by default after login, but it is available in the dashbard.
-		</p>
-
-		<form method="POST" action="?/setdefault">
-			<button class="button">Set as Default</button>
-		</form>
-	{/if}
-</section>
-
-<section class="section">
 	<h3>Sharing</h3>
 	<p>Share your calendar with other users to collaborate.</p>
 	<form action="?/create_share" method="POST">

@@ -69,6 +69,6 @@ export const actions: Actions = {
 
 		await query(login_query)
 
-		redirect(302, '/app/calendar')
+		redirect(302, '/app/dashboard')
 	}
 }
