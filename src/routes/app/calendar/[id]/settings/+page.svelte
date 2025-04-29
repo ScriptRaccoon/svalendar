@@ -60,6 +60,26 @@
 	{/if}
 </section>
 
+<section class="section">
+	<h3>Sharing</h3>
+	<p>Share your calendar with other users to collaborate.</p>
+	<form action="?/create_share" method="POST">
+		<div class="input-group">
+			<label for="username">User name</label>
+			<input type="text" id="username" name="username" required />
+		</div>
+		<div class="input-group">
+			<label for="permission_level">Permission level</label>
+			<select name="permission_level" id="permission_level">
+				<option value="read">Read</option>
+				<option value="write">Write</option>
+				<option value="owner">Owner</option>
+			</select>
+		</div>
+		<button class="button">Share</button>
+	</form>
+</section>
+
 {#if !calendar.is_default}
 	<section class="section">
 		<h3>Danger Zone</h3>
