@@ -135,11 +135,16 @@ export const actions: Actions = {
 			u.name = ${username} AND u.id != ${user.id}
 		ON CONFLICT(calendar_id, user_id) DO UPDATE
 		SET permission_level = ${permission_level}
+		RETURNING calendar_permissions.id
 		`
 
-		const { err } = await query(share_query)
+		const { err, rows } = await query<{ id: number }>(share_query)
 		if (err) {
 			return fail(500, { error: 'Database error.' })
+		}
+
+		if (!rows.length) {
+			return fail(400, { error: 'User not found.' })
 		}
 
 		return { success: true }
