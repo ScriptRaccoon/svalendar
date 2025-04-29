@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ColorPicker from '$lib/components/ColorPicker.svelte'
+	import IconButton from '$lib/components/IconButton.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
@@ -58,6 +59,26 @@
 		</div>
 		<button class="button">Share</button>
 	</form>
+	{#if data.shares.length > 0}
+		<p>The calendar is shared with:</p>
+		<ul class="list">
+			{#each data.shares as share}
+				<li>
+					<div class="share">
+						{share.user_name} ({share.permission_level} access)
+						<form action="?/remove_share" method="POST">
+							<input type="hidden" name="user_id" value={share.user_id} />
+							<IconButton
+								aria_label="remove share"
+								icon={faXmark}
+								small={true}
+							/>
+						</form>
+					</div>
+				</li>
+			{/each}
+		</ul>
+	{/if}
 </section>
 
 {#if !calendar.is_default}
@@ -94,5 +115,10 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: start;
+	}
+
+	.share {
+		display: flex;
+		justify-content: space-between;
 	}
 </style>

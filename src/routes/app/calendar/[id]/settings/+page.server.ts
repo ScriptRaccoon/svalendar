@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
-import type { Calendar } from '$lib/server/types'
+import type { Share, Calendar } from '$lib/server/types'
 import { COLOR_IDS } from '$lib/config'
 import sql from 'sql-template-tag'
 
@@ -36,7 +36,28 @@ export const load: PageServerLoad = async (event) => {
 		error(403, 'Permission denied.')
 	}
 
-	return { calendar }
+	const shares_query = sql`
+	SELECT
+		c.name AS calendar_name,
+		c.id AS calendar_id,
+		u.name AS user_name,
+		u.id AS user_id,
+		cp.permission_level AS permission_level
+	FROM
+		calendar_permissions cp
+	INNER JOIN
+		calendars c ON c.id = cp.calendar_id
+	INNER JOIN
+		users u ON u.id = cp.user_id
+	WHERE
+		c.id = ${calendar_id}
+		AND cp.user_id != ${user.id}
+	`
+
+	const { rows: shares, err: shares_err } = await query<Share>(shares_query)
+	if (shares_err) error(500, 'Database error.')
+
+	return { calendar, shares }
 }
 
 export const actions: Actions = {
@@ -117,6 +138,32 @@ export const actions: Actions = {
 		`
 
 		const { err } = await query(share_query)
+		if (err) {
+			return fail(500, { error: 'Database error.' })
+		}
+
+		return { success: true }
+	},
+
+	remove_share: async (event) => {
+		// TODO: check permissions here as well ...
+		const user = event.locals.user
+		if (!user) error(401, 'Unauthorized')
+
+		const calendar_id = Number(event.params.id)
+		const form_data = await event.request.formData()
+
+		const invited_user_id = form_data.get('user_id') as string | null
+		if (!invited_user_id) {
+			return fail(400, { error: 'User ID is required.' })
+		}
+
+		const delete_query = sql`
+		DELETE FROM calendar_permissions
+		WHERE calendar_id = ${calendar_id} AND user_id = ${invited_user_id}
+		`
+
+		const { err } = await query(delete_query)
 		if (err) {
 			return fail(500, { error: 'Database error.' })
 		}

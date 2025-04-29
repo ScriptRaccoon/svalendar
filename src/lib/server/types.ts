@@ -12,6 +12,14 @@ export type CalendarBasic = {
 
 export type Calendar = CalendarBasic & { is_default: number }
 
+export type Share = {
+	calendar_name: string
+	calendar_id: number
+	user_name: string
+	user_id: number
+	permission_level: 'read' | 'write' | 'owner'
+}
+
 export type CalendarEvent = {
 	id: number
 	calendar_id: number
