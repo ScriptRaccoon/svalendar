@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
-import type { CalendarBasic } from '$lib/server/types'
+import type { Calendar } from '$lib/server/types'
 import { DEFAULT_COLOR } from '$lib/config'
 import sql from 'sql-template-tag'
 
@@ -22,7 +22,7 @@ export const load: PageServerLoad = async (event) => {
 		name ASC
 	`
 
-	const { rows, err } = await query<CalendarBasic>(calendars_query)
+	const { rows, err } = await query<Calendar>(calendars_query)
 
 	if (err) error(500, 'Database error.')
 

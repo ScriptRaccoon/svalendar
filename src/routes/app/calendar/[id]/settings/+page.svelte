@@ -81,30 +81,26 @@
 	{/if}
 </section>
 
-{#if !calendar.is_default}
-	<section class="section">
-		<h3>Danger Zone</h3>
+<section class="section">
+	<h3>Danger Zone</h3>
 
-		<form method="POST" action="?/delete">
-			{#if confirm_deletion}
-				<button type="submit" class="button danger">Delete</button>
-				<button type="button" class="button" onclick={cancel_deletion}
-					>Cancel</button
-				>
-			{:else}
-				<button type="button" class="button danger" onclick={ask_for_confirmation}
-					>Delete</button
-				>
-			{/if}
-			{#if confirm_deletion}
-				<p>
-					Are you sure? All the data inside the calendar will be deleted
-					permanently.
-				</p>
-			{/if}
-		</form>
-	</section>
-{/if}
+	<form method="POST" action="?/delete">
+		{#if confirm_deletion}
+			<button type="submit" class="button danger">Delete</button>
+			<button type="button" class="button" onclick={cancel_deletion}>Cancel</button>
+		{:else}
+			<button type="button" class="button danger" onclick={ask_for_confirmation}
+				>Delete</button
+			>
+		{/if}
+		{#if confirm_deletion}
+			<p>
+				Are you sure? All the data inside the calendar will be deleted
+				permanently.
+			</p>
+		{/if}
+	</form>
+</section>
 
 {#if form?.error}
 	<p class="error">{form.error}</p>

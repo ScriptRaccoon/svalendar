@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
-import type { CalendarBasic, CalendarEvent } from '$lib/server/types'
+import type { Calendar, CalendarEvent } from '$lib/server/types'
 import sql from 'sql-template-tag'
 
 export const load: PageServerLoad = async (event) => {
@@ -22,7 +22,7 @@ export const load: PageServerLoad = async (event) => {
 		c.id = ${calendar_id}
 		AND cp.user_id = ${user.id}`
 
-	const { rows: calendars, err } = await query<CalendarBasic>(calendars_query)
+	const { rows: calendars, err } = await query<Calendar>(calendars_query)
 
 	if (err) error(500, 'Database error.')
 	if (!calendars.length) error(404, 'Calendar not found.')

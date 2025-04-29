@@ -3,21 +3,21 @@ export type UserLocals = {
 	name: string
 }
 
-export type CalendarBasic = {
+type PermissionLevel = 'read' | 'write' | 'owner'
+
+export type Calendar = {
 	id: number
 	name: string
 	default_color: string
-	permission_level: 'read' | 'write' | 'owner'
+	permission_level: PermissionLevel
 }
-
-export type Calendar = CalendarBasic & { is_default: number }
 
 export type Share = {
 	calendar_name: string
 	calendar_id: number
 	user_name: string
 	user_id: number
-	permission_level: 'read' | 'write' | 'owner'
+	permission_level: PermissionLevel
 }
 
 export type CalendarEvent = {
