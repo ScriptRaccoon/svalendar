@@ -1,10 +1,9 @@
-import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
+import { error } from '@sveltejs/kit'
 import { query } from '$lib/server/db'
-import type { Calendar, CalendarEvent } from '$lib/server/types'
 import sql from 'sql-template-tag'
-import type { CalendarEventEncrypted } from '$lib/server/types'
 import { decrypt_calendar_event } from '$lib/server/events'
+import type { Calendar, CalendarEvent, CalendarEventEncrypted } from '$lib/server/types'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
