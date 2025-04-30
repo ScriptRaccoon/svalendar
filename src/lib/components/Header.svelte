@@ -6,10 +6,10 @@
 	<h1>Svalendar</h1>
 	<nav>
 		<ul>
+			<li>
+				<a href="/"> Home </a>
+			</li>
 			{#if !page.data.user}
-				<li>
-					<a href="/"> Home </a>
-				</li>
 				<li>
 					<a href="/register"> Register </a>
 				</li>
