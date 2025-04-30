@@ -31,7 +31,7 @@
 	/>
 </header>
 
-<section class="section">
+<section class="card">
 	<h3>Appearance</h3>
 
 	<form method="POST" action="?/edit" use:enhance>
@@ -50,7 +50,7 @@
 	</form>
 </section>
 
-<section class="section">
+<section class="card">
 	<h3>Default Calendar</h3>
 	<p>Set a calendar as default so that it is selected by default when you log in.</p>
 	<form method="POST" action="?/set_default" use:enhance>
@@ -58,7 +58,7 @@
 	</form>
 </section>
 
-<section class="section">
+<section class="card">
 	<h3>Sharing</h3>
 	<p>Share your calendar with other users to collaborate.</p>
 	<form action="?/create_share" method="POST" use:enhance>
@@ -101,7 +101,7 @@
 	{/if}
 </section>
 
-<section class="section">
+<section class="card">
 	<h3>Danger Zone</h3>
 
 	<form method="POST" action="?/delete" use:enhance>

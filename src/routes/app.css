@@ -6,26 +6,28 @@
 
 :root {
 	--bg-color: white;
+	--card-color: #f2f2f2;
 	--font-color: #222;
 	--secondary-font-color: #444;
 	--outline-color: #aaa;
 	--error-color: red;
 	--primary-color: rgb(15, 125, 15);
 	--button-danger-color: rgb(179, 14, 14);
-	--highlight-color: #f8f8f8;
+	--focus-color: white;
 	--title-color: rgb(15, 125, 15);
 	--icon-bg-color: #e6e6e6;
 }
 
 :root[data-theme='dark'] {
 	--bg-color: #222;
+	--card-color: #19191c;
 	--font-color: #ddd;
 	--secondary-font-color: #bbb;
 	--outline-color: #666;
 	--error-color: hsl(0, 100%, 65%);
 	--primary-color: rgb(17, 110, 17);
 	--button-danger-color: rgb(179, 14, 14);
-	--highlight-color: #2e2e2e;
+	--focus-color: #2e2e2e;
 	--title-color: yellow;
 	--icon-bg-color: #444;
 }
@@ -60,7 +62,7 @@ h3 {
 
 h2 {
 	font-size: 1.75rem;
-	margin-bottom: 1rem;
+	margin-bottom: 1.5rem;
 }
 
 h3 {
@@ -76,7 +78,7 @@ select {
 	font: inherit;
 	color: inherit;
 	border: none;
-	background: none;
+	background: var(--bg-color);
 }
 
 button {
@@ -121,7 +123,7 @@ button:focus-visible {
 	textarea:focus-visible,
 	select:focus-visible {
 		outline: 1px solid var(--secondary-font-color);
-		background-color: var(--highlight-color);
+		background-color: var(--focus-color);
 	}
 
 	textarea {
@@ -134,10 +136,6 @@ button:focus-visible {
 	color: var(--error-color);
 }
 
-.section {
-	margin-bottom: 2rem;
-}
-
 .list {
 	margin-block: 1rem;
 	padding-left: 1.25rem;
@@ -145,6 +143,18 @@ button:focus-visible {
 	li {
 		margin-block: 0.5rem;
 	}
+
+	&.no-bullets {
+		list-style: none;
+		padding-left: 0.25rem;
+	}
+}
+
+.card {
+	background-color: var(--card-color);
+	padding: 1.2rem 1rem;
+	border-radius: 0.5rem;
+	margin-bottom: 1.25rem;
 }
 
 pre {
@@ -153,18 +163,4 @@ pre {
 	padding: 0.5rem;
 	border-radius: 0.25rem;
 	overflow: auto;
-}
-
-/* utilities */
-
-.no-bullets {
-	list-style: none;
-}
-
-.mb1 {
-	margin-bottom: 1rem;
-}
-
-.mb2 {
-	margin-bottom: 2rem;
 }

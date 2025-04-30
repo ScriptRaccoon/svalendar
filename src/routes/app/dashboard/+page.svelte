@@ -18,13 +18,19 @@
 <p>Hey, {data.name}!</p>
 
 {#if data.pending_shares.length}
-	<section class="section">
+	<section class="card">
 		<h3>Pending Share Offers</h3>
-		<ul class="list">
+		<ul class="list no-bullets">
 			{#each data.pending_shares as calendar}
 				<li>
 					<div class="share">
-						<span>{calendar.name}</span>
+						<div>
+							<span class="icon-wrapper">
+								<Fa icon={PERMISSION_ICONS[calendar.permission_level]} />
+							</span>
+							<span>{calendar.name}</span>
+						</div>
+
 						<menu>
 							<form action="?/reject_share" method="POST" use:enhance>
 								<input
@@ -58,9 +64,9 @@
 	</section>
 {/if}
 
-<section class="section">
-	<h3>List of Calendars</h3>
-	<ul class="no-bullets">
+<section class="card">
+	<h3>Calendars</h3>
+	<ul class="list no-bullets">
 		{#each data.calendars as calendar}
 			<li>
 				<div class="item">
@@ -91,7 +97,7 @@
 	</ul>
 </section>
 
-<section class="section">
+<section class="card">
 	<h3>Create Calendar</h3>
 	<form action="?/create_calendar" method="POST" use:enhance>
 		<div class="input-group">

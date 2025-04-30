@@ -21,10 +21,10 @@
 
 <h2>Account</h2>
 
-<section class="section">
+<section class="card">
 	<h3>Account Details</h3>
 
-	<form method="POST" action="?/name" class="mb2" use:enhance>
+	<form method="POST" action="?/name" use:enhance>
 		<div class="input-group">
 			<label for="name">Name</label>
 			<input type="text" id="name" name="name" required value={data.name} />
@@ -33,7 +33,7 @@
 		<button class="button" type="submit">Update Name</button>
 	</form>
 
-	<form method="POST" action="?/password" use:enhance>
+	<form class="password-form" method="POST" action="?/password" use:enhance>
 		<div class="input-group">
 			<label for="password">Password</label>
 			<input type="password" name="password" id="password" required />
@@ -52,12 +52,12 @@
 	</form>
 </section>
 
-<section class="section">
+<section class="card">
 	<h3>Appearance</h3>
 	<button class="button" onclick={theme.toggle}>Toggle Theme</button>
 </section>
 
-<section class="section">
+<section class="card">
 	<h3>My Data</h3>
 	<p>
 		To download your data in JSON format, follow
@@ -65,7 +65,7 @@
 	</p>
 </section>
 
-<section class="section">
+<section class="card">
 	<h3>Danger Zone</h3>
 
 	<form method="POST" action="?/delete" use:enhance>
@@ -95,3 +95,9 @@
 {#if form?.message}
 	<p>{form.message}</p>
 {/if}
+
+<style>
+	.password-form {
+		margin-top: 1.5rem;
+	}
+</style>

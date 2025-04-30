@@ -8,7 +8,7 @@
 
 <h2>Welcome to Svalendar</h2>
 
-<section class="section" aria-label="introduction">
+<section aria-label="introduction">
 	<p>
 		Svalendar is an open-source calendar app designed to help you organize your life.
 		It provides a simple and privacy-focused way to manage your schedule across
@@ -16,7 +16,7 @@
 	</p>
 </section>
 
-<section class="section">
+<section>
 	<h3>Features</h3>
 
 	<ul class="list">
@@ -51,7 +51,7 @@
 	</ul>
 </section>
 
-<section class="section">
+<section>
 	<h3>Privacy and Simplicity</h3>
 
 	<p>
@@ -61,7 +61,7 @@
 	</p>
 </section>
 
-<section class="section">
+<section>
 	<h3>Data Security</h3>
 
 	<p>
@@ -84,7 +84,7 @@
 	</details>
 </section>
 
-<section class="section">
+<section>
 	<h3>Technology</h3>
 
 	<p>
@@ -95,7 +95,7 @@
 	</p>
 </section>
 
-<section class="section">
+<section>
 	<h3>Get Started</h3>
 
 	<p>
@@ -104,3 +104,9 @@
 		your calendars.
 	</p>
 </section>
+
+<style>
+	section {
+		margin-bottom: 1.75rem;
+	}
+</style>
