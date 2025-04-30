@@ -1,11 +1,12 @@
 import type { Actions } from './$types'
 import { fail } from '@sveltejs/kit'
 import { get_error_messages } from '$lib/server/utils'
-import { query } from '$lib/server/db'
+import { db } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import { name_schema, password_schema } from '$lib/server/schemas'
 import { DEFAULT_COLOR } from '$lib/config'
 import sql from 'sql-template-tag'
+import { LibsqlError } from '@libsql/client'
 
 export const actions: Actions = {
 	default: async (event) => {
@@ -38,57 +39,71 @@ export const actions: Actions = {
 
 		const password_hash = await bcrypt.hash(password!, 10)
 
-		const user_query = sql`
+		const tx = await db.transaction('write')
+
+		try {
+			const user_query = sql`
 			INSERT INTO users (name, password_hash)
 			VALUES (${name}, ${password_hash})
 			RETURNING id`
 
-		const { rows, err } = await query<{ id: number }>(user_query)
+			const { rows: users } = await tx.execute({
+				sql: user_query.sql,
+				args: user_query.values as any[]
+			})
 
-		if (err) {
-			if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
-				return fail(400, { error: 'User with that name already exists.', name })
-			}
+			if (!users.length) throw new Error('User not created.')
 
-			return fail(500, { error: 'Database error.', name })
-		}
+			const user_id = users[0].id as number
 
-		if (!rows.length) return fail(500, { error: 'Database error.', name })
-
-		const { id } = rows[0]
-
-		const calendar_query = sql`
+			const calendar_query = sql`
 			INSERT INTO calendars (name, default_color)
 			VALUES ('Default', ${DEFAULT_COLOR})
 			RETURNING id as calendar_id`
 
-		const { rows: calendars } = await query<{ calendar_id: number }>(calendar_query)
+			const { rows: calendars } = await tx.execute({
+				sql: calendar_query.sql,
+				args: calendar_query.values as any[]
+			})
 
-		if (!calendars?.length) {
-			return fail(500, { error: 'Database error.', name })
-		}
+			if (!calendars?.length) throw new Error('Calendar not created.')
 
-		const { calendar_id } = calendars[0]
+			const calendar_id = calendars[0].calendar_id as number
 
-		const owner_query = sql`
+			const owner_query = sql`
 			INSERT INTO calendar_permissions
 			(user_id, calendar_id, permission_level, approved_at, revokable)
-			VALUES (${id}, ${calendar_id}, 'owner', CURRENT_TIMESTAMP, FALSE)`
+			VALUES (${user_id}, ${calendar_id}, 'owner', CURRENT_TIMESTAMP, FALSE)`
 
-		const { err: owner_err } = await query(owner_query)
+			await tx.execute({
+				sql: owner_query.sql,
+				args: owner_query.values as any[]
+			})
 
-		if (owner_err) {
-			return fail(500, { error: 'Database error.', name })
-		}
-
-		const default_calendar_query = sql`
+			const default_calendar_query = sql`
 			UPDATE users
 			SET default_calendar_id = ${calendar_id}
-			WHERE id = ${id}`
+			WHERE id = ${user_id}`
 
-		const { err: default_calendar_err } = await query(default_calendar_query)
-		if (default_calendar_err) {
+			await tx.execute({
+				sql: default_calendar_query.sql,
+				args: default_calendar_query.values as any[]
+			})
+
+			await tx.commit()
+		} catch (err) {
+			console.error('transaction failed', err)
+
+			if (err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+				return fail(400, {
+					error: 'User with that name already exists.',
+					name
+				})
+			}
+
 			return fail(500, { error: 'Database error.', name })
+		} finally {
+			tx.close()
 		}
 
 		return { success: true, name }
