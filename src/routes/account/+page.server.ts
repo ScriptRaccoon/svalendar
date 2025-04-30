@@ -86,12 +86,26 @@ export const actions: Actions = {
 		event.cookies.delete('jwt', { path: '/' })
 		delete event.locals.user
 
-		const delete_query = sql`
+		const delete_user_query = sql`
 		DELETE FROM users
 		WHERE id = ${user.id}`
 
-		const { err } = await query(delete_query)
-		if (err) return fail(500, { error: 'Database error.' })
+		const { err: err_user } = await query(delete_user_query)
+		if (err_user) return fail(500, { error: 'Database error.' })
+
+		const delete_unused_calendars_query = sql`
+		DELETE FROM calendars
+		WHERE id IN (
+			SELECT id
+			FROM calendars c
+			WHERE NOT EXISTS (
+				SELECT 1
+				FROM calendar_permissions cp
+				WHERE cp.calendar_id = c.id
+			)
+		);`
+
+		await query(delete_unused_calendars_query) // ignore errors on purpose
 
 		redirect(302, '/')
 	}
