@@ -9,6 +9,20 @@ export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
 	if (!user) error(401, 'Unauthorized')
 
+	const default_query = sql`
+	SELECT default_calendar_id FROM users WHERE id = ${user.id}
+	`
+
+	let default_calendar_id: number | null = null
+
+	const { rows: default_rows } = await query<{
+		default_calendar_id: number
+	}>(default_query)
+
+	if (default_rows?.length) {
+		default_calendar_id = default_rows[0].default_calendar_id
+	}
+
 	const calendars_query = sql`
 	SELECT
 		c.id,
@@ -35,7 +49,7 @@ export const load: PageServerLoad = async (event) => {
 	const calendars = rows.filter((calendar) => calendar.approved_at)
 	const pending_shares = rows.filter((calendar) => !calendar.approved_at)
 
-	return { calendars, pending_shares }
+	return { calendars, pending_shares, default_calendar_id }
 }
 
 export const actions: Actions = {
