@@ -3,7 +3,7 @@ import type { UserLocals } from '$lib/server/types'
 import { redirect, type Handle } from '@sveltejs/kit'
 import jwt from 'jsonwebtoken'
 
-const protected_paths = ['/app', '/account', '/api'] as const
+const protected_paths = ['/app', '/account'] as const
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get('jwt')
