@@ -4,6 +4,10 @@
 	let { form } = $props()
 </script>
 
+<svelte:head>
+	<title>Login</title>
+</svelte:head>
+
 <h2>Login</h2>
 
 <form method="POST" use:enhance>

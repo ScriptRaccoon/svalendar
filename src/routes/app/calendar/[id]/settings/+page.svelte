@@ -18,8 +18,12 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Calendar Settings</title>
+</svelte:head>
+
 <header>
-	<h2>Settings</h2>
+	<h2>Calendar Settings</h2>
 	<IconLink
 		href={`/app/calendar/${calendar.id}`}
 		aria_label="back to calendar"

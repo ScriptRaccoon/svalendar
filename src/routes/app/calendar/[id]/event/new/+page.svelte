@@ -7,6 +7,10 @@
 	let { form, data } = $props()
 </script>
 
+<svelte:head>
+	<title>New Event</title>
+</svelte:head>
+
 <header>
 	<h2>New Event</h2>
 	<IconLink

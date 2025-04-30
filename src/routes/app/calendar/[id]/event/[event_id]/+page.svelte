@@ -12,6 +12,10 @@
 	)
 </script>
 
+<svelte:head>
+	<title>{title}</title>
+</svelte:head>
+
 <header>
 	<h2>{title}</h2>
 	<IconLink

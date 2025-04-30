@@ -20,6 +20,10 @@
 	let yesterday = $derived(format(addDays(today, -1), 'yyyy-MM-dd'))
 </script>
 
+<svelte:head>
+	<title>Calendar {calendar.name}</title>
+</svelte:head>
+
 <header>
 	<h2>Calendar {calendar.name}</h2>
 

@@ -15,6 +15,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Account</title>
+</svelte:head>
+
 <h2>Account</h2>
 
 <section class="section">

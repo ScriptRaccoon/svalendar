@@ -2,6 +2,10 @@
 	import sample from './sample.json'
 </script>
 
+<svelte:head>
+	<title>Svalendar</title>
+</svelte:head>
+
 <h2>Welcome to Svalendar</h2>
 
 <section class="section" aria-label="introduction">

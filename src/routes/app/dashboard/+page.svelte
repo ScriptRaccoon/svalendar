@@ -9,6 +9,10 @@
 	let { form, data } = $props()
 </script>
 
+<svelte:head>
+	<title>Dashboard</title>
+</svelte:head>
+
 <h2>Dashboard</h2>
 
 <p>Hey, {data.name}!</p>
