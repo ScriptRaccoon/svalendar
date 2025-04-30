@@ -39,6 +39,11 @@
 			<strong>Multiple Calendars:</strong> Create and manage separate calendars for different
 			purposes.
 		</li>
+		<li>
+			<strong>Calendar Sharing:</strong> Calendars can be shared with other users in
+			an easy way, with three permission levels: <i>read</i>, <i>write</i>, and
+			<i>owner</i>.
+		</li>
 	</ul>
 </section>
 
@@ -93,10 +98,5 @@
 		You can <a href="/register">register</a> to create an account and start organizing
 		your schedule. If you already have an account, <a href="/login">log in</a> to access
 		your calendars.
-	</p>
-
-	<p>
-		This app is designed for those who value simplicity, privacy, and control over
-		their data.
 	</p>
 </section>
