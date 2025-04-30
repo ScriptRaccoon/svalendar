@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms'
 	import IconButton from '$lib/components/IconButton.svelte'
 	import { PERMISSION_ICONS } from '$lib/config.js'
 	import { faCheckCircle } from '@fortawesome/free-regular-svg-icons'
@@ -10,7 +11,7 @@
 
 <h2>Dashboard</h2>
 
-<p>Hey, {data.user?.name}!</p>
+<p>Hey, {data.name}!</p>
 
 {#if data.pending_shares.length}
 	<section class="section">
@@ -21,7 +22,7 @@
 					<div class="share">
 						<span>{calendar.name}</span>
 						<menu>
-							<form action="?/reject_share" method="POST">
+							<form action="?/reject_share" method="POST" use:enhance>
 								<input
 									type="hidden"
 									name="calendar_id"
@@ -33,7 +34,7 @@
 									icon={faXmark}
 								/>
 							</form>
-							<form action="?/accept_share" method="POST">
+							<form action="?/accept_share" method="POST" use:enhance>
 								<input
 									type="hidden"
 									name="calendar_id"
@@ -71,7 +72,7 @@
 						{/if}
 					</div>
 					{#if calendar.revokable}
-						<form action="?/revoke_access" method="POST">
+						<form action="?/revoke_access" method="POST" use:enhance>
 							<input type="hidden" name="calendar_id" value={calendar.id} />
 							<IconButton
 								small={true}
@@ -88,7 +89,7 @@
 
 <section class="section">
 	<h3>Create Calendar</h3>
-	<form action="?/create_calendar" method="POST">
+	<form action="?/create_calendar" method="POST" use:enhance>
 		<div class="input-group">
 			<label for="name">Name</label>
 			<input type="text" id="name" name="name" required />

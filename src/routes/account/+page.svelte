@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { page } from '$app/state'
+	import { enhance } from '$app/forms'
 	import { theme } from '$lib/states.svelte.js'
 
-	let { form } = $props()
+	let { data, form } = $props()
 
 	let confirm_deletion = $state(false)
 
@@ -20,22 +20,16 @@
 <section class="section">
 	<h3>Account Details</h3>
 
-	<form method="POST" action="?/name" class="mb2">
+	<form method="POST" action="?/name" class="mb2" use:enhance>
 		<div class="input-group">
 			<label for="name">Name</label>
-			<input
-				type="text"
-				id="name"
-				name="name"
-				required
-				value={form?.name ?? page.data.user?.name}
-			/>
+			<input type="text" id="name" name="name" required value={data.name} />
 		</div>
 
 		<button class="button" type="submit">Update Name</button>
 	</form>
 
-	<form method="POST" action="?/password">
+	<form method="POST" action="?/password" use:enhance>
 		<div class="input-group">
 			<label for="password">Password</label>
 			<input type="password" name="password" id="password" required />
@@ -70,7 +64,7 @@
 <section class="section">
 	<h3>Danger Zone</h3>
 
-	<form method="POST" action="?/delete">
+	<form method="POST" action="?/delete" use:enhance>
 		<div>
 			{#if confirm_deletion}
 				<button class="button danger" type="submit">Delete Account</button>

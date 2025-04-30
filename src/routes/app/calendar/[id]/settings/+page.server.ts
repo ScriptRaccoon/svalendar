@@ -112,13 +112,18 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
+		const username_query = sql`SELECT name FROM users WHERE id = ${user.id}`
+		const { rows: user_rows } = await query<{ name: string }>(username_query)
+		if (!user_rows?.length) error(404, 'User not found.')
+		const my_username = user_rows[0].name
+
 		const calendar_id = Number(event.params.id)
 
 		const form_data = await event.request.formData()
 		const username = form_data.get('username') as string | null
 		if (!username) return fail(400, { error: 'User name is required.' })
 
-		if (user.name === username) {
+		if (username === my_username) {
 			return fail(400, { error: 'You cannot share a calendar with yourself.' })
 		}
 

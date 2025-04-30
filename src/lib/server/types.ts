@@ -1,6 +1,5 @@
 export type UserLocals = {
 	id: number
-	name: string
 }
 
 type PermissionLevel = 'read' | 'write' | 'owner'

@@ -60,7 +60,7 @@ export const actions: Actions = {
 
 		login_rate_limiter.clear(ip)
 
-		const token = jwt.sign({ id, name }, JWT_SECRET)
+		const token = jwt.sign({ id }, JWT_SECRET)
 
 		event.cookies.set('jwt', token, {
 			httpOnly: true,

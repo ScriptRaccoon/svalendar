@@ -9,19 +9,20 @@ export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
 	if (!user) error(401, 'Unauthorized')
 
-	const default_query = sql`
-	SELECT default_calendar_id FROM users WHERE id = ${user.id}
+	const users_query = sql`
+	SELECT name, default_calendar_id FROM users WHERE id = ${user.id}
 	`
 
-	let default_calendar_id: number | null = null
+	const { rows: users } = await query<{
+		name: string
+		default_calendar_id: number | null
+	}>(users_query)
 
-	const { rows: default_rows } = await query<{
-		default_calendar_id: number
-	}>(default_query)
-
-	if (default_rows?.length) {
-		default_calendar_id = default_rows[0].default_calendar_id
+	if (!users?.length) {
+		error(404, 'User not found.')
 	}
+
+	const { default_calendar_id, name } = users[0]
 
 	const calendars_query = sql`
 	SELECT
@@ -49,7 +50,7 @@ export const load: PageServerLoad = async (event) => {
 	const calendars = rows.filter((calendar) => calendar.approved_at)
 	const pending_shares = rows.filter((calendar) => !calendar.approved_at)
 
-	return { calendars, pending_shares, default_calendar_id }
+	return { calendars, pending_shares, name, default_calendar_id }
 }
 
 export const actions: Actions = {

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms'
 	import ColorPicker from '$lib/components/ColorPicker.svelte'
 	import IconButton from '$lib/components/IconButton.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
@@ -29,7 +30,7 @@
 <section class="section">
 	<h3>Appearance</h3>
 
-	<form method="POST" action="?/edit">
+	<form method="POST" action="?/edit" use:enhance>
 		<div class="input-group">
 			<label for="name">Name</label>
 			<input type="text" id="name" name="name" required value={calendar.name} />
@@ -48,7 +49,7 @@
 <section class="section">
 	<h3>Default Calendar</h3>
 	<p>Set a calendar as default so that it is selected by default when you log in.</p>
-	<form method="POST" action="?/set_default">
+	<form method="POST" action="?/set_default" use:enhance>
 		<button class="button">Set Default</button>
 	</form>
 </section>
@@ -56,7 +57,7 @@
 <section class="section">
 	<h3>Sharing</h3>
 	<p>Share your calendar with other users to collaborate.</p>
-	<form action="?/create_share" method="POST">
+	<form action="?/create_share" method="POST" use:enhance>
 		<div class="input-group">
 			<label for="username">User name</label>
 			<input type="text" id="username" name="username" required />
@@ -81,7 +82,7 @@
 						{#if !share.approved_at}
 							&ndash; Pending
 						{/if}
-						<form action="?/remove_share" method="POST">
+						<form action="?/remove_share" method="POST" use:enhance>
 							<input type="hidden" name="user_id" value={share.user_id} />
 							<IconButton
 								aria_label="remove share"
@@ -99,7 +100,7 @@
 <section class="section">
 	<h3>Danger Zone</h3>
 
-	<form method="POST" action="?/delete">
+	<form method="POST" action="?/delete" use:enhance>
 		{#if confirm_deletion}
 			<button type="submit" class="button danger">Delete</button>
 			<button type="button" class="button" onclick={cancel_deletion}>Cancel</button>

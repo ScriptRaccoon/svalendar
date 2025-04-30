@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms'
 	import EventInput from '$lib/components/EventInput.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
@@ -15,7 +16,7 @@
 	/>
 </header>
 
-<form method="POST">
+<form method="POST" use:enhance>
 	<EventInput
 		title={form?.title ?? ''}
 		description={form?.description ?? ''}

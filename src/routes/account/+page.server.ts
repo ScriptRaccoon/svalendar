@@ -1,10 +1,20 @@
 import { error, fail, redirect } from '@sveltejs/kit'
-import type { Actions } from './$types'
+import type { Actions, PageServerLoad } from './$types'
 import { name_schema, password_schema } from '$lib/server/schemas'
 import { get_error_messages } from '$lib/server/utils'
 import { query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import sql from 'sql-template-tag'
+
+export const load: PageServerLoad = async (event) => {
+	const user = event.locals.user
+	if (!user) throw error(401, 'Unauthorized')
+
+	const username_query = sql`SELECT name FROM users WHERE id = ${user.id}`
+	const { rows } = await query<{ name: string }>(username_query)
+	if (!rows?.length) error(404, 'User not found.')
+	return { name: rows[0].name }
+}
 
 export const actions: Actions = {
 	name: async (event) => {
@@ -36,9 +46,7 @@ export const actions: Actions = {
 			return fail(500, { error: 'Database error.', name })
 		}
 
-		if (event.locals.user) {
-			event.locals.user.name = name!
-		}
+		console.log('name updated', name)
 
 		return { name, message: 'Name updated successfully.' }
 	},
