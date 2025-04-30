@@ -27,14 +27,16 @@ export const actions: Actions = {
 			return fail(400, { error: 'Name is required.', name })
 		}
 
-		const password_query = sql`
-		SELECT id, password_hash
+		const user_query = sql`
+		SELECT id, password_hash, default_calendar_id
 		FROM users
 		WHERE name = ${name}`
 
-		const { rows, err } = await query<{ id: number; password_hash: string }>(
-			password_query
-		)
+		const { rows, err } = await query<{
+			id: number
+			password_hash: string
+			default_calendar_id: number | null
+		}>(user_query)
 
 		if (err) {
 			return fail(500, { error: 'Database error.', name })
@@ -44,10 +46,10 @@ export const actions: Actions = {
 			return fail(400, { error: 'Invalid name or password.', name })
 		}
 
-		const { password_hash, id } = rows[0]
+		const { password_hash, id, default_calendar_id } = rows[0]
 
-		const is_correct = await bcrypt.compare(password!, password_hash)
-		if (!is_correct) {
+		const pw_is_correct = await bcrypt.compare(password!, password_hash)
+		if (!pw_is_correct) {
 			return fail(400, { error: 'Invalid name or password.', name })
 		}
 
@@ -64,11 +66,15 @@ export const actions: Actions = {
 
 		const login_query = sql`
 		UPDATE users
-		SET last_login = datetime('now')
+		SET last_login = CURRENT_TIMESTAMP
 		WHERE name = ${name}`
 
 		await query(login_query)
 
-		redirect(302, '/app/dashboard')
+		const redirect_url = default_calendar_id
+			? `/app/calendar/${default_calendar_id}`
+			: '/app/dashboard'
+
+		redirect(302, redirect_url)
 	}
 }

@@ -3,7 +3,9 @@ CREATE TABLE IF NOT EXISTS users (
     name TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_login TIMESTAMP
+    last_login TIMESTAMP,
+    default_calendar_id INTEGER,
+    FOREIGN KEY (default_calendar_id) REFERENCES calendars (id) ON DELETE SET NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_name ON users (name);

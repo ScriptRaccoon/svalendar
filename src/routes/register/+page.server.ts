@@ -81,6 +81,16 @@ export const actions: Actions = {
 			return fail(500, { error: 'Database error.', name })
 		}
 
+		const default_calendar_query = sql`
+			UPDATE users
+			SET default_calendar_id = ${calendar_id}
+			WHERE id = ${id}`
+
+		const { err: default_calendar_err } = await query(default_calendar_query)
+		if (default_calendar_err) {
+			return fail(500, { error: 'Database error.', name })
+		}
+
 		return { success: true, name }
 	}
 }
