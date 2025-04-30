@@ -58,12 +58,26 @@
 	<ul class="no-bullets">
 		{#each data.calendars as calendar}
 			<li>
-				<span class="icon-wrapper">
-					<Fa icon={PERMISSION_ICONS[calendar.permission_level]} />
-				</span>
-				<a href="/app/calendar/{calendar.id}">
-					{calendar.name}
-				</a>
+				<div class="item">
+					<div>
+						<span class="icon-wrapper">
+							<Fa icon={PERMISSION_ICONS[calendar.permission_level]} />
+						</span>
+						<a href="/app/calendar/{calendar.id}">
+							{calendar.name}
+						</a>
+					</div>
+					{#if calendar.revokable}
+						<form action="?/revoke_access" method="POST">
+							<input type="hidden" name="calendar_id" value={calendar.id} />
+							<IconButton
+								small={true}
+								aria_label="revoke access"
+								icon={faXmark}
+							/>
+						</form>
+					{/if}
+				</div>
 			</li>
 		{/each}
 	</ul>
@@ -99,5 +113,10 @@
 			display: flex;
 			gap: 0.5rem;
 		}
+	}
+
+	.item {
+		display: flex;
+		justify-content: space-between;
 	}
 </style>

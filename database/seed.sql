@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS calendar_permissions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     approved_at TIMESTAMP,
+    revokable BOOLEAN DEFAULT TRUE,
     UNIQUE (user_id, calendar_id),
     FOREIGN KEY (calendar_id) REFERENCES calendars (id) ON DELETE CASCADE
 );

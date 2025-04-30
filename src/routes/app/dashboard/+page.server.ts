@@ -14,7 +14,8 @@ export const load: PageServerLoad = async (event) => {
 		c.id,
 		c.name,
 		cp.permission_level,
-		cp.approved_at
+		cp.approved_at,
+		cp.revokable
 	FROM
 		calendar_permissions AS cp
 	INNER JOIN
@@ -25,9 +26,9 @@ export const load: PageServerLoad = async (event) => {
 		name ASC
 	`
 
-	const { rows, err } = await query<Calendar & { approved_at: string | null }>(
-		calendars_query
-	)
+	const { rows, err } = await query<
+		Calendar & { approved_at: string | null; revokable: number }
+	>(calendars_query)
 
 	if (err) error(500, 'Database error.')
 
@@ -66,9 +67,10 @@ export const actions: Actions = {
 
 		const owner_query = sql`
 		INSERT INTO
-			calendar_permissions (calendar_id, user_id, permission_level, approved_at)
+			calendar_permissions
+			(calendar_id, user_id, permission_level, approved_at, revokable)
 		VALUES
-			(${calendar_id}, ${user.id}, 'owner', CURRENT_TIMESTAMP)
+			(${calendar_id}, ${user.id}, 'owner', CURRENT_TIMESTAMP, FALSE)
 		`
 
 		const { err: err_owner } = await query(owner_query)
@@ -115,6 +117,28 @@ export const actions: Actions = {
 		AND approved_at IS NULL`
 
 		const { err } = await query(reject_query)
+		if (err) return fail(500, { error: 'Database error.' })
+
+		return { success: true }
+	},
+
+	revoke_access: async (event) => {
+		const user = event.locals.user
+		if (!user) error(401, 'Unauthorized')
+
+		const form_data = await event.request.formData()
+		const calendar_id = Number(form_data.get('calendar_id'))
+
+		if (!calendar_id) return fail(400, { error: 'Calendar ID is required.' })
+
+		const revoke_query = sql`
+		DELETE FROM calendar_permissions
+		WHERE calendar_id = ${calendar_id}
+		AND user_id = ${user.id}
+		AND approved_at IS NOT NULL
+		AND revokable = TRUE`
+
+		const { err } = await query(revoke_query)
 		if (err) return fail(500, { error: 'Database error.' })
 
 		return { success: true }
