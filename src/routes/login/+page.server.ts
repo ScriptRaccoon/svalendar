@@ -69,7 +69,7 @@ export const actions: Actions = {
 		SET last_login = CURRENT_TIMESTAMP
 		WHERE name = ${name}`
 
-		await query(login_query)
+		await query(login_query) // ignore errors on purpose
 
 		const redirect_url = default_calendar_id
 			? `/app/calendar/${default_calendar_id}`

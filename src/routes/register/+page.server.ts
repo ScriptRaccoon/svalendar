@@ -91,8 +91,12 @@ export const actions: Actions = {
 			})
 
 			await tx.commit()
+			tx.close()
+
+			return { success: true, name }
 		} catch (err) {
 			console.error('transaction failed', err)
+			tx.close()
 
 			if (err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
 				return fail(400, {
@@ -102,10 +106,6 @@ export const actions: Actions = {
 			}
 
 			return fail(500, { error: 'Database error.', name })
-		} finally {
-			tx.close()
 		}
-
-		return { success: true, name }
 	}
 }
