@@ -2,7 +2,7 @@ export type UserLocals = {
 	id: number
 }
 
-type PermissionLevel = 'read' | 'write' | 'owner'
+export type PermissionLevel = 'read' | 'write' | 'owner'
 
 export type Calendar = {
 	id: string

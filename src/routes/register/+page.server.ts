@@ -1,6 +1,5 @@
 import type { Actions } from './$types'
 import { fail } from '@sveltejs/kit'
-import { get_error_messages } from '$lib/server/utils'
 import { db } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import { name_schema, password_schema } from '$lib/server/schemas'
@@ -8,6 +7,7 @@ import { DEFAULT_COLOR } from '$lib/config'
 import sql from 'sql-template-tag'
 import { LibsqlError } from '@libsql/client'
 import { snowflake } from '$lib/server/snowflake'
+import { get_error_messages } from '$lib/server/schemas'
 
 export const actions: Actions = {
 	default: async (event) => {

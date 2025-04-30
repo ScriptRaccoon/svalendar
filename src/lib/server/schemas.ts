@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z, ZodError } from 'zod'
 
 export const name_schema = z
 	.string()
@@ -31,3 +31,7 @@ export const password_schema = z
 export const datetime_schema = z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, {
 	message: 'Invalid datetime format (expected YYYY-MM-DDTHH:MM)'
 })
+
+export function get_error_messages(error: ZodError): string {
+	return error.errors.map((err) => err.message).join(' ')
+}

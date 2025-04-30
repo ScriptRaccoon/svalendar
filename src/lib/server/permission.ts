@@ -1,6 +1,6 @@
 import sql from 'sql-template-tag'
 import { query } from './db'
-import type { Calendar } from './types'
+import type { PermissionLevel } from './types'
 
 export async function get_permission(calendar_id: string, user_id: number) {
 	const permission_query = sql`
@@ -14,7 +14,7 @@ export async function get_permission(calendar_id: string, user_id: number) {
         AND cp.calendar_id = ${calendar_id}`
 
 	const { rows } = await query<{
-		permission_level: Calendar['permission_level']
+		permission_level: PermissionLevel
 	}>(permission_query)
 
 	if (!rows?.length) return null

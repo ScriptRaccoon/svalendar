@@ -1,13 +1,18 @@
+import { DB_AUTH_TOKEN, DB_URL } from '$env/static/private'
 import { createClient, LibsqlError } from '@libsql/client'
 import type { Sql } from 'sql-template-tag'
 
 export const db = createClient({
-	url: 'file:database/main.db',
-	authToken: ''
+	url: DB_URL,
+	authToken: DB_AUTH_TOKEN
 })
 
 db.execute('PRAGMA foreign_keys = ON')
 
+/**
+ * Small wrapper around db.execute to handle errors
+ * and specify the type of the result.
+ */
 export async function query<T>(query: Sql) {
 	try {
 		const { rows } = await db.execute(query.sql, query.values as any[])

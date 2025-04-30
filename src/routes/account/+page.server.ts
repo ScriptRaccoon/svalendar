@@ -1,10 +1,10 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { name_schema, password_schema } from '$lib/server/schemas'
-import { get_error_messages } from '$lib/server/utils'
 import { query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import sql from 'sql-template-tag'
+import { get_error_messages } from '$lib/server/schemas'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -45,8 +45,6 @@ export const actions: Actions = {
 
 			return fail(500, { error: 'Database error.', name })
 		}
-
-		console.log('name updated', name)
 
 		return { name, message: 'Name updated successfully.' }
 	},

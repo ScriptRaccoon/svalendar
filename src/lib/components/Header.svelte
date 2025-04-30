@@ -7,14 +7,14 @@
 	<nav>
 		<ul>
 			<li>
-				<a href="/"> Home </a>
+				<a href="/">Home</a>
 			</li>
 			{#if !page.data.user}
 				<li>
-					<a href="/register"> Register </a>
+					<a href="/register">Register</a>
 				</li>
 				<li>
-					<a href="/login"> Login </a>
+					<a href="/login">Login</a>
 				</li>
 			{:else}
 				<li>
