@@ -60,6 +60,14 @@
 </section>
 
 <section class="section">
+	<h3>My Data</h3>
+	<p>
+		To download your data in JSON format, follow
+		<a href="/account/mydata">this link</a>.
+	</p>
+</section>
+
+<section class="section">
 	<h3>Danger Zone</h3>
 
 	<form method="POST" action="?/delete">
