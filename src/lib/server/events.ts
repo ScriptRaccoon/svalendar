@@ -7,8 +7,8 @@ import { decrypt } from './encryption'
 
 export async function get_validated_event(
 	form_data: FormData,
-	calendar_id: number,
-	event_id: number | null = null
+	calendar_id: string,
+	event_id: string | null = null
 ) {
 	const title = form_data.get('title') as string
 	const description = form_data.get('description') as string

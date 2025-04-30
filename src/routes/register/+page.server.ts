@@ -68,7 +68,7 @@ export const actions: Actions = {
 
 			if (!calendars?.length) throw new Error('Calendar not created.')
 
-			const calendar_id = calendars[0].calendar_id as number
+			const calendar_id = calendars[0].calendar_id as string
 
 			const owner_query = sql`
 			INSERT INTO calendar_permissions

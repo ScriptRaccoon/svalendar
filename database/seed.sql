@@ -4,14 +4,14 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP,
-    default_calendar_id INTEGER,
+    default_calendar_id TEXT,
     FOREIGN KEY (default_calendar_id) REFERENCES calendars (id) ON DELETE SET NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_name ON users (name);
 
 CREATE TABLE IF NOT EXISTS calendars (
-    id INTEGER PRIMARY KEY,
+    id TEXT DEFAULT (uuid ()) PRIMARY KEY,
     name TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     default_color TEXT NOT NULL
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS calendars (
 
 CREATE TABLE IF NOT EXISTS calendar_permissions (
     id INTEGER PRIMARY KEY,
-    calendar_id INTEGER NOT NULL,
+    calendar_id TEXT NOT NULL,
     user_id INTEGER NOT NULL,
     permission_level TEXT NOT NULL CHECK (permission_level IN ('read', 'write', 'owner')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -46,8 +46,8 @@ WHERE
 END;
 
 CREATE TABLE IF NOT EXISTS events (
-    id INTEGER PRIMARY KEY,
-    calendar_id INTEGER NOT NULL,
+    id TEXT DEFAULT (uuid ()) PRIMARY KEY,
+    calendar_id TEXT NOT NULL,
     title_encrypted TEXT NOT NULL,
     title_iv TEXT NOT NULL,
     title_tag TEXT NOT NULL,

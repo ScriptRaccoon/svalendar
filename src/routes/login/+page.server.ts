@@ -19,6 +19,10 @@ export const actions: Actions = {
 		const form_data = await event.request.formData()
 		const name = form_data.get('name') as string | null
 
+		if (!name) {
+			return fail(400, { error: 'Name is required.', name })
+		}
+
 		const ip = event.getClientAddress()
 		if (login_rate_limiter.is_rate_limited(ip)) {
 			return fail(429, {
@@ -28,9 +32,6 @@ export const actions: Actions = {
 		}
 
 		const password = form_data.get('password') as string | null
-		if (!name) {
-			return fail(400, { error: 'Name is required.', name })
-		}
 
 		const user_query = sql`
 		SELECT id, password_hash, default_calendar_id
@@ -40,7 +41,7 @@ export const actions: Actions = {
 		const { rows, err } = await query<{
 			id: number
 			password_hash: string
-			default_calendar_id: number | null
+			default_calendar_id: string | null
 		}>(user_query)
 
 		if (err) {

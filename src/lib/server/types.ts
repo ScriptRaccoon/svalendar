@@ -5,7 +5,7 @@ export type UserLocals = {
 type PermissionLevel = 'read' | 'write' | 'owner'
 
 export type Calendar = {
-	id: number
+	id: string
 	name: string
 	default_color: string
 	permission_level: PermissionLevel
@@ -13,7 +13,7 @@ export type Calendar = {
 
 export type Share = {
 	calendar_name: string
-	calendar_id: number
+	calendar_id: string
 	user_name: string
 	user_id: number
 	permission_level: PermissionLevel
@@ -21,8 +21,8 @@ export type Share = {
 }
 
 export type CalendarEvent = {
-	id: number
-	calendar_id: number
+	id: string
+	calendar_id: string
 	title: string
 	description: string
 	location: string
@@ -34,8 +34,8 @@ export type CalendarEvent = {
 }
 
 export type CalendarEventEncrypted = {
-	id: number
-	calendar_id: number
+	id: string
+	calendar_id: string
 	title_encrypted: string
 	title_iv: string
 	title_tag: string

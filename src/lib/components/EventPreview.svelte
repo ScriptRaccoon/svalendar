@@ -9,7 +9,7 @@
 	type Props = {
 		event: CalendarEvent
 		next_start_time: string | null
-		calendar_id: number
+		calendar_id: string
 	}
 
 	let { event, next_start_time, calendar_id }: Props = $props()

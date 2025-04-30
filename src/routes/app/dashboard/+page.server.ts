@@ -15,7 +15,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const { rows: users } = await query<{
 		name: string
-		default_calendar_id: number | null
+		default_calendar_id: string | null
 	}>(users_query)
 
 	if (!users?.length) {
@@ -64,7 +64,7 @@ export const actions: Actions = {
 		if (!name) return fail(400, { error: 'Name is required.', name })
 
 		const tx = await db.transaction('write')
-		let calendar_id: number
+		let calendar_id: string | null = null
 
 		try {
 			const insert_query = sql`
@@ -79,7 +79,7 @@ export const actions: Actions = {
 
 			if (!rows.length) throw new Error('Calendar not created.')
 
-			calendar_id = rows[0].id as number
+			calendar_id = rows[0].id as string
 
 			const owner_query = sql`
 			INSERT INTO calendar_permissions
@@ -107,7 +107,7 @@ export const actions: Actions = {
 		if (!user) error(401, 'Unauthorized')
 
 		const form_data = await event.request.formData()
-		const calendar_id = Number(form_data.get('calendar_id'))
+		const calendar_id = form_data.get('calendar_id') as string | null
 
 		if (!calendar_id) return fail(400, { error: 'Calendar ID is required.' })
 
@@ -129,7 +129,7 @@ export const actions: Actions = {
 		if (!user) error(401, 'Unauthorized')
 
 		const form_data = await event.request.formData()
-		const calendar_id = Number(form_data.get('calendar_id'))
+		const calendar_id = form_data.get('calendar_id') as string | null
 
 		if (!calendar_id) return fail(400, { error: 'Calendar ID is required.' })
 
@@ -150,7 +150,7 @@ export const actions: Actions = {
 		if (!user) error(401, 'Unauthorized')
 
 		const form_data = await event.request.formData()
-		const calendar_id = Number(form_data.get('calendar_id'))
+		const calendar_id = form_data.get('calendar_id') as string | null
 
 		if (!calendar_id) return fail(400, { error: 'Calendar ID is required.' })
 

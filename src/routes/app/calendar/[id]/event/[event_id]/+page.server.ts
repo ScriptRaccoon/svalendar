@@ -15,8 +15,8 @@ export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
 	if (!user) throw error(401, 'Unauthorized')
 
-	const calendar_id = Number(event.params.id)
-	const event_id = Number(event.params.event_id)
+	const calendar_id = event.params.id
+	const event_id = event.params.event_id
 
 	const permission_level = await get_permission(calendar_id, user.id)
 	if (!permission_level) {
@@ -52,8 +52,8 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		const calendar_id = Number(event.params.id)
-		const event_id = Number(event.params.event_id)
+		const calendar_id = event.params.id
+		const event_id = event.params.event_id
 
 		const permission_level = await get_permission(calendar_id, user.id)
 		if (!permission_level || permission_level == 'read') {
@@ -106,8 +106,8 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		const calendar_id = Number(event.params.id)
-		const event_id = Number(event.params.event_id)
+		const calendar_id = event.params.id
+		const event_id = event.params.event_id
 
 		const permission_level = await get_permission(calendar_id, user.id)
 		if (!permission_level || permission_level == 'read') {
