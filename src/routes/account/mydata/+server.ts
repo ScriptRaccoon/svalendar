@@ -53,5 +53,13 @@ export const GET: RequestHandler = async (event) => {
 
 	const events: CalendarEvent[] = rows.map(decrypt_calendar_event)
 
-	return json({ user: users[0], calendars, events })
+	return json({
+		meta: {
+			title: 'Data Export',
+			created_at: new Date().toISOString()
+		},
+		user: users[0],
+		calendars,
+		events
+	})
 }
