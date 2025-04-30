@@ -3,6 +3,8 @@ import type { PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
 import type { Calendar, CalendarEvent } from '$lib/server/types'
 import sql from 'sql-template-tag'
+import type { CalendarEventEncrypted } from '$lib/server/types'
+import { decrypt_calendar_event } from '$lib/server/events'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -23,19 +25,36 @@ export const load: PageServerLoad = async (event) => {
 		AND c.id = ${calendar_id}
 		AND cp.user_id = ${user.id}`
 
-	const { rows: calendars, err } = await query<Calendar>(calendars_query)
+	const { rows: calendars, err: err_calendars } = await query<Calendar>(calendars_query)
 
-	if (err) error(500, 'Database error.')
+	if (err_calendars) error(500, 'Database error.')
 	if (!calendars.length) error(404, 'Calendar not found.')
 
 	const calendar = calendars[0]
 
-	const url = `/api/events/${calendar_id}?start_date=${today}&end_date=${today}`
+	const events_query = sql`
+	SELECT
+		id, calendar_id,
+		title_encrypted, title_iv, title_tag,
+		description_encrypted, description_iv, description_tag,
+		location_encrypted, location_iv, location_tag,
+		start_time, end_time,
+		start_date, end_date,
+		color
+	FROM
+		events
+	WHERE
+		calendar_id = ${calendar_id}
+		AND start_date <= ${today}
+		AND end_date >= ${today}
+	ORDER BY
+		start_time ASC
+	`
 
-	const res = await event.fetch(url)
-	if (!res.ok) error(500, 'Failed to fetch events from API')
+	const { rows, err: err_events } = await query<CalendarEventEncrypted>(events_query)
+	if (err_events) error(500, 'Database error.')
 
-	const events: CalendarEvent[] = await res.json()
+	const events: CalendarEvent[] = rows.map(decrypt_calendar_event)
 
 	return { calendar, events, today }
 }
