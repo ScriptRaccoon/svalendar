@@ -46,6 +46,14 @@
 </section>
 
 <section class="section">
+	<h3>Default Calendar</h3>
+	<p>Set a calendar as default so that it is selected by default when you log in.</p>
+	<form method="POST" action="?/set_default">
+		<button class="button">Set Default</button>
+	</form>
+</section>
+
+<section class="section">
 	<h3>Sharing</h3>
 	<p>Share your calendar with other users to collaborate.</p>
 	<form action="?/create_share" method="POST">

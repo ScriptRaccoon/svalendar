@@ -89,6 +89,7 @@ export const actions: Actions = {
 
 		redirect(302, `/app/calendar/${calendar_id}`)
 	},
+
 	delete: async (event) => {
 		// TODO: check permissions here as well ...
 		const user = event.locals.user
@@ -175,5 +176,24 @@ export const actions: Actions = {
 		}
 
 		return { success: true }
+	},
+
+	set_default: async (event) => {
+		// TODO: check permissions here as well ...
+		const user = event.locals.user
+		if (!user) error(401, 'Unauthorized')
+		const calendar_id = Number(event.params.id)
+
+		const default_query = sql`
+		UPDATE users
+		SET default_calendar_id = ${calendar_id}
+		WHERE id = ${user.id}`
+
+		const { err } = await query(default_query)
+		if (err) {
+			return fail(500, { error: 'Database error.' })
+		}
+
+		redirect(302, `/app/calendar/${calendar_id}`)
 	}
 }
