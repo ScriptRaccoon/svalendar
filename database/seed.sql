@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE INDEX IF NOT EXISTS idx_name ON users (name);
 
 CREATE TABLE IF NOT EXISTS calendars (
-    id TEXT DEFAULT (uuid ()) PRIMARY KEY,
+    id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     default_color TEXT NOT NULL
@@ -46,7 +46,7 @@ WHERE
 END;
 
 CREATE TABLE IF NOT EXISTS events (
-    id TEXT DEFAULT (uuid ()) PRIMARY KEY,
+    id TEXT PRIMARY KEY,
     calendar_id TEXT NOT NULL,
     title_encrypted TEXT NOT NULL,
     title_iv TEXT NOT NULL,

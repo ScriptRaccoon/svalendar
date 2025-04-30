@@ -4,6 +4,7 @@ import { db, query } from '$lib/server/db'
 import type { Calendar } from '$lib/server/types'
 import { DEFAULT_COLOR } from '$lib/config'
 import sql from 'sql-template-tag'
+import { snowflake } from '$lib/server/snowflake'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -64,22 +65,18 @@ export const actions: Actions = {
 		if (!name) return fail(400, { error: 'Name is required.', name })
 
 		const tx = await db.transaction('write')
-		let calendar_id: string | null = null
+
+		const calendar_id = await snowflake.generate()
 
 		try {
 			const insert_query = sql`
-			INSERT INTO calendars (name, default_color)
-			VALUES (${name}, ${DEFAULT_COLOR})
-			RETURNING id`
+			INSERT INTO calendars (id, name, default_color)
+			VALUES (${calendar_id}, ${name}, ${DEFAULT_COLOR})`
 
-			const { rows } = await tx.execute({
+			await tx.execute({
 				sql: insert_query.sql,
 				args: insert_query.values as any[]
 			})
-
-			if (!rows.length) throw new Error('Calendar not created.')
-
-			calendar_id = rows[0].id as string
 
 			const owner_query = sql`
 			INSERT INTO calendar_permissions
@@ -99,7 +96,7 @@ export const actions: Actions = {
 			error(500, 'Database error.')
 		}
 
-		if (calendar_id) redirect(302, `/app/calendar/${calendar_id}`)
+		redirect(302, `/app/calendar/${calendar_id}`)
 	},
 
 	accept_share: async (event) => {

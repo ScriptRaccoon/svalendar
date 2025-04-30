@@ -7,6 +7,7 @@ import { name_schema, password_schema } from '$lib/server/schemas'
 import { DEFAULT_COLOR } from '$lib/config'
 import sql from 'sql-template-tag'
 import { LibsqlError } from '@libsql/client'
+import { snowflake } from '$lib/server/snowflake'
 
 export const actions: Actions = {
 	default: async (event) => {
@@ -56,19 +57,16 @@ export const actions: Actions = {
 
 			const user_id = users[0].id as number
 
-			const calendar_query = sql`
-			INSERT INTO calendars (name, default_color)
-			VALUES ('Default', ${DEFAULT_COLOR})
-			RETURNING id as calendar_id`
+			const calendar_id = await snowflake.generate()
 
-			const { rows: calendars } = await tx.execute({
+			const calendar_query = sql`
+			INSERT INTO calendars (id, name, default_color)
+			VALUES (${calendar_id}, 'Default', ${DEFAULT_COLOR})`
+
+			await tx.execute({
 				sql: calendar_query.sql,
 				args: calendar_query.values as any[]
 			})
-
-			if (!calendars?.length) throw new Error('Calendar not created.')
-
-			const calendar_id = calendars[0].calendar_id as string
 
 			const owner_query = sql`
 			INSERT INTO calendar_permissions

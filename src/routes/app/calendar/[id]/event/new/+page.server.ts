@@ -6,6 +6,7 @@ import { encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
 import { get_validated_event } from '$lib/server/events'
 import { get_permission } from '$lib/server/permission'
+import { snowflake } from '$lib/server/snowflake'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -52,15 +53,17 @@ export const actions: Actions = {
 		const encrypted_description_data = encrypt(fields.description)
 		const encrypted_location_data = encrypt(fields.location)
 
+		const event_id = await snowflake.generate()
+
 		const insert_query = sql`
         INSERT INTO events
-			(calendar_id,
+			(id, calendar_id,
 			title_encrypted, title_iv, title_tag,
 			description_encrypted, description_iv, description_tag,		
 			location_encrypted, location_iv, location_tag,
 			start_time, end_time, color)
         VALUES
-            (${calendar_id},
+            (${event_id}, ${calendar_id},
 			${encrypted_title_data.data},
 			${encrypted_title_data.iv},
 			${encrypted_title_data.tag},
@@ -70,9 +73,7 @@ export const actions: Actions = {
 			${encrypted_location_data.data},
 			${encrypted_location_data.iv},
 			${encrypted_location_data.tag},
-			${fields.start_time}, ${fields.end_time}, ${fields.color})
-        RETURNING id
-        `
+			${fields.start_time}, ${fields.end_time}, ${fields.color})`
 
 		const { err } = await query(insert_query)
 		if (err) return fail(500, { error: 'Database error.', ...fields })
