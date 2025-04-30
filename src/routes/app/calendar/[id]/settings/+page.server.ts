@@ -42,7 +42,8 @@ export const load: PageServerLoad = async (event) => {
 		c.id AS calendar_id,
 		u.name AS user_name,
 		u.id AS user_id,
-		cp.permission_level AS permission_level
+		cp.permission_level,
+		cp.approved_at
 	FROM
 		calendar_permissions cp
 	INNER JOIN

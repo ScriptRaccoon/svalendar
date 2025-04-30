@@ -11,7 +11,10 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendars_query = sql`
 	SELECT
-		c.id, c.name, cp.permission_level
+		c.id,
+		c.name,
+		cp.permission_level,
+		cp.approved_at
 	FROM
 		calendar_permissions AS cp
 	INNER JOIN
@@ -22,11 +25,16 @@ export const load: PageServerLoad = async (event) => {
 		name ASC
 	`
 
-	const { rows, err } = await query<Calendar>(calendars_query)
+	const { rows, err } = await query<Calendar & { approved_at: string | null }>(
+		calendars_query
+	)
 
 	if (err) error(500, 'Database error.')
 
-	return { calendars: rows }
+	const calendars = rows.filter((calendar) => calendar.approved_at)
+	const pending_shares = rows.filter((calendar) => !calendar.approved_at)
+
+	return { calendars, pending_shares }
 }
 
 export const actions: Actions = {
@@ -58,14 +66,57 @@ export const actions: Actions = {
 
 		const owner_query = sql`
 		INSERT INTO
-			calendar_permissions (calendar_id, user_id, permission_level)
+			calendar_permissions (calendar_id, user_id, permission_level, approved_at)
 		VALUES
-			(${calendar_id}, ${user.id}, 'owner')
+			(${calendar_id}, ${user.id}, 'owner', CURRENT_TIMESTAMP)
 		`
 
 		const { err: err_owner } = await query(owner_query)
 		if (err_owner) return fail(500, { error: 'Database error.', name })
 
 		redirect(302, `/app/calendar/${calendar_id}`)
+	},
+
+	accept_share: async (event) => {
+		const user = event.locals.user
+		if (!user) error(401, 'Unauthorized')
+
+		const form_data = await event.request.formData()
+		const calendar_id = Number(form_data.get('calendar_id'))
+
+		if (!calendar_id) return fail(400, { error: 'Calendar ID is required.' })
+
+		const accept_query = sql`
+		UPDATE calendar_permissions
+		SET approved_at = CURRENT_TIMESTAMP
+		WHERE calendar_id = ${calendar_id}
+		AND user_id = ${user.id}
+		AND approved_at IS NULL`
+
+		const { err } = await query(accept_query)
+		if (err) return fail(500, { error: 'Database error.' })
+
+		return { success: true }
+	},
+
+	reject_share: async (event) => {
+		const user = event.locals.user
+		if (!user) error(401, 'Unauthorized')
+
+		const form_data = await event.request.formData()
+		const calendar_id = Number(form_data.get('calendar_id'))
+
+		if (!calendar_id) return fail(400, { error: 'Calendar ID is required.' })
+
+		const reject_query = sql`
+		DELETE FROM calendar_permissions
+		WHERE calendar_id = ${calendar_id}
+		AND user_id = ${user.id}
+		AND approved_at IS NULL`
+
+		const { err } = await query(reject_query)
+		if (err) return fail(500, { error: 'Database error.' })
+
+		return { success: true }
 	}
 }

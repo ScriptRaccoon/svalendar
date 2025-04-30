@@ -18,6 +18,7 @@ export type Share = {
 	user_name: string
 	user_id: number
 	permission_level: PermissionLevel
+	approved_at: string | null
 }
 
 export type CalendarEvent = {

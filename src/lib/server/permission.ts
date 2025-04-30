@@ -9,7 +9,8 @@ export async function get_permission(calendar_id: number, user_id: number) {
     FROM
         calendar_permissions cp
     WHERE
-        cp.user_id = ${user_id}
+        cp.approved_at IS NOT NULL
+        AND cp.user_id = ${user_id}
         AND cp.calendar_id = ${calendar_id}`
 
 	const { rows } = await query<{

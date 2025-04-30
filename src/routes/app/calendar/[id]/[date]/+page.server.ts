@@ -19,7 +19,8 @@ export const load: PageServerLoad = async (event) => {
 	INNER JOIN
 		calendars c ON c.id = cp.calendar_id
 	WHERE
-		c.id = ${calendar_id}
+		cp.approved_at IS NOT NULL
+		AND c.id = ${calendar_id}
 		AND cp.user_id = ${user.id}`
 
 	const { rows: calendars, err } = await query<Calendar>(calendars_query)

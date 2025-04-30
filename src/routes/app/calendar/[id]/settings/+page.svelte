@@ -70,6 +70,9 @@
 				<li>
 					<div class="share">
 						{share.user_name} ({share.permission_level} access)
+						{#if !share.approved_at}
+							&ndash; Pending
+						{/if}
 						<form action="?/remove_share" method="POST">
 							<input type="hidden" name="user_id" value={share.user_id} />
 							<IconButton

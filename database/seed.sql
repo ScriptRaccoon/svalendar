@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS calendar_permissions (
     permission_level TEXT NOT NULL CHECK (permission_level IN ('read', 'write', 'owner')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
+    approved_at TIMESTAMP,
     UNIQUE (user_id, calendar_id),
     FOREIGN KEY (calendar_id) REFERENCES calendars (id) ON DELETE CASCADE
 );

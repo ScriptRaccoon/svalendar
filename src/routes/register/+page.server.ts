@@ -71,8 +71,8 @@ export const actions: Actions = {
 		const { calendar_id } = calendars[0]
 
 		const owner_query = sql`
-			INSERT INTO calendar_permissions (user_id, calendar_id, permission_level)
-			VALUES (${id}, ${calendar_id}, 'owner')`
+			INSERT INTO calendar_permissions (user_id, calendar_id, permission_level, approved_at)
+			VALUES (${id}, ${calendar_id}, 'owner', CURRENT_TIMESTAMP)`
 
 		const { err: owner_err } = await query(owner_query)
 
