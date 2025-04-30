@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS calendar_permissions (
     approved_at TIMESTAMP,
     revokable BOOLEAN DEFAULT TRUE,
     UNIQUE (user_id, calendar_id),
-    FOREIGN KEY (calendar_id) REFERENCES calendars (id) ON DELETE CASCADE
+    FOREIGN KEY (calendar_id) REFERENCES calendars (id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_calendar_id ON calendar_permissions (calendar_id);
