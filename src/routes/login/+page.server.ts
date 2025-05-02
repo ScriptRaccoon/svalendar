@@ -11,7 +11,7 @@ const login_rate_limiter = new RateLimiter(5, 60 * 1000) // 5 attempts per minut
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
-	if (user) redirect(302, '/app/calendar')
+	if (user) redirect(302, '/app/dashboard')
 }
 
 export const actions: Actions = {
