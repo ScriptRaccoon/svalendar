@@ -1,11 +1,11 @@
 <script lang="ts">
 	import Fa from 'svelte-fa'
-	import { type IconDefinition as SolidIcon } from '@fortawesome/free-solid-svg-icons'
-	import { type IconDefinition as RegularIcon } from '@fortawesome/free-regular-svg-icons'
+	import { type IconDefinition as IconSolid } from '@fortawesome/free-solid-svg-icons'
+	import { type IconDefinition as IconRegular } from '@fortawesome/free-regular-svg-icons'
 
 	type Props = {
 		aria_label: string
-		icon: SolidIcon | RegularIcon
+		icon: IconSolid | IconRegular
 		onclick?: () => void
 		small?: boolean
 	}
@@ -20,7 +20,6 @@
 <style>
 	button {
 		background-color: var(--icon-bg-color);
-		cursor: pointer;
 		border-radius: 50%;
 		width: 2rem;
 		height: 2rem;
@@ -30,8 +29,8 @@
 	}
 
 	button.small {
-		width: 1.5rem;
-		height: 1.5rem;
+		width: 1.4rem;
+		height: 1.4rem;
 		font-size: 0.75rem;
 	}
 </style>

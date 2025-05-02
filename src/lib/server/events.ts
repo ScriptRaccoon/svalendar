@@ -8,7 +8,7 @@ import { decrypt } from './encryption'
 export async function get_validated_event(
 	form_data: FormData,
 	calendar_id: string,
-	event_id: string | null = null
+	event_id: string | null = null // is null for new events
 ) {
 	const title = form_data.get('title') as string
 	const description = form_data.get('description') as string
@@ -38,16 +38,16 @@ export async function get_validated_event(
 		}
 	}
 
-	if (!COLOR_IDS.includes(color)) {
-		return { status: 400, error_message: 'Invalid color.', fields }
-	}
-
 	if (!datetime_schema.safeParse(start_time).success) {
 		return { status: 400, error_message: 'Invalid start time.', fields }
 	}
 
 	if (!datetime_schema.safeParse(end_time).success) {
 		return { status: 400, error_message: 'Invalid end time.', fields }
+	}
+
+	if (!COLOR_IDS.includes(color)) {
+		return { status: 400, error_message: 'Invalid color.', fields }
 	}
 
 	const overlap_query = sql`
@@ -90,6 +90,25 @@ export async function get_validated_event(
 
 export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarEvent {
 	const { id, calendar_id, start_time, end_time, start_date, end_date, color } = event
+
+	const title = decrypt({
+		data: event.title_encrypted,
+		iv: event.title_iv,
+		tag: event.title_tag
+	})
+
+	const description = decrypt({
+		data: event.description_encrypted,
+		iv: event.description_iv,
+		tag: event.description_tag
+	})
+
+	const location = decrypt({
+		data: event.location_encrypted,
+		iv: event.location_iv,
+		tag: event.location_tag
+	})
+
 	return {
 		id,
 		calendar_id,
@@ -98,20 +117,8 @@ export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarE
 		start_date,
 		end_date,
 		color,
-		title: decrypt({
-			data: event.title_encrypted,
-			iv: event.title_iv,
-			tag: event.title_tag
-		}),
-		description: decrypt({
-			data: event.description_encrypted,
-			iv: event.description_iv,
-			tag: event.description_tag
-		}),
-		location: decrypt({
-			data: event.location_encrypted,
-			iv: event.location_iv,
-			tag: event.location_tag
-		})
+		title,
+		description,
+		location
 	}
 }

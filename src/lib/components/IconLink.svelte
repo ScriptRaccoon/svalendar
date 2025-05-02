@@ -1,12 +1,12 @@
 <script lang="ts">
 	import Fa from 'svelte-fa'
-	import { type IconDefinition as SolidIcon } from '@fortawesome/free-solid-svg-icons'
-	import { type IconDefinition as RegularIcon } from '@fortawesome/free-regular-svg-icons'
+	import { type IconDefinition as IconSolid } from '@fortawesome/free-solid-svg-icons'
+	import { type IconDefinition as IconRegular } from '@fortawesome/free-regular-svg-icons'
 
 	type Props = {
 		href: string
 		aria_label: string
-		icon: SolidIcon | RegularIcon
+		icon: IconSolid | IconRegular
 		scale?: number
 	}
 
@@ -19,6 +19,7 @@
 
 <style>
 	a {
+		text-decoration: none;
 		background-color: var(--icon-bg-color);
 		border-radius: 50%;
 		width: 2rem;

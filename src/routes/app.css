@@ -72,6 +72,10 @@ h3 {
 	margin-bottom: 0.5rem;
 }
 
+summary {
+	cursor: pointer;
+}
+
 input,
 button,
 select,

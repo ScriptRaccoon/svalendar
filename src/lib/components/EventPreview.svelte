@@ -15,8 +15,8 @@
 
 <a
 	class="event"
-	href={`/app/calendar/${event.calendar_id}/event/${event.id}`}
-	style="--color: {EVENTS_COLORS_DICTIONARY[event.color]};"
+	href="/app/calendar/{event.calendar_id}/event/{event.id}"
+	style:--color={EVENTS_COLORS_DICTIONARY[event.color]}
 >
 	<div class="header">
 		<div class="title">
@@ -51,13 +51,13 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-	}
 
-	.title {
-		font-weight: bold;
-	}
+		.title {
+			font-weight: bold;
+		}
 
-	.location {
-		font-size: 0.825rem;
+		.location {
+			font-size: 0.825rem;
+		}
 	}
 </style>

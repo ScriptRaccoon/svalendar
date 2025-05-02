@@ -2,12 +2,13 @@ import sql from 'sql-template-tag'
 import { query } from './db'
 import type { PermissionLevel } from './types'
 
-export async function get_permission(calendar_id: string, user_id: number) {
+export async function get_permission(
+	calendar_id: string,
+	user_id: number
+): Promise<PermissionLevel | null> {
 	const permission_query = sql`
-    SELECT
-        permission_level
-    FROM
-        calendar_permissions cp
+    SELECT permission_level
+    FROM calendar_permissions cp
     WHERE
         cp.approved_at IS NOT NULL
         AND cp.user_id = ${user_id}
