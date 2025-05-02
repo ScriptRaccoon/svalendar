@@ -3,13 +3,13 @@
 	import EventInput from '$lib/components/EventInput.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
-	import { getDate } from 'date-fns'
+	import { format } from 'date-fns'
 
 	let { form, data } = $props()
 
 	let back_url = $derived(
 		data.start_time
-			? `/app/calendar/${data.calendar_id}/${getDate(data.start_time)}`
+			? `/app/calendar/${data.calendar_id}/${format(data.start_time, 'yyyy-MM-dd')}`
 			: `/app/calendar/${data.calendar_id}`
 	)
 </script>
