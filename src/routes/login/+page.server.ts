@@ -1,4 +1,4 @@
-import type { Actions } from './$types'
+import type { Actions, PageServerLoad } from './$types'
 import { fail, redirect } from '@sveltejs/kit'
 import { query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
@@ -9,9 +9,9 @@ import sql from 'sql-template-tag'
 
 const login_rate_limiter = new RateLimiter(5, 60 * 1000) // 5 attempts per minute
 
-export const load = async (event) => {
+export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
-	if (user) redirect(302, '/app/dashboard')
+	if (user) redirect(302, '/app/calendar')
 }
 
 export const actions: Actions = {
