@@ -10,9 +10,15 @@
 
 <h2>Register</h2>
 
+<p class="secondary">
+	Please choose a username and secure password to create an account. If you already have
+	an account, you can
+	<a href="/login">login</a> instead.
+</p>
+
 <form method="POST" use:enhance>
 	<div class="input-group">
-		<label for="name">Name</label>
+		<label for="name">Username</label>
 		<input type="text" id="name" name="name" required value={form?.name} />
 	</div>
 

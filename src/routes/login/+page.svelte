@@ -10,6 +10,11 @@
 
 <h2>Login</h2>
 
+<p class="secondary">
+	Please enter your credentials to log in. If you don't have an account yet,
+	<a href="/register">register</a> first.
+</p>
+
 <form method="POST" use:enhance>
 	<div class="input-group">
 		<label for="name">Name</label>
