@@ -77,7 +77,7 @@
 	<h3>My Data</h3>
 	<p>
 		To download your data in JSON format, follow
-		<a href="/account/mydata">this link</a>.
+		<a href="/app/account/mydata">this link</a>.
 	</p>
 </section>
 

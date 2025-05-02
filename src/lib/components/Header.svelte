@@ -21,7 +21,7 @@
 					<a href="/app/dashboard">Dashboard</a>
 				</li>
 				<li>
-					<a href="/account">Account</a>
+					<a href="/app/account">Account</a>
 				</li>
 				<li>
 					<a href="/logout" data-sveltekit-preload-data="off">Logout</a>
