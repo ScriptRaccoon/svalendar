@@ -35,12 +35,14 @@
 		scroll_to_first_event()
 	})
 
-	let new_event_url = $derived(
-		`/app/calendar/${calendar.id}/event/new` +
-			`?start_time=${today}T09:00` +
-			`&end_time=${today}T10:00` +
+	const new_event_url = (hour: number) => {
+		return (
+			`/app/calendar/${calendar.id}/event/new` +
+			`?start_time=${today}T${hour.toString().padStart(2, '0')}:00` +
+			`&end_time=${today}T${(hour + 1).toString().padStart(2, '0')}:00` +
 			`&color=${calendar.default_color}`
-	)
+		)
+	}
 </script>
 
 <svelte:head>
@@ -60,7 +62,7 @@
 			/>
 		{/if}
 		{#if calendar.permission_level === 'owner' || calendar.permission_level === 'write'}
-			<IconLink href={new_event_url} aria_label="New Event" icon={faPlus} />
+			<IconLink href={new_event_url(9)} aria_label="New Event" icon={faPlus} />
 		{/if}
 	</menu>
 </header>
@@ -94,9 +96,13 @@
 
 <div class="day">
 	{#each { length: 24 } as _, hour}
-		<div class="hour-block">
+		<a
+			class="hour-block"
+			href={new_event_url(hour)}
+			aria-label="create new event for hour {hour}"
+		>
 			<span class="time secondary">{hour.toString().padStart(2, '0') + ':00'}</span>
-		</div>
+		</a>
 	{/each}
 	{#each events as event, index (event.id)}
 		{#if index === 0}
@@ -159,6 +165,8 @@
 	}
 
 	.hour-block {
+		display: block;
+		text-decoration: none;
 		height: var(--unit);
 		position: relative;
 		border-top: 1px solid var(--helping-line-color);
