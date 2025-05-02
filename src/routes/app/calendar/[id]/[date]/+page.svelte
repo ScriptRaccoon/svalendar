@@ -55,7 +55,7 @@
 	</p>
 {/if}
 
-<header>
+<header class="control-header">
 	<h3>{new Date(today).toLocaleDateString()}</h3>
 	{#if events.length === 0}
 		<span class="secondary">No events for this day</span>
@@ -106,12 +106,24 @@
 		margin-left: auto;
 	}
 
+	.control-header {
+		position: sticky;
+		align-items: center;
+		top: 0;
+		z-index: 10;
+		padding-block: 0.25rem;
+		background-color: var(--bg-color);
+
+		h3 {
+			margin: 0;
+		}
+	}
+
 	.rights {
 		margin-top: -0.75rem;
 	}
 
 	.day {
-		margin-top: 1rem;
 		--unit: 6rem;
 		position: relative;
 	}
