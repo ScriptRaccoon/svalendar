@@ -28,3 +28,5 @@ export const PERMISSION_ICONS = {
 	write: faPenToSquare,
 	owner: faCalendar
 } as const
+
+export const MINIMAL_EVENT_DURATION = 10 // in minutes

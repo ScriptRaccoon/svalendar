@@ -1,4 +1,4 @@
-import { COLOR_IDS } from '$lib/config'
+import { COLOR_IDS, MINIMAL_EVENT_DURATION } from '$lib/config'
 import sql from 'sql-template-tag'
 import { datetime_schema } from './schemas'
 import { query } from './db'
@@ -30,7 +30,18 @@ export async function get_validated_event(
 		return { status: 400, error_message: 'Fill in the required fields.', fields }
 	}
 
-	if (new Date(start_time) >= new Date(end_time)) {
+	if (!datetime_schema.safeParse(start_time).success) {
+		return { status: 400, error_message: 'Invalid start time.', fields }
+	}
+
+	if (!datetime_schema.safeParse(end_time).success) {
+		return { status: 400, error_message: 'Invalid end time.', fields }
+	}
+
+	const start_time_ms = new Date(start_time).getTime()
+	const end_time_ms = new Date(end_time).getTime()
+
+	if (start_time_ms >= end_time_ms) {
 		return {
 			status: 400,
 			error_message: 'End time must be after start time.',
@@ -38,12 +49,12 @@ export async function get_validated_event(
 		}
 	}
 
-	if (!datetime_schema.safeParse(start_time).success) {
-		return { status: 400, error_message: 'Invalid start time.', fields }
-	}
-
-	if (!datetime_schema.safeParse(end_time).success) {
-		return { status: 400, error_message: 'Invalid end time.', fields }
+	if (end_time_ms - start_time_ms < MINIMAL_EVENT_DURATION * 60 * 1000) {
+		return {
+			status: 400,
+			error_message: `Event duration must be at least ${MINIMAL_EVENT_DURATION} minutes.`,
+			fields
+		}
 	}
 
 	if (!COLOR_IDS.includes(color)) {
