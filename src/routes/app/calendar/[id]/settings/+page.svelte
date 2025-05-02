@@ -34,7 +34,8 @@
 <section class="card">
 	<h3>Appearance</h3>
 
-	<form method="POST" action="?/edit" use:enhance>
+	<!-- don't work with use:enhance since it is buggy -->
+	<form method="POST" action="?/edit">
 		<div class="input-group">
 			<label for="name">Name</label>
 			<input type="text" id="name" name="name" required value={calendar.name} />
@@ -48,6 +49,14 @@
 
 		<button class="button">Update</button>
 	</form>
+
+	{#if form?.error && form.action === 'edit'}
+		<p class="error">{form.error}</p>
+	{/if}
+
+	{#if form?.success && form.action === 'edit'}
+		<p>Calendar updated successfully.</p>
+	{/if}
 </section>
 
 <section class="card">
@@ -56,12 +65,20 @@
 	<form method="POST" action="?/set_default" use:enhance>
 		<button class="button">Set Default</button>
 	</form>
+
+	{#if form?.error && form.action === 'set_default'}
+		<p class="error">{form.error}</p>
+	{/if}
+
+	{#if form?.success && form.action === 'set_default'}
+		<p>Calendar has been set as default.</p>
+	{/if}
 </section>
 
 <section class="card">
 	<h3>Sharing</h3>
 	<p>Share your calendar with other users to collaborate.</p>
-	<form action="?/create_share" method="POST" use:enhance>
+	<form action="?/share" method="POST" use:enhance>
 		<div class="input-group">
 			<label for="username">User name</label>
 			<input type="text" id="username" name="username" required />
@@ -76,6 +93,11 @@
 		</div>
 		<button class="button">Share</button>
 	</form>
+
+	{#if form?.error && form.action === 'share'}
+		<p class="error">{form.error}</p>
+	{/if}
+
 	{#if data.shares.length > 0}
 		<p>The calendar is shared with:</p>
 		<ul class="list">
@@ -86,7 +108,7 @@
 						{#if !share.approved_at}
 							&ndash; Pending
 						{/if}
-						<form action="?/remove_share" method="POST" use:enhance>
+						<form action="?/unshare" method="POST" use:enhance>
 							<input type="hidden" name="user_id" value={share.user_id} />
 							<IconButton
 								aria_label="remove share"
@@ -98,6 +120,10 @@
 				</li>
 			{/each}
 		</ul>
+
+		{#if form?.error && form.action === 'unshare'}
+			<p class="error">{form.error}</p>
+		{/if}
 	{/if}
 </section>
 
@@ -120,11 +146,11 @@
 			</p>
 		{/if}
 	</form>
-</section>
 
-{#if form?.error}
-	<p class="error">{form.error}</p>
-{/if}
+	{#if form?.error && form.action === 'delete'}
+		<p class="error">{form.error}</p>
+	{/if}
+</section>
 
 <style>
 	header {

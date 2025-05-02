@@ -62,7 +62,9 @@ export const actions: Actions = {
 		const form_data = await event.request.formData()
 		const name = form_data.get('name') as string | null
 
-		if (!name) return fail(400, { error: 'Name is required.', name })
+		if (!name) {
+			return fail(400, { action: 'create', error: 'Name is required.', name })
+		}
 
 		const tx = await db.transaction('write')
 
@@ -93,7 +95,7 @@ export const actions: Actions = {
 		} catch (err) {
 			console.error('transaction failed', err)
 			tx.close()
-			error(500, 'Database error.')
+			return fail(500, { action: 'create', error: 'Database error.', name })
 		}
 
 		redirect(302, `/app/calendar/${calendar_id}`)
@@ -106,7 +108,9 @@ export const actions: Actions = {
 		const form_data = await event.request.formData()
 		const calendar_id = form_data.get('calendar_id') as string | null
 
-		if (!calendar_id) return fail(400, { error: 'Calendar ID is required.' })
+		if (!calendar_id) {
+			return fail(400, { action: 'share', error: 'Calendar ID is required.' })
+		}
 
 		const accept_query = sql`
 		UPDATE calendar_permissions
@@ -116,7 +120,9 @@ export const actions: Actions = {
 		AND approved_at IS NULL`
 
 		const { err } = await query(accept_query)
-		if (err) return fail(500, { error: 'Database error.' })
+		if (err) {
+			return fail(500, { action: 'share', error: 'Database error.' })
+		}
 
 		return { success: true }
 	},
@@ -128,7 +134,9 @@ export const actions: Actions = {
 		const form_data = await event.request.formData()
 		const calendar_id = form_data.get('calendar_id') as string | null
 
-		if (!calendar_id) return fail(400, { error: 'Calendar ID is required.' })
+		if (!calendar_id) {
+			return fail(400, { action: 'share', error: 'Calendar ID is required.' })
+		}
 
 		const reject_query = sql`
 		DELETE FROM calendar_permissions
@@ -137,7 +145,9 @@ export const actions: Actions = {
 		AND approved_at IS NULL`
 
 		const { err } = await query(reject_query)
-		if (err) return fail(500, { error: 'Database error.' })
+		if (err) {
+			return fail(500, { action: 'share', error: 'Database error.' })
+		}
 
 		return { success: true }
 	},
@@ -149,7 +159,9 @@ export const actions: Actions = {
 		const form_data = await event.request.formData()
 		const calendar_id = form_data.get('calendar_id') as string | null
 
-		if (!calendar_id) return fail(400, { error: 'Calendar ID is required.' })
+		if (!calendar_id) {
+			return fail(400, { action: 'revoke', error: 'Calendar ID is required.' })
+		}
 
 		const revoke_query = sql`
 		DELETE FROM calendar_permissions
@@ -159,7 +171,9 @@ export const actions: Actions = {
 		AND revokable = TRUE`
 
 		const { err } = await query(revoke_query)
-		if (err) return fail(500, { error: 'Database error.' })
+		if (err) {
+			return fail(500, { action: 'revoke', error: 'Database error.' })
+		}
 
 		return { success: true }
 	}

@@ -70,24 +70,25 @@ export const actions: Actions = {
 		const form_data = await event.request.formData()
 		const calendar_id = event.params.id
 		const name = form_data.get('name') as string | null
-		const color = form_data.get('color') as string | null
+		const default_color = form_data.get('color') as string | null
 
-		if (!name) return fail(400, { error: 'Name is required.', name })
-		if (!color) return fail(400, { error: 'Color is required.', name })
+		if (!name) return fail(400, { action: 'edit', error: 'Name is required.' })
+		if (!default_color)
+			return fail(400, { action: 'edit', error: 'Default Color is required.' })
 
-		if (!COLOR_IDS.includes(color)) {
-			return fail(400, { error: 'Invalid color.', name })
+		if (!COLOR_IDS.includes(default_color)) {
+			return fail(400, { action: 'edit', error: 'Invalid color.' })
 		}
 
 		const update_query = sql`
         UPDATE calendars
-        SET name = ${name}, default_color = ${color}
+        SET name = ${name}, default_color = ${default_color}
         WHERE id = ${calendar_id}`
 
 		const { err } = await query(update_query)
-		if (err) return fail(500, { error: 'Database error.', name })
+		if (err) return fail(500, { action: 'edit', error: 'Database error.' })
 
-		redirect(302, `/app/calendar/${calendar_id}`)
+		return { action: 'edit', success: true }
 	},
 
 	delete: async (event) => {
@@ -102,12 +103,12 @@ export const actions: Actions = {
         WHERE id = ${calendar_id}`
 
 		const { err } = await query(delete_query)
-		if (err) return fail(500, { error: 'Database error.' })
+		if (err) return fail(500, { action: 'delete', error: 'Database error.' })
 
 		redirect(302, '/app/dashboard')
 	},
 
-	create_share: async (event) => {
+	share: async (event) => {
 		// TODO: check permissions here as well ...
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
@@ -121,15 +122,22 @@ export const actions: Actions = {
 
 		const form_data = await event.request.formData()
 		const username = form_data.get('username') as string | null
-		if (!username) return fail(400, { error: 'User name is required.' })
+		if (!username)
+			return fail(400, { action: 'share', error: 'User name is required.' })
 
 		if (username === my_username) {
-			return fail(400, { error: 'You cannot share a calendar with yourself.' })
+			return fail(400, {
+				action: 'share',
+				error: 'You cannot share a calendar with yourself.'
+			})
 		}
 
 		const permission_level = form_data.get('permission_level') as string | null
 		if (!permission_level)
-			return fail(400, { error: 'Permission level is required.' })
+			return fail(400, {
+				action: 'share',
+				error: 'Permission level is required.'
+			})
 
 		const share_query = sql`
 		INSERT INTO
@@ -147,17 +155,17 @@ export const actions: Actions = {
 
 		const { err, rows } = await query<{ id: number }>(share_query)
 		if (err) {
-			return fail(500, { error: 'Database error.' })
+			return fail(500, { action: 'share', error: 'Database error.' })
 		}
 
 		if (!rows.length) {
-			return fail(400, { error: 'User not found.' })
+			return fail(400, { action: 'share', error: 'User not found.' })
 		}
 
-		return { success: true }
+		return { action: 'share', success: true }
 	},
 
-	remove_share: async (event) => {
+	unshare: async (event) => {
 		// TODO: check permissions here as well ...
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
@@ -167,7 +175,7 @@ export const actions: Actions = {
 
 		const invited_user_id = form_data.get('user_id') as string | null
 		if (!invited_user_id) {
-			return fail(400, { error: 'User ID is required.' })
+			return fail(400, { action: 'unshare', error: 'User ID is required.' })
 		}
 
 		const delete_query = sql`
@@ -177,10 +185,10 @@ export const actions: Actions = {
 
 		const { err } = await query(delete_query)
 		if (err) {
-			return fail(500, { error: 'Database error.' })
+			return fail(500, { action: 'unshare', error: 'Database error.' })
 		}
 
-		return { success: true }
+		return { action: 'unshare', success: true }
 	},
 
 	set_default: async (event) => {
@@ -197,9 +205,9 @@ export const actions: Actions = {
 
 		const { err } = await query(default_query)
 		if (err) {
-			return fail(500, { error: 'Database error.' })
+			return fail(500, { action: 'set_default', error: 'Database error.' })
 		}
 
-		redirect(302, `/app/calendar/${calendar_id}`)
+		return { action: 'set_default', success: true }
 	}
 }

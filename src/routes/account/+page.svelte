@@ -33,6 +33,14 @@
 		<button class="button" type="submit">Update Name</button>
 	</form>
 
+	{#if form?.error && form.action === 'name'}
+		<p class="error">{form.error}</p>
+	{/if}
+
+	{#if form?.success && form.action === 'name'}
+		<p>Name updated successfully.</p>
+	{/if}
+
 	<form class="password-form" method="POST" action="?/password" use:enhance>
 		<div class="input-group">
 			<label for="password">Password</label>
@@ -50,6 +58,14 @@
 		</div>
 		<button class="button" type="submit">Update Password</button>
 	</form>
+
+	{#if form?.error && form.action === 'password'}
+		<p class="error">{form.error}</p>
+	{/if}
+
+	{#if form?.success && form.action === 'password'}
+		<p>Password updated successfully.</p>
+	{/if}
 </section>
 
 <section class="card">
@@ -86,15 +102,11 @@
 			<p>This action cannot be undone! Are you sure? All data will be lost.</p>
 		{/if}
 	</form>
+
+	{#if form?.error && form.action === 'delete'}
+		<p class="error">{form.error}</p>
+	{/if}
 </section>
-
-{#if form?.error}
-	<p class="error">{form.error}</p>
-{/if}
-
-{#if form?.message}
-	<p>{form.message}</p>
-{/if}
 
 <style>
 	.password-form {

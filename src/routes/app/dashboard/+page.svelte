@@ -61,6 +61,9 @@
 				</li>
 			{/each}
 		</ul>
+		{#if form?.action === 'share' && form?.error}
+			<p class="error">{form.error}</p>
+		{/if}
 	</section>
 {/if}
 
@@ -95,6 +98,9 @@
 			</li>
 		{/each}
 	</ul>
+	{#if form?.action === 'revoke' && form?.error}
+		<p class="error">{form.error}</p>
+	{/if}
 </section>
 
 <section class="card">
@@ -107,11 +113,11 @@
 
 		<button class="button">Create</button>
 	</form>
-</section>
 
-{#if form?.error}
-	<p>{form.error}</p>
-{/if}
+	{#if form?.action === 'create' && form?.error}
+		<p class="error">{form.error}</p>
+	{/if}
+</section>
 
 <style>
 	.icon-wrapper {

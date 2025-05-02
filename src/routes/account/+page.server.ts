@@ -28,7 +28,10 @@ export const actions: Actions = {
 		const name_validation = name_schema.safeParse(name)
 
 		if (name_validation.error) {
-			return fail(400, { error: get_error_messages(name_validation.error), name })
+			return fail(400, {
+				action: 'name',
+				error: get_error_messages(name_validation.error)
+			})
 		}
 
 		const name_query = sql`
@@ -40,13 +43,16 @@ export const actions: Actions = {
 
 		if (err) {
 			if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
-				return fail(400, { error: 'User with that name already exists.', name })
+				return fail(400, {
+					action: 'name',
+					error: 'User with that name already exists.'
+				})
 			}
 
-			return fail(500, { error: 'Database error.', name })
+			return fail(500, { action: 'name', error: 'Database error.' })
 		}
 
-		return { name, message: 'Name updated successfully.' }
+		return { action: 'name', success: true }
 	},
 	password: async (event) => {
 		const user = event.locals.user
@@ -59,10 +65,13 @@ export const actions: Actions = {
 
 		const password_validation = password_schema.safeParse(password)
 		if (password_validation.error) {
-			return fail(400, { error: get_error_messages(password_validation.error) })
+			return fail(400, {
+				action: 'password',
+				error: get_error_messages(password_validation.error)
+			})
 		}
 		if (password !== confirm_password) {
-			return fail(400, { error: 'Passwords do not match' })
+			return fail(400, { action: 'password', error: 'Passwords do not match' })
 		}
 
 		const password_hash = await bcrypt.hash(password!, 10)
@@ -74,9 +83,9 @@ export const actions: Actions = {
 
 		const { err } = await query(password_query)
 
-		if (err) return fail(500, { error: 'Database error.' })
+		if (err) return fail(500, { action: 'password', error: 'Database error.' })
 
-		return { message: 'Password updated successfully.' }
+		return { action: 'password', success: true }
 	},
 
 	delete: async (event) => {
@@ -91,7 +100,7 @@ export const actions: Actions = {
 		WHERE id = ${user.id}`
 
 		const { err: err_user } = await query(delete_user_query)
-		if (err_user) return fail(500, { error: 'Database error.' })
+		if (err_user) return fail(500, { action: 'delete', error: 'Database error.' })
 
 		const delete_unused_calendars_query = sql`
 		DELETE FROM calendars
