@@ -1,7 +1,7 @@
 <script lang="ts">
 	import EventPreview from '$lib/components/EventPreview.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
-	import type { CalendarEvent } from '$lib/server/types'
+	import type { Calendar, CalendarEvent } from '$lib/server/types'
 	import {
 		faCaretLeft,
 		faCaretRight,
@@ -12,8 +12,7 @@
 
 	let { data } = $props()
 
-	const calendar = data.calendar
-
+	let calendar = $derived<Calendar>(data.calendar)
 	let events = $derived<CalendarEvent[]>(data.events)
 	let today = $derived<string>(data.today)
 	let tomorrow = $derived(format(addDays(today, 1), 'yyyy-MM-dd'))
@@ -86,7 +85,7 @@
 			style:--hours-diff={(1 / 60) *
 				differenceInMinutes(event.end_time, event.start_time)}
 		>
-			<EventPreview {event} calendar_id={calendar.id} />
+			<EventPreview {event} />
 		</div>
 	{/each}
 </div>

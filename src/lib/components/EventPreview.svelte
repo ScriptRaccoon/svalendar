@@ -8,15 +8,14 @@
 
 	type Props = {
 		event: CalendarEvent
-		calendar_id: string
 	}
 
-	let { event, calendar_id }: Props = $props()
+	let { event }: Props = $props()
 </script>
 
 <a
 	class="event"
-	href={`/app/calendar/${calendar_id}/event/${event.id}`}
+	href={`/app/calendar/${event.calendar_id}/event/${event.id}`}
 	style="--color: {EVENTS_COLORS_DICTIONARY[event.color]};"
 >
 	<div class="header">
