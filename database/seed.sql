@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS calendar_permissions (
     user_id INTEGER NOT NULL,
     permission_level TEXT NOT NULL CHECK (permission_level IN ('read', 'write', 'owner')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP,
     approved_at TIMESTAMP,
     revokable BOOLEAN DEFAULT TRUE,
     UNIQUE (user_id, calendar_id),
@@ -34,16 +33,6 @@ CREATE TABLE IF NOT EXISTS calendar_permissions (
 CREATE INDEX IF NOT EXISTS idx_calendar_id ON calendar_permissions (calendar_id);
 
 CREATE INDEX IF NOT EXISTS idx_user_id ON calendar_permissions (user_id);
-
-CREATE TRIGGER IF NOT EXISTS update_calendar_permissions AFTER
-UPDATE ON calendar_permissions FOR EACH ROW BEGIN
-UPDATE calendar_permissions
-SET
-    updated_at = CURRENT_TIMESTAMP
-WHERE
-    id = NEW.id;
-
-END;
 
 CREATE TABLE IF NOT EXISTS events (
     id TEXT PRIMARY KEY,
