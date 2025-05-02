@@ -44,7 +44,13 @@
 	<form class="password-form" method="POST" action="?/password" use:enhance>
 		<div class="input-group">
 			<label for="password">Password</label>
-			<input type="password" name="password" id="password" required />
+			<input
+				type="password"
+				name="password"
+				id="password"
+				required
+				autocomplete="off"
+			/>
 		</div>
 
 		<div class="input-group">
@@ -54,6 +60,7 @@
 				name="confirm_password"
 				id="confirm_password"
 				required
+				autocomplete="off"
 			/>
 		</div>
 		<button class="button" type="submit">Update Password</button>

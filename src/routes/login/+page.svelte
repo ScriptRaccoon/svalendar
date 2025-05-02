@@ -23,7 +23,7 @@
 
 	<div class="input-group">
 		<label for="password">Password</label>
-		<input type="password" id="password" name="password" required />
+		<input type="password" id="password" name="password" required autocomplete="on" />
 	</div>
 
 	<button class="button">Submit</button>
