@@ -8,7 +8,7 @@
 		faCog,
 		faPlus
 	} from '@fortawesome/free-solid-svg-icons'
-	import { format, addDays } from 'date-fns'
+	import { format, addDays, getHours, getMinutes, differenceInMinutes } from 'date-fns'
 
 	let { data } = $props()
 
@@ -18,6 +18,10 @@
 	let today = $derived<string>(data.today)
 	let tomorrow = $derived(format(addDays(today, 1), 'yyyy-MM-dd'))
 	let yesterday = $derived(format(addDays(today, -1), 'yyyy-MM-dd'))
+
+	function get_hours(datetime: string) {
+		return getHours(datetime) + getMinutes(datetime) / 60
+	}
 </script>
 
 <svelte:head>
@@ -52,6 +56,9 @@
 
 <header>
 	<h3>{new Date(today).toLocaleDateString()}</h3>
+	{#if events.length === 0}
+		<span class="no-events">No events for this day</span>
+	{/if}
 	<menu>
 		<IconLink
 			href="/app/calendar/{calendar.id}/{yesterday}"
@@ -66,29 +73,36 @@
 	</menu>
 </header>
 
-{#if events.length > 0}
-	<div class="events">
-		{#each events as event, index (event.id)}
-			{@const next_start_time =
-				index < events.length - 1 ? events[index + 1].start_time : null}
-
-			<EventPreview {event} {next_start_time} calendar_id={calendar.id} />
-		{/each}
-	</div>
-{:else}
-	<p>No events for this date.</p>
-{/if}
+<div class="day">
+	{#each { length: 24 } as _, hour}
+		<div class="hour-block">
+			<span class="time">{hour.toString().padStart(2, '0') + ':00'}</span>
+		</div>
+	{/each}
+	{#each events as event (event.id)}
+		<div
+			class="positioner"
+			style:--hours-start={get_hours(event.start_time)}
+			style:--hours-diff={(1 / 60) *
+				differenceInMinutes(event.end_time, event.start_time)}
+		>
+			<EventPreview {event} calendar_id={calendar.id} />
+		</div>
+	{/each}
+</div>
 
 <style>
 	header {
 		display: flex;
 		justify-content: space-between;
 		align-items: start;
+		gap: 1rem;
 	}
 
 	header menu {
 		display: flex;
 		gap: 0.5rem;
+		margin-left: auto;
 	}
 
 	.rights {
@@ -96,7 +110,37 @@
 		color: var(--secondary-font-color);
 	}
 
-	.events {
+	.day {
 		margin-top: 1rem;
+		--unit: 6rem;
+		position: relative;
+	}
+
+	.hour-block {
+		height: var(--unit);
+		position: relative;
+		border-top: 1px solid var(--helping-line-color);
+
+		.time {
+			position: absolute;
+			top: 0;
+			left: 0;
+			font-size: 0.875rem;
+			color: var(--secondary-font-color);
+		}
+	}
+
+	.positioner {
+		top: calc(var(--hours-start) * var(--unit));
+		height: max(4rem, calc(var(--hours-diff) * var(--unit)));
+		translate: 0 1px;
+		overflow: hidden;
+		right: 0;
+		left: 3rem;
+		position: absolute;
+	}
+
+	.no-events {
+		color: var(--secondary-font-color);
 	}
 </style>
