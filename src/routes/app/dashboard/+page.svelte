@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
 	import IconButton from '$lib/components/IconButton.svelte'
-	import { PERMISSION_ICONS } from '$lib/config.js'
+	import { PERMISSION_ICONS } from '$lib/config'
 	import { faCheckCircle } from '@fortawesome/free-regular-svg-icons'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
 	import Fa from 'svelte-fa'

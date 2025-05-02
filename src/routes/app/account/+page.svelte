@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
-	import { theme } from '$lib/states.svelte.js'
+	import { theme } from '$lib/states.svelte'
 
 	let { data, form } = $props()
 
