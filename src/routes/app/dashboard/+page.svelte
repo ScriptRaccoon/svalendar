@@ -81,7 +81,7 @@
 							{calendar.name}
 						</a>
 						{#if data.default_calendar_id === calendar.id}
-							<span class="default">&nbsp; (default)</span>
+							<span class="secondary">(default)</span>
 						{/if}
 					</div>
 					{#if calendar.revokable}
@@ -138,9 +138,5 @@
 	.item {
 		display: flex;
 		justify-content: space-between;
-	}
-
-	.default {
-		color: var(--secondary-font-color);
 	}
 </style>

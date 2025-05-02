@@ -137,6 +137,10 @@ button:focus-visible {
 	color: var(--error-color);
 }
 
+.secondary {
+	color: var(--secondary-font-color);
+}
+
 .list {
 	margin-block: 1rem;
 	padding-left: 1.25rem;

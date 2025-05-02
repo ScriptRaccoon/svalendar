@@ -50,13 +50,15 @@
 </header>
 
 {#if calendar.permission_level !== 'owner'}
-	<p class="rights">You have {calendar.permission_level} rights for this calendar.</p>
+	<p class="rights secondary">
+		You have {calendar.permission_level} rights for this calendar.
+	</p>
 {/if}
 
 <header>
 	<h3>{new Date(today).toLocaleDateString()}</h3>
 	{#if events.length === 0}
-		<span class="no-events">No events for this day</span>
+		<span class="secondary">No events for this day</span>
 	{/if}
 	<menu>
 		<IconLink
@@ -75,7 +77,7 @@
 <div class="day">
 	{#each { length: 24 } as _, hour}
 		<div class="hour-block">
-			<span class="time">{hour.toString().padStart(2, '0') + ':00'}</span>
+			<span class="time secondary">{hour.toString().padStart(2, '0') + ':00'}</span>
 		</div>
 	{/each}
 	{#each events as event (event.id)}
@@ -106,7 +108,6 @@
 
 	.rights {
 		margin-top: -0.75rem;
-		color: var(--secondary-font-color);
 	}
 
 	.day {
@@ -125,7 +126,6 @@
 			top: 0;
 			left: 0;
 			font-size: 0.875rem;
-			color: var(--secondary-font-color);
 		}
 	}
 
@@ -137,9 +137,5 @@
 		right: 0;
 		left: 3rem;
 		position: absolute;
-	}
-
-	.no-events {
-		color: var(--secondary-font-color);
 	}
 </style>

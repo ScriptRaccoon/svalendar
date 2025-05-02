@@ -11,7 +11,7 @@
 </script>
 
 <div class="colors-container">
-	<span class="label">{label}</span>
+	<span class="secondary">{label}</span>
 	<div class="colors">
 		{#each EVENT_COLORS as color (color.id)}
 			<input
@@ -53,10 +53,6 @@
 		grid-template-columns: auto 1fr;
 		gap: 1rem;
 		margin-bottom: 1rem;
-
-		.label {
-			color: var(--secondary-font-color);
-		}
 	}
 
 	.colors {
