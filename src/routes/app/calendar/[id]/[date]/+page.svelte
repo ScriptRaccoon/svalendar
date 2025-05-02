@@ -68,8 +68,8 @@
 </header>
 
 {#if calendar.permission_level !== 'owner'}
-	<p class="rights secondary">
-		You have {calendar.permission_level} rights for this calendar.
+	<p class="permissions secondary">
+		You have {calendar.permission_level} permissions for this calendar.
 	</p>
 {/if}
 
@@ -165,7 +165,7 @@
 		}
 	}
 
-	.rights {
+	.permissions {
 		margin-top: -0.75rem;
 	}
 
