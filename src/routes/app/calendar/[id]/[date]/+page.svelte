@@ -69,7 +69,9 @@
 {/if}
 
 <header class="control-header">
-	<h3>{new Date(today).toLocaleDateString()}</h3>
+	<h3>
+		{format(today, 'EEEE, dd MMMM yyyy')}
+	</h3>
 	{#if events.length === 0}
 		<span class="secondary">No events for this day</span>
 	{/if}
