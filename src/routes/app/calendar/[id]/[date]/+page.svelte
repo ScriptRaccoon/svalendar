@@ -34,6 +34,13 @@
 	afterNavigate(() => {
 		scroll_to_first_event()
 	})
+
+	let new_event_url = $derived(
+		`/app/calendar/${calendar.id}/event/new` +
+			`?start_time=${today}T09:00` +
+			`&end_time=${today}T10:00` +
+			`&color=${calendar.default_color}`
+	)
 </script>
 
 <svelte:head>
@@ -53,11 +60,7 @@
 			/>
 		{/if}
 		{#if calendar.permission_level === 'owner' || calendar.permission_level === 'write'}
-			<IconLink
-				href="/app/calendar/{calendar.id}/event/new?date={today}&color={calendar.default_color}"
-				aria_label="New Event"
-				icon={faPlus}
-			/>
+			<IconLink href={new_event_url} aria_label="New Event" icon={faPlus} />
 		{/if}
 	</menu>
 </header>

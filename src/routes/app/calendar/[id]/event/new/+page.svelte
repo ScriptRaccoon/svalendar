@@ -3,8 +3,15 @@
 	import EventInput from '$lib/components/EventInput.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
+	import { getDate } from 'date-fns'
 
 	let { form, data } = $props()
+
+	let back_url = $derived(
+		data.start_time
+			? `/app/calendar/${data.calendar_id}/${getDate(data.start_time)}`
+			: `/app/calendar/${data.calendar_id}`
+	)
 </script>
 
 <svelte:head>
@@ -13,11 +20,7 @@
 
 <header>
 	<h2>New Event</h2>
-	<IconLink
-		href={`/app/calendar/${data.calendar_id}/${data.selected_date}`}
-		aria_label="back to calendar"
-		icon={faXmark}
-	/>
+	<IconLink href={back_url} aria_label="back to calendar" icon={faXmark} />
 </header>
 
 <form method="POST" use:enhance>
