@@ -15,37 +15,35 @@
 	<div class="colors">
 		{#each EVENT_COLORS as color (color.id)}
 			<input
-				id="c_{color.id}"
 				type="radio"
 				name="color"
 				value={color.id}
 				checked={color.id === current_color}
+				style:--color={color.value}
 				disabled={readonly}
 			/>
-			<label
-				class="color"
-				style:--color={color.value}
-				for="c_{color.id}"
-				aria-label={color.id}
-			></label>
 		{/each}
 	</div>
 </div>
 
 <style>
 	input[type='radio'] {
-		position: absolute;
-		left: -100vw;
-	}
+		appearance: none;
+		width: 1.5rem;
+		height: 1.5rem;
+		border-radius: 50%;
+		background-color: var(--color);
+		cursor: pointer;
 
-	input[type='radio']:checked + .color {
-		outline: 2px solid var(--outline-color);
-		outline-offset: 2px;
-	}
+		&:checked {
+			outline: 2px solid var(--outline-color);
+			outline-offset: 2px;
+		}
 
-	input[type='radio']:focus-visible + .color {
-		outline: 2px solid var(--font-color);
-		outline-offset: 2px;
+		&:focus-visible {
+			outline: 2px solid var(--font-color);
+			outline-offset: 2px;
+		}
 	}
 
 	.colors-container {
@@ -61,13 +59,5 @@
 		flex-wrap: wrap;
 		max-width: 26rem;
 		gap: 0.25rem;
-	}
-
-	.color {
-		width: 1.5rem;
-		height: 1.5rem;
-		border-radius: 50%;
-		background-color: var(--color);
-		cursor: pointer;
 	}
 </style>
