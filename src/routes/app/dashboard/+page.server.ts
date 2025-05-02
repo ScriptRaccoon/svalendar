@@ -1,6 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
-import { db, query } from '$lib/server/db'
+import { db, query, tx_query } from '$lib/server/db'
 import type { Calendar } from '$lib/server/types'
 import { DEFAULT_COLOR } from '$lib/config'
 import sql from 'sql-template-tag'
@@ -75,20 +75,14 @@ export const actions: Actions = {
 			INSERT INTO calendars (id, name, default_color)
 			VALUES (${calendar_id}, ${name}, ${DEFAULT_COLOR})`
 
-			await tx.execute({
-				sql: insert_query.sql,
-				args: insert_query.values as any[]
-			})
+			await tx_query(tx, insert_query)
 
 			const owner_query = sql`
 			INSERT INTO calendar_permissions
 			(calendar_id, user_id, permission_level, approved_at, revokable)
 			VALUES (${calendar_id}, ${user.id}, 'owner', CURRENT_TIMESTAMP, FALSE)`
 
-			await tx.execute({
-				sql: owner_query.sql,
-				args: owner_query.values as any[]
-			})
+			await tx_query(tx, owner_query)
 
 			await tx.commit()
 			tx.close()

@@ -1,6 +1,6 @@
 import type { Actions } from './$types'
 import { fail } from '@sveltejs/kit'
-import { db } from '$lib/server/db'
+import { db, tx_query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import { name_schema, password_schema } from '$lib/server/schemas'
 import { DEFAULT_COLOR } from '$lib/config'
@@ -48,14 +48,11 @@ export const actions: Actions = {
 			VALUES (${name}, ${password_hash})
 			RETURNING id`
 
-			const { rows: users } = await tx.execute({
-				sql: user_query.sql,
-				args: user_query.values as any[]
-			})
+			const users = await tx_query<{ id: number }>(tx, user_query)
 
 			if (!users.length) throw new Error('User not created.')
 
-			const user_id = users[0].id as number
+			const user_id = users[0].id
 
 			const calendar_id = await snowflake.generate()
 
@@ -63,30 +60,21 @@ export const actions: Actions = {
 			INSERT INTO calendars (id, name, default_color)
 			VALUES (${calendar_id}, 'Default', ${DEFAULT_COLOR})`
 
-			await tx.execute({
-				sql: calendar_query.sql,
-				args: calendar_query.values as any[]
-			})
+			await tx_query(tx, calendar_query)
 
 			const owner_query = sql`
 			INSERT INTO calendar_permissions
 			(user_id, calendar_id, permission_level, approved_at, revokable)
 			VALUES (${user_id}, ${calendar_id}, 'owner', CURRENT_TIMESTAMP, FALSE)`
 
-			await tx.execute({
-				sql: owner_query.sql,
-				args: owner_query.values as any[]
-			})
+			await tx_query(tx, owner_query)
 
 			const default_calendar_query = sql`
 			UPDATE users
 			SET default_calendar_id = ${calendar_id}
 			WHERE id = ${user_id}`
 
-			await tx.execute({
-				sql: default_calendar_query.sql,
-				args: default_calendar_query.values as any[]
-			})
+			await tx_query(tx, default_calendar_query)
 
 			await tx.commit()
 			tx.close()
