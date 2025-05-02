@@ -96,13 +96,23 @@
 
 <div class="day">
 	{#each { length: 24 } as _, hour}
-		<a
-			class="hour-block"
-			href={new_event_url(hour)}
-			aria-label="create new event for hour {hour}"
-		>
-			<span class="time secondary">{hour.toString().padStart(2, '0') + ':00'}</span>
-		</a>
+		{#if calendar.permission_level === 'owner' || calendar.permission_level === 'write'}
+			<a
+				class="hour-block"
+				href={new_event_url(hour)}
+				aria-label="create new event for hour {hour}"
+			>
+				<span class="time secondary"
+					>{hour.toString().padStart(2, '0') + ':00'}</span
+				>
+			</a>
+		{:else}
+			<div class="hour-block">
+				<span class="time secondary"
+					>{hour.toString().padStart(2, '0') + ':00'}</span
+				>
+			</div>
+		{/if}
 	{/each}
 	{#each events as event, index (event.id)}
 		{#if index === 0}
