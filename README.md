@@ -17,3 +17,7 @@ Svalendar is a calendar application for managing events and schedules.
 - **Framework**: Built with [SvelteKit](https://kit.svelte.dev). Hence, the name _Svalendar_.
 - **Database**: Uses SQLite for data storage.
 - **Authentication**: Self-made authentication system for user management.
+
+## Favicon Source
+
+<https://loading.io/icon/cgof25>
