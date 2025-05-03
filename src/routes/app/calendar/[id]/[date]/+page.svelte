@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { afterNavigate } from '$app/navigation'
 	import EventPreview from '$lib/components/EventPreview.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import type { Calendar, CalendarEvent } from '$lib/server/types'
@@ -29,18 +28,6 @@
 		const [end_hour, end_minute] = end_time.split(':').map(Number)
 		return end_hour - start_hour + (end_minute - start_minute) / 60
 	}
-
-	let first_event_element = $state<HTMLElement | null>(null)
-
-	function scroll_to_first_event() {
-		first_event_element?.scrollIntoView({
-			block: 'center'
-		})
-	}
-
-	afterNavigate(() => {
-		scroll_to_first_event()
-	})
 
 	const new_event_url = (hour: number) => {
 		return (
@@ -119,25 +106,14 @@
 			</div>
 		{/if}
 	{/each}
-	{#each events as event, index (event.id)}
-		{#if index === 0}
-			<div
-				class="positioner"
-				style:--hours-start={get_hours(event.start_time)}
-				style:--hours-diff={get_hours_diff(event.start_time, event.end_time)}
-				bind:this={first_event_element}
-			>
-				<EventPreview {event} />
-			</div>
-		{:else}
-			<div
-				class="positioner"
-				style:--hours-start={get_hours(event.start_time)}
-				style:--hours-diff={get_hours_diff(event.start_time, event.end_time)}
-			>
-				<EventPreview {event} />
-			</div>
-		{/if}
+	{#each events as event (event.id)}
+		<div
+			class="positioner"
+			style:--hours-start={get_hours(event.start_time)}
+			style:--hours-diff={get_hours_diff(event.start_time, event.end_time)}
+		>
+			<EventPreview {event} />
+		</div>
 	{/each}
 </div>
 
