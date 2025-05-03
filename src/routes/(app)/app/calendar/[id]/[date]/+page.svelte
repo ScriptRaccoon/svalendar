@@ -175,7 +175,7 @@
 
 	.positioner {
 		top: calc(var(--hours-start) * var(--unit));
-		height: calc(var(--hours-diff) * var(--unit));
+		height: max(2.5rem, calc(var(--hours-diff) * var(--unit)));
 		translate: 0 1px;
 		overflow: hidden;
 		right: 0;
