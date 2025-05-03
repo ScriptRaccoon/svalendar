@@ -10,8 +10,9 @@
 	"location_encrypted": "LCLdjshpaN+zOhiz",
 	"location_iv": "TYFekQWowbmhrcB+",
 	"location_tag": "wn1UWoZjsd2XZl6FpHG2Iw==",
-	"start_time": "2025-04-26T18:00",
-	"end_time": "2025-04-26T18:30",
+	"event_date": "2025-04-26",
+	"start_time": "18:00",
+	"end_time": "18:30",
 	"created_at": "2025-04-25 12:11:36",
 	"color": "red"
 }
