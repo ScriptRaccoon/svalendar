@@ -3,7 +3,6 @@
 	import type { CalendarEvent } from '$lib/server/types'
 	import { faClockFour } from '@fortawesome/free-regular-svg-icons'
 	import { faLocationDot } from '@fortawesome/free-solid-svg-icons'
-	import { format } from 'date-fns'
 	import Fa from 'svelte-fa'
 
 	type Props = {
@@ -31,8 +30,8 @@
 	</div>
 	<div class="time">
 		<Fa icon={faClockFour} />
-		{format(event.start_time, 'HH:mm')} &ndash;
-		{format(event.end_time, 'HH:mm')}
+		{event.start_time} &ndash;
+		{event.end_time}
 	</div>
 </a>
 

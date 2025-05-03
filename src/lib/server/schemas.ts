@@ -33,10 +33,21 @@ export const password_schema = z
 		message: 'Password must contain at least one letter.'
 	})
 
-// don't use Zod's .datetime() because that expects seconds
-export const datetime_schema = z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, {
-	message: 'Invalid datetime format (expected YYYY-MM-DDTHH:MM)'
-})
+export const date_schema = z
+	.string({
+		required_error: 'Date is required.',
+		invalid_type_error: 'Date must be a string.'
+	})
+	.date('Invalid date format. Expected YYYY-MM-DD.')
+
+export const time_schema = z
+	.string({
+		required_error: 'Time is required.',
+		invalid_type_error: 'Time must be a string.'
+	})
+	.regex(/^\d{2}:\d{2}$/, {
+		message: 'Invalid time format. Expected HH:MM.'
+	})
 
 export function get_error_messages(error: ZodError): string {
 	return error.errors.map((err) => err.message).join(' ')

@@ -4,9 +4,10 @@
 	type Props = {
 		title: string
 		description: string
+		location: string
 		start_time: string
 		end_time: string
-		location: string
+		date: string
 		color: string
 		readonly: boolean
 	}
@@ -14,9 +15,10 @@
 	let {
 		title,
 		description,
+		location,
 		start_time,
 		end_time,
-		location,
+		date,
 		color: current_color,
 		readonly
 	}: Props = $props()
@@ -33,9 +35,14 @@
 </div>
 
 <div class="input-group">
+	<label for="date">Date*</label>
+	<input type="date" id="date" name="date" value={date} {readonly} />
+</div>
+
+<div class="input-group">
 	<label for="start_time">Start Time*</label>
 	<input
-		type="datetime-local"
+		type="time"
 		id="start_time"
 		name="start_time"
 		value={start_time}
@@ -47,7 +54,7 @@
 <div class="input-group">
 	<label for="end_time">End Time*</label>
 	<input
-		type="datetime-local"
+		type="time"
 		id="end_time"
 		name="end_time"
 		value={end_time}

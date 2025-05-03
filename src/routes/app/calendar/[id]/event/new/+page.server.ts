@@ -1,7 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
-import { format } from 'date-fns'
 import { encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
 import { get_validated_event } from '$lib/server/events'
@@ -21,9 +20,10 @@ export const load: PageServerLoad = async (event) => {
 
 	const start_time = event.url.searchParams.get('start_time')
 	const end_time = event.url.searchParams.get('end_time')
+	const date = event.url.searchParams.get('date')
 	const color = event.url.searchParams.get('color')
 
-	return { calendar_id, start_time, end_time, color }
+	return { calendar_id, start_time, end_time, date, color }
 }
 
 export const actions: Actions = {
@@ -61,7 +61,7 @@ export const actions: Actions = {
 			title_encrypted, title_iv, title_tag,
 			description_encrypted, description_iv, description_tag,		
 			location_encrypted, location_iv, location_tag,
-			start_time, end_time, color)
+			start_time, end_time, event_date, color)
         VALUES
             (${event_id}, ${calendar_id},
 			${encrypted_title_data.data},
@@ -73,12 +73,14 @@ export const actions: Actions = {
 			${encrypted_location_data.data},
 			${encrypted_location_data.iv},
 			${encrypted_location_data.tag},
-			${fields.start_time}, ${fields.end_time}, ${fields.color})`
+			${fields.start_time},
+			${fields.end_time},
+			${fields.date},
+			${fields.color})`
 
 		const { err } = await query(insert_query)
 		if (err) return fail(500, { error: 'Database error.', ...fields })
 
-		const date = format(fields.start_time, 'yyyy-MM-dd')
-		redirect(302, `/app/calendar/${calendar_id}/${date}`)
+		redirect(302, `/app/calendar/${calendar_id}/${fields.date}`)
 	}
 }

@@ -1,10 +1,9 @@
 import { COLOR_IDS, MINIMAL_EVENT_DURATION } from '$lib/config'
 import sql from 'sql-template-tag'
-import { datetime_schema } from './schemas'
+import { date_schema, time_schema, get_error_messages } from './schemas'
 import { query } from './db'
 import type { CalendarEvent, CalendarEventEncrypted, EventTitleEncrypted } from './types'
 import { decrypt } from './encryption'
-import { format } from 'date-fns'
 
 export async function get_validated_event(
 	form_data: FormData,
@@ -15,6 +14,7 @@ export async function get_validated_event(
 	const description = form_data.get('description') as string
 	const start_time = form_data.get('start_time') as string
 	const end_time = form_data.get('end_time') as string
+	const date = form_data.get('date') as string
 	const location = form_data.get('location') as string
 	const color = form_data.get('color') as string | null
 
@@ -23,45 +23,57 @@ export async function get_validated_event(
 		description,
 		start_time,
 		end_time,
+		date,
 		location,
 		color
 	}
 
-	if (!title || !start_time || !end_time || !color) {
+	if (!title || !start_time || !end_time || !date || !color) {
 		return { status: 400, error_message: 'Fill in the required fields.', fields }
 	}
 
-	if (!datetime_schema.safeParse(start_time).success) {
-		return { status: 400, error_message: 'Invalid start time.', fields }
-	}
-
-	if (!datetime_schema.safeParse(end_time).success) {
-		return { status: 400, error_message: 'Invalid end time.', fields }
-	}
-
-	const start_time_ms = new Date(start_time).getTime()
-	const end_time_ms = new Date(end_time).getTime()
-
-	if (format(start_time_ms, 'yyyy-MM-dd') !== format(end_time_ms, 'yyyy-MM-dd')) {
+	const date_validation = date_schema.safeParse(date)
+	if (!date_validation.success) {
 		return {
 			status: 400,
-			error_message: 'Start and end time must be on the same day.',
+			error_message: get_error_messages(date_validation.error),
 			fields
 		}
 	}
 
-	if (start_time_ms >= end_time_ms) {
+	const start_time_validation = time_schema.safeParse(start_time)
+	if (!start_time_validation.success) {
 		return {
 			status: 400,
-			error_message: 'End time must be after start time.',
+			error_message: get_error_messages(start_time_validation.error),
+			fields
+		}
+	}
+	const end_time_validation = time_schema.safeParse(end_time)
+	if (!end_time_validation.success) {
+		return {
+			status: 400,
+			error_message: get_error_messages(end_time_validation.error),
 			fields
 		}
 	}
 
-	if (end_time_ms - start_time_ms < MINIMAL_EVENT_DURATION * 60 * 1000) {
+	if (start_time >= end_time) {
 		return {
 			status: 400,
-			error_message: `Event duration must be at least ${MINIMAL_EVENT_DURATION} minutes.`,
+			error_message: 'Start time must be before end time.',
+			fields
+		}
+	}
+
+	const start_time_date = new Date(`${date}T${start_time}`)
+	const end_time_date = new Date(`${date}T${end_time}`)
+	const duration = end_time_date.getTime() - start_time_date.getTime()
+
+	if (duration < MINIMAL_EVENT_DURATION * 60 * 1000) {
+		return {
+			status: 400,
+			error_message: `Event must be at least ${MINIMAL_EVENT_DURATION} minutes long.`,
 			fields
 		}
 	}
@@ -77,6 +89,7 @@ export async function get_validated_event(
         events
     WHERE
         calendar_id = ${calendar_id}
+		AND event_date = ${date}
         AND end_time > ${start_time}
         AND start_time < ${end_time}
 		AND (${event_id} IS NULL OR id != ${event_id})
@@ -109,7 +122,7 @@ export async function get_validated_event(
 }
 
 export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarEvent {
-	const { id, calendar_id, start_time, end_time, start_date, end_date, color } = event
+	const { id, calendar_id, start_time, end_time, event_date, color } = event
 
 	const title = decrypt({
 		data: event.title_encrypted,
@@ -134,8 +147,7 @@ export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarE
 		calendar_id,
 		start_time,
 		end_time,
-		start_date,
-		end_date,
+		event_date,
 		color,
 		title,
 		description,

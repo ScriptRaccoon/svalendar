@@ -28,8 +28,7 @@ export type CalendarEvent = {
 	location: string
 	start_time: string
 	end_time: string
-	start_date: string
-	end_date: string
+	event_date: string
 	color: string
 }
 
@@ -47,8 +46,7 @@ export type CalendarEventEncrypted = {
 	location_tag: string
 	start_time: string
 	end_time: string
-	start_date: string
-	end_date: string
+	event_date: string
 	color: string
 }
 

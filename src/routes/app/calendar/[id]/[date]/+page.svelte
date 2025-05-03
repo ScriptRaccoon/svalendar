@@ -9,7 +9,7 @@
 		faCog,
 		faPlus
 	} from '@fortawesome/free-solid-svg-icons'
-	import { format, addDays, getHours, getMinutes, differenceInMinutes } from 'date-fns'
+	import { format, addDays } from 'date-fns'
 
 	let { data } = $props()
 
@@ -19,8 +19,15 @@
 	let tomorrow = $derived(format(addDays(today, 1), 'yyyy-MM-dd'))
 	let yesterday = $derived(format(addDays(today, -1), 'yyyy-MM-dd'))
 
-	function get_hours(datetime: string) {
-		return getHours(datetime) + getMinutes(datetime) / 60
+	function get_hours(time: string) {
+		const [hour, minute] = time.split(':').map(Number)
+		return hour + minute / 60
+	}
+
+	function get_hours_diff(start_time: string, end_time: string) {
+		const [start_hour, start_minute] = start_time.split(':').map(Number)
+		const [end_hour, end_minute] = end_time.split(':').map(Number)
+		return end_hour - start_hour + (end_minute - start_minute) / 60
 	}
 
 	let first_event_element = $state<HTMLElement | null>(null)
@@ -38,8 +45,9 @@
 	const new_event_url = (hour: number) => {
 		return (
 			`/app/calendar/${calendar.id}/event/new` +
-			`?start_time=${today}T${hour.toString().padStart(2, '0')}:00` +
-			`&end_time=${today}T${(hour + 1).toString().padStart(2, '0')}:00` +
+			`?start_time=${hour.toString().padStart(2, '0')}:00` +
+			`&end_time=${(hour + 1).toString().padStart(2, '0')}:00` +
+			`&date=${today}` +
 			`&color=${calendar.default_color}`
 		)
 	}
@@ -119,8 +127,7 @@
 			<div
 				class="positioner"
 				style:--hours-start={get_hours(event.start_time)}
-				style:--hours-diff={(1 / 60) *
-					differenceInMinutes(event.end_time, event.start_time)}
+				style:--hours-diff={get_hours_diff(event.start_time, event.end_time)}
 				bind:this={first_event_element}
 			>
 				<EventPreview {event} />
@@ -129,8 +136,7 @@
 			<div
 				class="positioner"
 				style:--hours-start={get_hours(event.start_time)}
-				style:--hours-diff={(1 / 60) *
-					differenceInMinutes(event.end_time, event.start_time)}
+				style:--hours-diff={get_hours_diff(event.start_time, event.end_time)}
 			>
 				<EventPreview {event} />
 			</div>

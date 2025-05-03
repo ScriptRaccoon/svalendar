@@ -19,7 +19,7 @@
 <header>
 	<h2>{title}</h2>
 	<IconLink
-		href={`/app/calendar/${event.calendar_id}/${event.start_date}`}
+		href={`/app/calendar/${event.calendar_id}/${event.event_date}`}
 		aria_label="back to calendar"
 		icon={faXmark}
 	/>
@@ -31,6 +31,7 @@
 		description={form?.description ?? event.description}
 		start_time={form?.start_time ?? event.start_time}
 		end_time={form?.end_time ?? event.end_time}
+		date={form?.date ?? event.event_date}
 		location={form?.location ?? event.location}
 		color={form?.color ?? event.color}
 		readonly={data.permission_level === 'read'}

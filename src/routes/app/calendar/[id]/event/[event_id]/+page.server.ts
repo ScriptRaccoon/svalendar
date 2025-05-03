@@ -5,7 +5,6 @@ import type { CalendarEventEncrypted } from '$lib/server/types'
 import type { Actions } from './$types'
 import { fail } from '@sveltejs/kit'
 import { redirect } from '@sveltejs/kit'
-import { format } from 'date-fns'
 import { encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
 import { decrypt_calendar_event, get_validated_event } from '$lib/server/events'
@@ -29,9 +28,7 @@ export const load: PageServerLoad = async (event) => {
 		title_encrypted, title_iv, title_tag,
 		description_encrypted, description_iv, description_tag,
 		location_encrypted, location_iv, location_tag,
-		start_time, end_time,
-		start_date, end_date,
-		color
+		start_time, end_time, event_date, color
     FROM
         events
     WHERE
@@ -90,6 +87,7 @@ export const actions: Actions = {
 				location_tag = ${encrypted_location.tag},
                 start_time = ${fields.start_time},
                 end_time = ${fields.end_time},
+				event_date = ${fields.date},
                 color = ${fields.color}
         WHERE
             id = ${event_id}
@@ -98,8 +96,7 @@ export const actions: Actions = {
 		const { err } = await query(events_query)
 		if (err) return fail(500, { error: 'Database error.', ...fields })
 
-		const date = format(fields.start_time, 'yyyy-MM-dd')
-		redirect(302, `/app/calendar/${calendar_id}/${date}`)
+		redirect(302, `/app/calendar/${calendar_id}/${fields.date}`)
 	},
 
 	delete: async (event) => {
@@ -122,8 +119,8 @@ export const actions: Actions = {
 		if (err) return fail(500, { error: 'Database error.' })
 
 		const form_data = await event.request.formData()
-		const start_time = form_data.get('start_time') as string
-		const date = format(start_time, 'yyyy-MM-dd')
+		const date = form_data.get('date')
+
 		redirect(302, `/app/calendar/${calendar_id}/${date}`)
 	}
 }
