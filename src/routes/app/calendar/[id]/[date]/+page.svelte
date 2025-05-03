@@ -85,9 +85,6 @@
 	<h3>
 		{format(today, 'EEEE, dd MMMM yyyy')}
 	</h3>
-	{#if events.length === 0}
-		<span class="secondary">No events for this day</span>
-	{/if}
 	<menu>
 		<IconLink
 			href="/app/calendar/{calendar.id}/{yesterday}"
@@ -155,7 +152,6 @@
 	header menu {
 		display: flex;
 		gap: 0.5rem;
-		margin-left: auto;
 	}
 
 	.control-header {
