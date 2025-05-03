@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
+	import { goto } from '$app/navigation'
 	import EventInput from '$lib/components/EventInput.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
@@ -44,6 +45,14 @@
 			<button class="button danger" type="submit" formaction="?/delete"
 				>Delete Event</button
 			>
+			<button
+				class="button"
+				type="button"
+				onclick={() =>
+					goto(`/app/calendar/${event.calendar_id}/${event.event_date}`)}
+			>
+				Cancel
+			</button>
 			<button class="button" type="submit">Save</button>
 		</menu>
 	{/if}
@@ -57,5 +66,10 @@
 	menu {
 		display: flex;
 		justify-content: space-between;
+		gap: 1rem;
+
+		.button.danger {
+			margin-right: auto;
+		}
 	}
 </style>

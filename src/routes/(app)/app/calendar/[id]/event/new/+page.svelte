@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
+	import { goto } from '$app/navigation'
 	import EventInput from '$lib/components/EventInput.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
@@ -36,9 +37,21 @@
 		readonly={false}
 	/>
 
-	<button class="button" type="submit">Create Event</button>
+	<menu>
+		<button class="button" type="button" onclick={() => goto(back_url)}>
+			Cancel
+		</button>
+		<button class="button" type="submit">Create Event</button>
+	</menu>
 </form>
 
 {#if form?.error}
 	<p class="error">{form.error}</p>
 {/if}
+
+<style>
+	menu {
+		display: flex;
+		justify-content: space-between;
+	}
+</style>

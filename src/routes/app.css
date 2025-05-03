@@ -120,6 +120,7 @@ button:focus-visible {
 	color: white;
 	padding: 0.15rem 0.6rem;
 	border-radius: 0.25rem;
+	white-space: nowrap;
 
 	&.danger {
 		background-color: var(--button-danger-color);
