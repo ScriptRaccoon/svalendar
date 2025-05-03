@@ -85,7 +85,13 @@
 
 <section class="card">
 	<h2>Appearance</h2>
-	<button class="button" onclick={theme.toggle}>Toggle Theme</button>
+	<button class="button" onclick={theme.toggle}>
+		{#if theme.value === 'dark'}
+			Switch to Light Mode
+		{:else}
+			Switch to Dark Mode
+		{/if}
+	</button>
 </section>
 
 <section class="card">
