@@ -1,6 +1,7 @@
 <script lang="ts">
 	import EventPreview from '$lib/components/EventPreview.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
+	import { PERMISSION_ICONS } from '$lib/config'
 	import type { Calendar, CalendarEvent } from '$lib/server/types'
 	import {
 		faCaretLeft,
@@ -9,6 +10,7 @@
 		faPlus
 	} from '@fortawesome/free-solid-svg-icons'
 	import { format, addDays } from 'date-fns'
+	import Fa from 'svelte-fa'
 
 	let { data } = $props()
 
@@ -45,7 +47,10 @@
 </svelte:head>
 
 <header>
-	<h2>Calendar {calendar.name}</h2>
+	<h2>
+		<Fa icon={PERMISSION_ICONS[calendar.permission_level]} />
+		{calendar.name}
+	</h2>
 
 	<menu>
 		{#if calendar.permission_level === 'owner'}
@@ -60,12 +65,6 @@
 			<IconLink href={new_event_url(9)} aria_label="New Event" icon={faPlus} />
 		{/if}
 	</menu>
-
-	{#if calendar.permission_level !== 'owner'}
-		<p class="permissions secondary">
-			You have {calendar.permission_level} permissions for this calendar.
-		</p>
-	{/if}
 </header>
 
 <header class="day-header">
