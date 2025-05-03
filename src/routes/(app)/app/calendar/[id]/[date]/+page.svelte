@@ -60,7 +60,7 @@
 	<header class="app-header">
 		<h1>
 			<Fa icon={PERMISSION_ICONS[calendar.permission_level]} />
-			{calendar.name}
+			<span class="calendar_name">{calendar.name}</span>
 		</h1>
 
 		<menu class="menu">
@@ -141,6 +141,10 @@
 		top: 0;
 		z-index: 10;
 		background-color: var(--bg-color);
+	}
+
+	.calendar_name {
+		margin-left: 0.4rem;
 	}
 
 	.day {
