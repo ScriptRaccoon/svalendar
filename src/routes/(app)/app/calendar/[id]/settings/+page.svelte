@@ -22,17 +22,19 @@
 	<title>Calendar Settings</title>
 </svelte:head>
 
-<header>
-	<h2>Calendar Settings</h2>
-	<IconLink
-		href={`/app/calendar/${calendar.id}`}
-		aria_label="back to calendar"
-		icon={faXmark}
-	/>
+<header class="app-header">
+	<h1>Calendar Settings</h1>
+	<menu class="menu">
+		<IconLink
+			href={`/app/calendar/${calendar.id}`}
+			aria_label="back to calendar"
+			icon={faXmark}
+		/>
+	</menu>
 </header>
 
 <section class="card">
-	<h3>Appearance</h3>
+	<h2>Appearance</h2>
 
 	<!-- don't work with use:enhance since it is buggy -->
 	<form method="POST" action="?/edit">
@@ -60,7 +62,7 @@
 </section>
 
 <section class="card">
-	<h3>Default Calendar</h3>
+	<h2>Default Calendar</h2>
 	<p>Set a calendar as default so that it is selected by default when you log in.</p>
 	<form method="POST" action="?/set_default" use:enhance>
 		<button class="button">Set Default</button>
@@ -76,7 +78,7 @@
 </section>
 
 <section class="card">
-	<h3>Sharing</h3>
+	<h2>Sharing</h2>
 	<p>Share your calendar with other users to collaborate.</p>
 	<form action="?/share" method="POST" use:enhance>
 		<div class="input-group">
@@ -128,7 +130,7 @@
 </section>
 
 <section class="card">
-	<h3>Danger Zone</h3>
+	<h2>Danger Zone</h2>
 
 	<form method="POST" action="?/delete" use:enhance>
 		{#if confirm_deletion}
@@ -153,12 +155,6 @@
 </section>
 
 <style>
-	header {
-		display: flex;
-		justify-content: space-between;
-		align-items: start;
-	}
-
 	.share {
 		display: flex;
 		justify-content: space-between;

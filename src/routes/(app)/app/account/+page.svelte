@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
+	import IconLink from '$lib/components/IconLink.svelte'
 	import { theme } from '$lib/states.svelte'
+	import { faList, faSignOut } from '@fortawesome/free-solid-svg-icons'
 
 	let { data, form } = $props()
 
@@ -19,10 +21,16 @@
 	<title>Account</title>
 </svelte:head>
 
-<h2>Account</h2>
+<header class="app-header">
+	<h1>Account</h1>
+	<menu class="menu">
+		<IconLink href="/app/dashboard" icon={faList} aria_label="Dashboard" />
+		<IconLink href="/app/logout" icon={faSignOut} aria_label="Logout" preload="off" />
+	</menu>
+</header>
 
 <section class="card">
-	<h3>Account Details</h3>
+	<h2>Account Details</h2>
 
 	<form method="POST" action="?/name" use:enhance>
 		<div class="input-group">
@@ -76,12 +84,12 @@
 </section>
 
 <section class="card">
-	<h3>Appearance</h3>
+	<h2>Appearance</h2>
 	<button class="button" onclick={theme.toggle}>Toggle Theme</button>
 </section>
 
 <section class="card">
-	<h3>My Data</h3>
+	<h2>My Data</h2>
 	<p>
 		To download your data in JSON format, follow
 		<a href="/app/account/mydata">this link</a>.
@@ -89,7 +97,7 @@
 </section>
 
 <section class="card">
-	<h3>Danger Zone</h3>
+	<h2>Danger Zone</h2>
 
 	<form method="POST" action="?/delete" use:enhance>
 		<div>

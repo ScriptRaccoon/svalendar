@@ -8,7 +8,7 @@
 	<title>Login</title>
 </svelte:head>
 
-<h2>Login</h2>
+<h2 class="large">Login</h2>
 
 <p class="secondary">
 	Please enter your credentials to log in. If you don't have an account yet,

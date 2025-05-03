@@ -6,9 +6,8 @@
 	<title>Svalendar</title>
 </svelte:head>
 
-<h2>Welcome to Svalendar</h2>
-
 <section aria-label="introduction">
+	<h2 class="large">Welcome to Svalendar</h2>
 	<p>
 		Svalendar is an open-source calendar app designed to help you organize your life.
 		It provides a simple and privacy-focused way to manage your schedule across
@@ -17,7 +16,7 @@
 </section>
 
 <section>
-	<h3>Features</h3>
+	<h2 class="large">Features</h2>
 
 	<ul class="list">
 		<li>
@@ -52,7 +51,7 @@
 </section>
 
 <section>
-	<h3>Privacy and Simplicity</h3>
+	<h2 class="large">Privacy and Simplicity</h2>
 
 	<p>
 		The app avoids third-party integrations and unnecessary client-side JavaScript,
@@ -62,7 +61,7 @@
 </section>
 
 <section>
-	<h3>Data Security</h3>
+	<h2 class="large">Data Security</h2>
 
 	<p>
 		The titles, descriptions, and locations of all calendar events are encrypted in
@@ -85,7 +84,7 @@
 </section>
 
 <section>
-	<h3>Technology</h3>
+	<h2 class="large">Technology</h2>
 
 	<p>
 		This app is built with <strong>SvelteKit</strong>, a modern framework for creating
@@ -96,7 +95,7 @@
 </section>
 
 <section>
-	<h3>Get Started</h3>
+	<h2 class="large">Get Started</h2>
 
 	<p>
 		You can <a href="/register">register</a> to create an account and start organizing

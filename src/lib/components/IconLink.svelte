@@ -8,12 +8,13 @@
 		aria_label: string
 		icon: IconSolid | IconRegular
 		scale?: number
+		preload?: 'hover' | 'tap' | 'off'
 	}
 
-	let { href, aria_label, icon, scale = 1.25 }: Props = $props()
+	let { href, aria_label, icon, scale = 1.125, preload = 'hover' }: Props = $props()
 </script>
 
-<a {href} aria-label={aria_label}>
+<a {href} aria-label={aria_label} data-sveltekit-preload-data={preload}>
 	<Fa {icon} {scale} />
 </a>
 

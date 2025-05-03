@@ -17,9 +17,11 @@
 	<title>New Event</title>
 </svelte:head>
 
-<header>
-	<h2>New Event</h2>
-	<IconLink href={back_url} aria_label="back to calendar" icon={faXmark} />
+<header class="app-header">
+	<h1>New Event</h1>
+	<menu class="menu">
+		<IconLink href={back_url} aria_label="back to calendar" icon={faXmark} />
+	</menu>
 </header>
 
 <form method="POST" use:enhance>
@@ -42,11 +44,3 @@
 {#if form?.error}
 	<p class="error">{form.error}</p>
 {/if}
-
-<style>
-	header {
-		display: flex;
-		justify-content: space-between;
-		align-items: start;
-	}
-</style>

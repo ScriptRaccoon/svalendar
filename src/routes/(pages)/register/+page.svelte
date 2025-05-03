@@ -8,7 +8,7 @@
 	<title>Register</title>
 </svelte:head>
 
-<h2>Register</h2>
+<h2 class="large">Register</h2>
 
 <p class="secondary">
 	Please choose a username and secure password to create an account. If you already have

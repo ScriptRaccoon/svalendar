@@ -16,13 +16,15 @@
 	<title>{title}</title>
 </svelte:head>
 
-<header>
-	<h2>{title}</h2>
-	<IconLink
-		href={`/app/calendar/${event.calendar_id}/${event.event_date}`}
-		aria_label="back to calendar"
-		icon={faXmark}
-	/>
+<header class="app-header">
+	<h1>{title}</h1>
+	<menu class="menu">
+		<IconLink
+			href={`/app/calendar/${event.calendar_id}/${event.event_date}`}
+			aria_label="back to calendar"
+			icon={faXmark}
+		/>
+	</menu>
 </header>
 
 <form method="POST" action="?/update" use:enhance>
@@ -54,10 +56,8 @@
 {/if}
 
 <style>
-	header,
 	menu {
 		display: flex;
 		justify-content: space-between;
-		align-items: start;
 	}
 </style>

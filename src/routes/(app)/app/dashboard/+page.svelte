@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
 	import IconButton from '$lib/components/IconButton.svelte'
+	import IconLink from '$lib/components/IconLink.svelte'
 	import { PERMISSION_ICONS } from '$lib/config'
-	import { faCheckCircle } from '@fortawesome/free-regular-svg-icons'
-	import { faXmark } from '@fortawesome/free-solid-svg-icons'
+	import { faCheckCircle, faUser } from '@fortawesome/free-regular-svg-icons'
+	import { faSignOut, faXmark } from '@fortawesome/free-solid-svg-icons'
 	import Fa from 'svelte-fa'
 
 	let { form, data } = $props()
@@ -13,13 +14,19 @@
 	<title>Dashboard</title>
 </svelte:head>
 
-<h2>Dashboard</h2>
+<header class="app-header">
+	<h1>Dashboard</h1>
+	<menu class="menu">
+		<IconLink href="/app/account" icon={faUser} aria_label="Account" />
+		<IconLink href="/app/logout" icon={faSignOut} aria_label="Logout" preload="off" />
+	</menu>
+</header>
 
 <p>Hey, {data.name}!</p>
 
 {#if data.pending_shares.length}
 	<section class="card">
-		<h3>Pending Share Offers</h3>
+		<h2>Pending Share Offers</h2>
 		<ul class="list no-bullets">
 			{#each data.pending_shares as calendar}
 				<li>
@@ -68,7 +75,7 @@
 {/if}
 
 <section class="card">
-	<h3>Calendars</h3>
+	<h2>Calendars</h2>
 	<ul class="list no-bullets">
 		{#each data.calendars as calendar}
 			<li>
@@ -104,7 +111,7 @@
 </section>
 
 <section class="card">
-	<h3>Create Calendar</h3>
+	<h2>Create Calendar</h2>
 	<form action="?/create_calendar" method="POST" use:enhance>
 		<div class="input-group">
 			<label for="name">Name</label>

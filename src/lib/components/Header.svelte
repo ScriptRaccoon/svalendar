@@ -1,32 +1,16 @@
-<script lang="ts">
-	import { page } from '$app/state'
-</script>
-
 <header>
 	<h1>Svalendar</h1>
 	<nav>
 		<ul>
-			{#if !page.data.user}
-				<li>
-					<a href="/">Home</a>
-				</li>
-				<li>
-					<a href="/register">Register</a>
-				</li>
-				<li>
-					<a href="/login">Login</a>
-				</li>
-			{:else}
-				<li>
-					<a href="/app/dashboard">Dashboard</a>
-				</li>
-				<li>
-					<a href="/app/account">Account</a>
-				</li>
-				<li>
-					<a href="/logout" data-sveltekit-preload-data="off">Logout</a>
-				</li>
-			{/if}
+			<li>
+				<a href="/">Home</a>
+			</li>
+			<li>
+				<a href="/register">Register</a>
+			</li>
+			<li>
+				<a href="/login">Login</a>
+			</li>
 		</ul>
 	</nav>
 </header>
