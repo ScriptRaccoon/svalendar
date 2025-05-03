@@ -47,47 +47,49 @@
 	<title>Calendar {calendar.name}</title>
 </svelte:head>
 
-<header class="app-header">
-	<h1>
-		<Fa icon={PERMISSION_ICONS[calendar.permission_level]} />
-		{calendar.name}
-	</h1>
+<div class="sticky">
+	<header class="app-header">
+		<h1>
+			<Fa icon={PERMISSION_ICONS[calendar.permission_level]} />
+			{calendar.name}
+		</h1>
 
-	<menu class="menu">
-		<IconLink href="/app/dashboard" icon={faList} aria_label="Dashboard" />
+		<menu class="menu">
+			<IconLink href="/app/dashboard" icon={faList} aria_label="Dashboard" />
 
-		{#if calendar.permission_level === 'owner'}
+			{#if calendar.permission_level === 'owner'}
+				<IconLink
+					href="/app/calendar/{calendar.id}/settings"
+					aria_label="Settings"
+					icon={faCog}
+					scale={1}
+				/>
+			{/if}
+
+			{#if calendar.permission_level === 'owner' || calendar.permission_level === 'write'}
+				<IconLink href={new_event_url(9)} aria_label="New Event" icon={faPlus} />
+			{/if}
+		</menu>
+	</header>
+
+	<header class="app-header">
+		<h2 class="no-margin">
+			{format(today, 'EEEE, dd MMMM yyyy')}
+		</h2>
+		<menu class="menu">
 			<IconLink
-				href="/app/calendar/{calendar.id}/settings"
-				aria_label="Settings"
-				icon={faCog}
-				scale={1}
+				href="/app/calendar/{calendar.id}/{yesterday}"
+				icon={faCaretLeft}
+				aria_label="yesterday"
 			/>
-		{/if}
-
-		{#if calendar.permission_level === 'owner' || calendar.permission_level === 'write'}
-			<IconLink href={new_event_url(9)} aria_label="New Event" icon={faPlus} />
-		{/if}
-	</menu>
-</header>
-
-<header class="app-header">
-	<h2 class="no-margin">
-		{format(today, 'EEEE, dd MMMM yyyy')}
-	</h2>
-	<menu class="menu">
-		<IconLink
-			href="/app/calendar/{calendar.id}/{yesterday}"
-			icon={faCaretLeft}
-			aria_label="yesterday"
-		/>
-		<IconLink
-			href="/app/calendar/{calendar.id}/{tomorrow}"
-			icon={faCaretRight}
-			aria_label="tomorrow"
-		/>
-	</menu>
-</header>
+			<IconLink
+				href="/app/calendar/{calendar.id}/{tomorrow}"
+				icon={faCaretRight}
+				aria_label="tomorrow"
+			/>
+		</menu>
+	</header>
+</div>
 
 <div class="day">
 	{#each { length: 24 } as _, hour}
@@ -121,6 +123,13 @@
 </div>
 
 <style>
+	.sticky {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+		background-color: var(--bg-color);
+	}
+
 	.day {
 		--unit: 6rem;
 		position: relative;
