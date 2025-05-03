@@ -131,12 +131,13 @@
 		{/if}
 	{/each}
 	{#each events as event (event.id)}
+		{@const hours_diff = get_hours_diff(event.start_time, event.end_time)}
 		<div
 			class="positioner"
 			style:--hours-start={get_hours(event.start_time)}
-			style:--hours-diff={get_hours_diff(event.start_time, event.end_time)}
+			style:--hours-diff={hours_diff}
 		>
-			<EventPreview {event} />
+			<EventPreview {event} {hours_diff} />
 		</div>
 	{/each}
 </div>
@@ -174,7 +175,7 @@
 
 	.positioner {
 		top: calc(var(--hours-start) * var(--unit));
-		height: max(4rem, calc(var(--hours-diff) * var(--unit)));
+		height: calc(var(--hours-diff) * var(--unit));
 		translate: 0 1px;
 		overflow: hidden;
 		right: 0;

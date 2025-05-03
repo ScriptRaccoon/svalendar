@@ -7,9 +7,10 @@
 
 	type Props = {
 		event: CalendarEvent
+		hours_diff: number
 	}
 
-	let { event }: Props = $props()
+	let { event, hours_diff }: Props = $props()
 </script>
 
 <a
@@ -28,11 +29,13 @@
 			</div>
 		{/if}
 	</div>
-	<div class="time">
-		<Fa icon={faClockFour} />
-		{event.start_time} &ndash;
-		{event.end_time}
-	</div>
+	{#if hours_diff >= 1}
+		<div class="time">
+			<Fa icon={faClockFour} />
+			{event.start_time} &ndash;
+			{event.end_time}
+		</div>
+	{/if}
 </a>
 
 <style>
