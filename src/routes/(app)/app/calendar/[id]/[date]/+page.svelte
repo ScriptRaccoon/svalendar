@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { afterNavigate } from '$app/navigation'
 	import EventPreview from '$lib/components/EventPreview.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import { PERMISSION_ICONS } from '$lib/config'
@@ -21,6 +22,8 @@
 	let tomorrow = $derived(format(addDays(today, 1), 'yyyy-MM-dd'))
 	let yesterday = $derived(format(addDays(today, -1), 'yyyy-MM-dd'))
 
+	const TIME_SLOT_HEIGHT = 70 // in pixels
+
 	function get_hours(time: string) {
 		const [hour, minute] = time.split(':').map(Number)
 		return hour + minute / 60
@@ -32,15 +35,21 @@
 		return end_hour - start_hour + (end_minute - start_minute) / 60
 	}
 
-	const new_event_url = (hour: number) => {
+	const new_event_url = (start_hour: number) => {
 		return (
 			`/app/calendar/${calendar.id}/event/new` +
-			`?start_time=${hour.toString().padStart(2, '0')}:00` +
-			`&end_time=${(hour + 1).toString().padStart(2, '0')}:00` +
+			`?start_time=${start_hour.toString().padStart(2, '0')}:00` +
+			`&end_time=${(start_hour + 1).toString().padStart(2, '0')}:00` +
 			`&date=${today}` +
 			`&color=${calendar.default_color}`
 		)
 	}
+
+	afterNavigate(() => {
+		window.scrollTo({
+			top: TIME_SLOT_HEIGHT * calendar.default_start_hour
+		})
+	})
 </script>
 
 <svelte:head>
@@ -67,7 +76,11 @@
 			{/if}
 
 			{#if calendar.permission_level === 'owner' || calendar.permission_level === 'write'}
-				<IconLink href={new_event_url(9)} aria_label="New Event" icon={faPlus} />
+				<IconLink
+					href={new_event_url(calendar.default_start_hour)}
+					aria_label="New Event"
+					icon={faPlus}
+				/>
 			{/if}
 		</menu>
 	</header>
@@ -91,7 +104,7 @@
 	</header>
 </div>
 
-<div class="day">
+<div class="day" style:--unit="{TIME_SLOT_HEIGHT}px">
 	{#each { length: 24 } as _, hour}
 		{#if calendar.permission_level === 'owner' || calendar.permission_level === 'write'}
 			<a
@@ -131,7 +144,6 @@
 	}
 
 	.day {
-		--unit: 4rem;
 		position: relative;
 	}
 

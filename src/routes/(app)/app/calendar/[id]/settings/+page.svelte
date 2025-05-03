@@ -43,6 +43,17 @@
 			<input type="text" id="name" name="name" required value={calendar.name} />
 		</div>
 
+		<div class="input-group">
+			<label for="default_start_hour">Default Start Hour</label>
+			<input
+				type="number"
+				name="default_start_hour"
+				id="default_start_hour"
+				required
+				value={calendar.default_start_hour}
+			/>
+		</div>
+
 		<ColorPicker
 			label="Default Color"
 			current_color={calendar.default_color}

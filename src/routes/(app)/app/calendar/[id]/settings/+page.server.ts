@@ -4,6 +4,7 @@ import { query } from '$lib/server/db'
 import type { Share, Calendar } from '$lib/server/types'
 import { COLOR_IDS } from '$lib/config'
 import sql from 'sql-template-tag'
+import { hour_schema } from '$lib/server/schemas'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -16,6 +17,7 @@ export const load: PageServerLoad = async (event) => {
         c.id,
 		c.name,
 		c.default_color,
+		c.default_start_hour,
 		cp.permission_level
     FROM
 		calendar_permissions cp
@@ -71,8 +73,17 @@ export const actions: Actions = {
 		const calendar_id = event.params.id
 		const name = form_data.get('name') as string | null
 		const default_color = form_data.get('color') as string | null
+		const default_start_hour = Number(form_data.get('default_start_hour'))
 
 		if (!name) return fail(400, { action: 'edit', error: 'Name is required.' })
+
+		if (!hour_schema.safeParse(default_start_hour).success) {
+			return fail(400, {
+				action: 'edit',
+				error: 'Invalid Start Hour'
+			})
+		}
+
 		if (!default_color)
 			return fail(400, { action: 'edit', error: 'Default Color is required.' })
 
@@ -81,9 +92,14 @@ export const actions: Actions = {
 		}
 
 		const update_query = sql`
-        UPDATE calendars
-        SET name = ${name}, default_color = ${default_color}
-        WHERE id = ${calendar_id}`
+        UPDATE
+			calendars
+        SET
+			name = ${name},
+			default_color = ${default_color},
+			default_start_hour = ${default_start_hour}
+        WHERE 
+			id = ${calendar_id}`
 
 		const { err } = await query(update_query)
 		if (err) return fail(500, { action: 'edit', error: 'Database error.' })

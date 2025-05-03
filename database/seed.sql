@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS calendars (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    default_color TEXT NOT NULL
+    default_color TEXT NOT NULL,
+    default_start_hour INTEGER DEFAULT 9
 );
 
 CREATE TABLE IF NOT EXISTS calendar_permissions (

@@ -8,6 +8,7 @@ export type Calendar = {
 	id: string
 	name: string
 	default_color: string
+	default_start_hour: number
 	permission_level: PermissionLevel
 }
 

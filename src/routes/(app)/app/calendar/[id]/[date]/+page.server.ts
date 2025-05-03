@@ -14,7 +14,11 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendars_query = sql`
 	SELECT
-		c.id, c.name, c.default_color, cp.permission_level
+		c.id,
+		c.name,
+		c.default_color,
+		c.default_start_hour,
+		cp.permission_level
 	FROM
 		calendar_permissions cp
 	INNER JOIN
