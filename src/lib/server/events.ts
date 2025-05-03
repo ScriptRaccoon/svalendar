@@ -4,6 +4,7 @@ import { datetime_schema } from './schemas'
 import { query } from './db'
 import type { CalendarEvent, CalendarEventEncrypted, EventTitleEncrypted } from './types'
 import { decrypt } from './encryption'
+import { format } from 'date-fns'
 
 export async function get_validated_event(
 	form_data: FormData,
@@ -40,6 +41,14 @@ export async function get_validated_event(
 
 	const start_time_ms = new Date(start_time).getTime()
 	const end_time_ms = new Date(end_time).getTime()
+
+	if (format(start_time_ms, 'yyyy-MM-dd') !== format(end_time_ms, 'yyyy-MM-dd')) {
+		return {
+			status: 400,
+			error_message: 'Start and end time must be on the same day.',
+			fields
+		}
+	}
 
 	if (start_time_ms >= end_time_ms) {
 		return {
