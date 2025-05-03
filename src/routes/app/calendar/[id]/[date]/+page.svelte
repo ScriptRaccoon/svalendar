@@ -138,10 +138,6 @@
 		padding-block: 1rem;
 	}
 
-	.permissions {
-		margin-top: -0.75rem;
-	}
-
 	.day {
 		--unit: 6rem;
 		position: relative;
