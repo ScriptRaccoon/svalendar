@@ -36,10 +36,16 @@
 	}
 
 	const new_event_url = (start_hour: number) => {
+		const start_time = `${start_hour.toString().padStart(2, '0')}:00`
+		const end_time =
+			start_hour === 23
+				? '23:59'
+				: `${(start_hour + 1).toString().padStart(2, '0')}:00`
+
 		return (
 			`/app/calendar/${calendar.id}/event/new` +
-			`?start_time=${start_hour.toString().padStart(2, '0')}:00` +
-			`&end_time=${(start_hour + 1).toString().padStart(2, '0')}:00` +
+			`?start_time=${start_time}` +
+			`&end_time=${end_time}` +
 			`&date=${today}` +
 			`&color=${calendar.default_color}`
 		)
