@@ -40,8 +40,6 @@
 	/>
 
 	{#if data.permission_level !== 'read'}
-		<p>Fields marked with * are required.</p>
-
 		<menu>
 			<button class="button danger" type="submit" formaction="?/delete"
 				>Delete Event</button

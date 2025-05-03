@@ -25,22 +25,24 @@
 </script>
 
 <div class="input-group">
-	<label for="title">Title*</label>
+	<label for="title">Title</label>
 	<input type="text" id="title" name="title" value={title} required {readonly} />
 </div>
 
 <div class="input-group">
-	<label for="description">Description</label>
+	<label for="description"
+		>Description <span class="smaller">&nbsp;(optional)</span></label
+	>
 	<textarea id="description" name="description" {readonly}>{description}</textarea>
 </div>
 
 <div class="input-group">
-	<label for="date">Date*</label>
+	<label for="date">Date</label>
 	<input type="date" id="date" name="date" value={date} {readonly} />
 </div>
 
 <div class="input-group">
-	<label for="start_time">Start Time*</label>
+	<label for="start_time">Start Time</label>
 	<input
 		type="time"
 		id="start_time"
@@ -52,7 +54,7 @@
 </div>
 
 <div class="input-group">
-	<label for="end_time">End Time*</label>
+	<label for="end_time">End Time</label>
 	<input
 		type="time"
 		id="end_time"
@@ -64,7 +66,7 @@
 </div>
 
 <div class="input-group">
-	<label for="location">Location</label>
+	<label for="location">Location <span class="smaller">&nbsp;(optional)</span></label>
 	<input type="text" id="location" name="location" value={location} {readonly} />
 </div>
 

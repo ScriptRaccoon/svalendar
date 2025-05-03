@@ -36,8 +36,6 @@
 		readonly={false}
 	/>
 
-	<p>Fields marked with * are required.</p>
-
 	<button class="button" type="submit">Create Event</button>
 </form>
 

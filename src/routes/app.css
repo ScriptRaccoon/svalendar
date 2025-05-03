@@ -207,3 +207,7 @@ pre {
 .no-margin {
 	margin: 0;
 }
+
+.smaller {
+	font-size: 0.825rem;
+}
