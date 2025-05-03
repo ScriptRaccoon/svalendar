@@ -131,7 +131,7 @@
 	}
 
 	.day {
-		--unit: 6rem;
+		--unit: 4rem;
 		position: relative;
 	}
 
