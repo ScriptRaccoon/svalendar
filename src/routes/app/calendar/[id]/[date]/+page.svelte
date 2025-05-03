@@ -60,15 +60,15 @@
 			<IconLink href={new_event_url(9)} aria_label="New Event" icon={faPlus} />
 		{/if}
 	</menu>
+
+	{#if calendar.permission_level !== 'owner'}
+		<p class="permissions secondary">
+			You have {calendar.permission_level} permissions for this calendar.
+		</p>
+	{/if}
 </header>
 
-{#if calendar.permission_level !== 'owner'}
-	<p class="permissions secondary">
-		You have {calendar.permission_level} permissions for this calendar.
-	</p>
-{/if}
-
-<header class="control-header">
+<header class="day-header">
 	<h3>
 		{format(today, 'EEEE, dd MMMM yyyy')}
 	</h3>
@@ -121,7 +121,7 @@
 	header {
 		display: flex;
 		justify-content: space-between;
-		align-items: start;
+		align-items: center;
 		gap: 1rem;
 	}
 
@@ -130,17 +130,13 @@
 		gap: 0.5rem;
 	}
 
-	.control-header {
-		position: sticky;
-		align-items: center;
-		top: 0;
-		z-index: 10;
-		padding-block: 0.25rem;
-		background-color: var(--bg-color);
+	header h2,
+	header h3 {
+		margin: 0;
+	}
 
-		h3 {
-			margin: 0;
-		}
+	.day-header {
+		padding-block: 1rem;
 	}
 
 	.permissions {
