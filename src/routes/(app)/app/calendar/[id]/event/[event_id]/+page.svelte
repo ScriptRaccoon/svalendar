@@ -43,10 +43,10 @@
 		<p>Fields marked with * are required.</p>
 
 		<menu>
-			<button class="button" type="submit">Update Event</button>
 			<button class="button danger" type="submit" formaction="?/delete"
 				>Delete Event</button
 			>
+			<button class="button" type="submit">Save</button>
 		</menu>
 	{/if}
 </form>
