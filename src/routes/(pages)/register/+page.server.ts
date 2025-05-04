@@ -1,6 +1,6 @@
 import type { Actions } from './$types'
 import { fail } from '@sveltejs/kit'
-import { db, tx_query } from '$lib/server/db'
+import { db } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import { name_schema, password_schema } from '$lib/server/schemas'
 import { DEFAULT_COLOR } from '$lib/config'
@@ -40,58 +40,32 @@ export const actions: Actions = {
 
 		const password_hash = await bcrypt.hash(password!, 10)
 
-		const tx = await db.transaction('write')
-
 		try {
-			const user_query = sql`
-			INSERT INTO users (name, password_hash)
-			VALUES (${name}, ${password_hash})
-			RETURNING id`
-
-			const users = await tx_query<{ id: number }>(tx, user_query)
-
-			if (!users.length) throw new Error('User not created.')
-
-			const user_id = users[0].id
-
+			const user_id = await snowflake.generate()
 			const calendar_id = await snowflake.generate()
 
+			const user_query = sql`
+			INSERT INTO users (id, name, password_hash)
+			VALUES (${user_id}, ${name}, ${password_hash})`
+
 			const calendar_query = sql`
-			INSERT INTO calendars (id, name, default_color)
-			VALUES (${calendar_id}, 'Default', ${DEFAULT_COLOR})`
+			INSERT INTO calendars
+				(id, name, user_id, default_color, is_default_calendar)
+			VALUES
+				(${calendar_id}, 'Default', ${user_id}, ${DEFAULT_COLOR}, TRUE)`
 
-			await tx_query(tx, calendar_query)
-
-			const owner_query = sql`
-			INSERT INTO calendar_permissions
-			(user_id, calendar_id, permission_level, approved_at, revokable)
-			VALUES (${user_id}, ${calendar_id}, 'owner', CURRENT_TIMESTAMP, FALSE)`
-
-			await tx_query(tx, owner_query)
-
-			const default_calendar_query = sql`
-			UPDATE users
-			SET default_calendar_id = ${calendar_id}
-			WHERE id = ${user_id}`
-
-			await tx_query(tx, default_calendar_query)
-
-			await tx.commit()
-			tx.close()
+			await db.batch([
+				{ sql: user_query.sql, args: user_query.values as any[] },
+				{ sql: calendar_query.sql, args: calendar_query.values as any[] }
+			])
 
 			return { success: true, name }
 		} catch (err) {
-			console.error('transaction failed', err)
-			tx.close()
-
-			if (err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
-				return fail(400, {
-					error: 'User with that name already exists.',
-					name
-				})
-			}
-
-			return fail(500, { error: 'Database error.', name })
+			const name_is_taken =
+				err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_UNIQUE'
+			return name_is_taken
+				? fail(400, { error: 'User with that name already exists.', name })
+				: fail(500, { error: 'Database error.', name })
 		}
 	}
 }

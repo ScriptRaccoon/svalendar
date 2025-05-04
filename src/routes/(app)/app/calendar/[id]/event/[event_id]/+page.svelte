@@ -7,18 +7,14 @@
 
 	let { data, form } = $props()
 	let event = $derived(data.event)
-
-	let title = $derived(
-		data.permission_level === 'read' ? 'Event Details' : 'Edit Event'
-	)
 </script>
 
 <svelte:head>
-	<title>{title}</title>
+	<title>Edit Event</title>
 </svelte:head>
 
 <header class="app-header">
-	<h1>{title}</h1>
+	<h1>Edit Event</h1>
 	<menu class="menu">
 		<IconLink
 			href={`/app/calendar/${event.calendar_id}/${event.event_date}`}
@@ -37,25 +33,22 @@
 		date={form?.date ?? event.event_date}
 		location={form?.location ?? event.location}
 		color={form?.color ?? event.color}
-		readonly={data.permission_level === 'read'}
+		readonly={false}
 	/>
 
-	{#if data.permission_level !== 'read'}
-		<menu>
-			<button class="button danger" type="submit" formaction="?/delete"
-				>Delete Event</button
-			>
-			<button
-				class="button"
-				type="button"
-				onclick={() =>
-					goto(`/app/calendar/${event.calendar_id}/${event.event_date}`)}
-			>
-				Cancel
-			</button>
-			<button class="button" type="submit">Save</button>
-		</menu>
-	{/if}
+	<menu>
+		<button class="button danger" type="submit" formaction="?/delete">
+			Delete Event
+		</button>
+		<button
+			class="button"
+			type="button"
+			onclick={() => goto(`/app/calendar/${event.calendar_id}/${event.event_date}`)}
+		>
+			Cancel
+		</button>
+		<button class="button" type="submit">Save</button>
+	</menu>
 </form>
 
 {#if form?.error}

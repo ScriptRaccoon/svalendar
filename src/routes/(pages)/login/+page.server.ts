@@ -34,12 +34,13 @@ export const actions: Actions = {
 		const password = form_data.get('password') as string | null
 
 		const user_query = sql`
-		SELECT id, password_hash, default_calendar_id
+		SELECT users.id, password_hash, calendars.id as default_calendar_id
 		FROM users
-		WHERE name = ${name}`
+		LEFT JOIN calendars ON calendars.user_id = users.id
+		WHERE users.name = ${name} and calendars.is_default_calendar = TRUE`
 
 		const { rows, err } = await query<{
-			id: number
+			id: string
 			password_hash: string
 			default_calendar_id: string | null
 		}>(user_query)
@@ -73,7 +74,7 @@ export const actions: Actions = {
 		const login_query = sql`
 		UPDATE users
 		SET last_login = CURRENT_TIMESTAMP
-		WHERE name = ${name}`
+		WHERE id = ${id}`
 
 		await query(login_query) // ignore errors on purpose
 

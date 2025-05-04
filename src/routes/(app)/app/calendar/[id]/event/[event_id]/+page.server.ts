@@ -8,7 +8,6 @@ import { redirect } from '@sveltejs/kit'
 import { encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
 import { decrypt_calendar_event, get_validated_event } from '$lib/server/events'
-import { get_permission } from '$lib/server/permission'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -16,11 +15,6 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendar_id = event.params.id
 	const event_id = event.params.event_id
-
-	const permission_level = await get_permission(calendar_id, user.id)
-	if (!permission_level) {
-		throw error(403, 'Permission denied.')
-	}
 
 	const event_query = sql`
     SELECT
@@ -41,7 +35,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendar_event = decrypt_calendar_event(rows[0])
 
-	return { calendar_id, event: calendar_event, permission_level }
+	return { calendar_id, event: calendar_event }
 }
 
 export const actions: Actions = {
@@ -51,11 +45,6 @@ export const actions: Actions = {
 
 		const calendar_id = event.params.id
 		const event_id = event.params.event_id
-
-		const permission_level = await get_permission(calendar_id, user.id)
-		if (!permission_level || permission_level == 'read') {
-			throw error(403, 'Permission denied.')
-		}
 
 		const form_data = await event.request.formData()
 
@@ -105,11 +94,6 @@ export const actions: Actions = {
 
 		const calendar_id = event.params.id
 		const event_id = event.params.event_id
-
-		const permission_level = await get_permission(calendar_id, user.id)
-		if (!permission_level || permission_level == 'read') {
-			throw error(403, 'Permission denied.')
-		}
 
 		const delete_query = sql`
         DELETE FROM events

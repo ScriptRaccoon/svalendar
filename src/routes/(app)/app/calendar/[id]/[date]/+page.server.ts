@@ -14,19 +14,17 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendars_query = sql`
 	SELECT
-		c.id,
-		c.name,
-		c.default_color,
-		c.default_start_hour,
-		cp.permission_level
+		id,
+		name,
+		default_color,
+		default_start_hour,
+		is_default_calendar
 	FROM
-		calendar_permissions cp
-	INNER JOIN
-		calendars c ON c.id = cp.calendar_id
+		calendars
 	WHERE
-		cp.approved_at IS NOT NULL
-		AND c.id = ${calendar_id}
-		AND cp.user_id = ${user.id}`
+		id = ${calendar_id}
+		AND user_id = ${user.id}
+	`
 
 	const { rows: calendars, err: err_calendars } = await query<Calendar>(calendars_query)
 

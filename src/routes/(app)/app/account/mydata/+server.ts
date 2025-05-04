@@ -11,7 +11,7 @@ export const GET: RequestHandler = async (event) => {
 	if (!user) error(401, 'Unauthorized')
 
 	const user_query = sql`
-    SELECT name, created_at, last_login, default_calendar_id
+    SELECT name, created_at, last_login
     FROM users
     WHERE id = ${user.id}
     `
@@ -20,10 +20,9 @@ export const GET: RequestHandler = async (event) => {
 	if (err_users) error(500, 'Database error.')
 
 	const calendars_query = sql`
-    SELECT c.id, c.name, c.default_color, c.created_at, cp.permission_level
-    FROM calendar_permissions cp
-    INNER JOIN calendars c ON c.id = cp.calendar_id
-    WHERE cp.user_id = ${user.id}
+    SELECT id, name, default_color, created_at, is_default_calendar
+    FROM calendars
+    WHERE user_id = ${user.id}
     `
 
 	const { rows: calendars, err: err_calendars } = await query(calendars_query)
@@ -39,9 +38,8 @@ export const GET: RequestHandler = async (event) => {
     FROM
         events e
     INNER JOIN calendars c ON c.id = e.calendar_id
-    INNER JOIN calendar_permissions cp ON cp.calendar_id = c.id
     WHERE
-        cp.user_id = ${user.id}
+        c.user_id = ${user.id}
     ORDER BY
         e.start_time ASC
     `

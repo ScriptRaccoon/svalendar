@@ -1,11 +1,9 @@
 CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY,
+    id TEXT PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_login TIMESTAMP,
-    default_calendar_id TEXT,
-    FOREIGN KEY (default_calendar_id) REFERENCES calendars (id) ON DELETE SET NULL
+    last_login TIMESTAMP
 );
 
 CREATE INDEX IF NOT EXISTS idx_name ON users (name);
@@ -13,27 +11,15 @@ CREATE INDEX IF NOT EXISTS idx_name ON users (name);
 CREATE TABLE IF NOT EXISTS calendars (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
+    user_id TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     default_color TEXT NOT NULL,
-    default_start_hour INTEGER DEFAULT 9
-);
-
-CREATE TABLE IF NOT EXISTS calendar_permissions (
-    id INTEGER PRIMARY KEY,
-    calendar_id TEXT NOT NULL,
-    user_id INTEGER NOT NULL,
-    permission_level TEXT NOT NULL CHECK (permission_level IN ('read', 'write', 'owner')),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    approved_at TIMESTAMP,
-    revokable BOOLEAN DEFAULT TRUE,
-    UNIQUE (user_id, calendar_id),
-    FOREIGN KEY (calendar_id) REFERENCES calendars (id) ON DELETE CASCADE,
+    default_start_hour INTEGER DEFAULT 9,
+    is_default_calendar BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_calendar_id ON calendar_permissions (calendar_id);
-
-CREATE INDEX IF NOT EXISTS idx_user_id ON calendar_permissions (user_id);
+CREATE INDEX IF NOT EXISTS idx_user_id ON calendars (user_id);
 
 CREATE TABLE IF NOT EXISTS events (
     id TEXT PRIMARY KEY,

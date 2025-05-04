@@ -42,11 +42,6 @@
 			<strong>Multiple Calendars:</strong> Create and manage separate calendars for different
 			purposes.
 		</li>
-		<li>
-			<strong>Calendar Sharing:</strong> Calendars can be shared with other users in
-			an easy way, with three permission levels: <i>read</i>, <i>write</i>, and
-			<i>owner</i>.
-		</li>
 	</ul>
 </section>
 

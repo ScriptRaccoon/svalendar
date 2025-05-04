@@ -99,22 +99,8 @@ export const actions: Actions = {
 		DELETE FROM users
 		WHERE id = ${user.id}`
 
-		const { err: err_user } = await query(delete_user_query)
-		if (err_user) return fail(500, { action: 'delete', error: 'Database error.' })
-
-		const delete_unused_calendars_query = sql`
-		DELETE FROM calendars
-		WHERE id IN (
-			SELECT id
-			FROM calendars c
-			WHERE NOT EXISTS (
-				SELECT 1
-				FROM calendar_permissions cp
-				WHERE cp.calendar_id = c.id
-			)
-		);`
-
-		await query(delete_unused_calendars_query) // ignore errors on purpose
+		const { err } = await query(delete_user_query)
+		if (err) return fail(500, { action: 'delete', error: 'Database error.' })
 
 		redirect(302, '/')
 	}

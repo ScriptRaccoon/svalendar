@@ -23,10 +23,4 @@ export const COLOR_IDS = EVENT_COLORS.map((color) => color.id) as [string, ...st
 
 export const DEFAULT_COLOR = 'blue'
 
-export const PERMISSION_ICONS = {
-	read: faEye,
-	write: faPenToSquare,
-	owner: faCalendar
-} as const
-
 export const MINIMAL_EVENT_DURATION = 10 // in minutes

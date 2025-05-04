@@ -2,8 +2,8 @@
 	import { afterNavigate } from '$app/navigation'
 	import EventPreview from '$lib/components/EventPreview.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
-	import { PERMISSION_ICONS } from '$lib/config'
 	import type { Calendar, CalendarEvent } from '$lib/server/types'
+	import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 	import {
 		faCaretLeft,
 		faCaretRight,
@@ -65,29 +65,25 @@
 <div class="sticky">
 	<header class="app-header">
 		<h1>
-			<Fa icon={PERMISSION_ICONS[calendar.permission_level]} />
+			<Fa icon={faCalendar} />
 			<span class="calendar_name">{calendar.name}</span>
 		</h1>
 
 		<menu class="menu">
 			<IconLink href="/app/dashboard" icon={faList} aria_label="Dashboard" />
 
-			{#if calendar.permission_level === 'owner'}
-				<IconLink
-					href="/app/calendar/{calendar.id}/settings"
-					aria_label="Settings"
-					icon={faCog}
-					scale={1}
-				/>
-			{/if}
+			<IconLink
+				href="/app/calendar/{calendar.id}/settings"
+				aria_label="Settings"
+				icon={faCog}
+				scale={1}
+			/>
 
-			{#if calendar.permission_level === 'owner' || calendar.permission_level === 'write'}
-				<IconLink
-					href={new_event_url(calendar.default_start_hour)}
-					aria_label="New Event"
-					icon={faPlus}
-				/>
-			{/if}
+			<IconLink
+				href={new_event_url(calendar.default_start_hour)}
+				aria_label="New Event"
+				icon={faPlus}
+			/>
 		</menu>
 	</header>
 
@@ -112,23 +108,13 @@
 
 <div class="day" style:--unit="{TIME_SLOT_HEIGHT}px">
 	{#each { length: 24 } as _, hour}
-		{#if calendar.permission_level === 'owner' || calendar.permission_level === 'write'}
-			<a
-				class="hour-block"
-				href={new_event_url(hour)}
-				aria-label="create new event for hour {hour}"
-			>
-				<span class="time secondary"
-					>{hour.toString().padStart(2, '0') + ':00'}</span
-				>
-			</a>
-		{:else}
-			<div class="hour-block">
-				<span class="time secondary"
-					>{hour.toString().padStart(2, '0') + ':00'}</span
-				>
-			</div>
-		{/if}
+		<a
+			class="hour-block"
+			href={new_event_url(hour)}
+			aria-label="create new event for hour {hour}"
+		>
+			<span class="time secondary">{hour.toString().padStart(2, '0') + ':00'}</span>
+		</a>
 	{/each}
 	{#each events as event (event.id)}
 		{@const hours_diff = get_hours_diff(event.start_time, event.end_time)}

@@ -4,7 +4,6 @@ import { query } from '$lib/server/db'
 import { encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
 import { get_validated_event } from '$lib/server/events'
-import { get_permission } from '$lib/server/permission'
 import { snowflake } from '$lib/server/snowflake'
 
 export const load: PageServerLoad = async (event) => {
@@ -12,11 +11,6 @@ export const load: PageServerLoad = async (event) => {
 	if (!user) error(401, 'Unauthorized')
 
 	const calendar_id = event.params.id
-
-	const permission_level = await get_permission(calendar_id, user.id)
-	if (!permission_level || permission_level == 'read') {
-		error(403, 'Permission denied.')
-	}
 
 	const start_time = event.url.searchParams.get('start_time')
 	const end_time = event.url.searchParams.get('end_time')
@@ -32,11 +26,6 @@ export const actions: Actions = {
 		if (!user) error(401, 'Unauthorized')
 
 		const calendar_id = event.params.id
-
-		const permission_level = await get_permission(calendar_id, user.id)
-		if (!permission_level || permission_level == 'read') {
-			error(403, 'Permission denied.')
-		}
 
 		const form_data = await event.request.formData()
 

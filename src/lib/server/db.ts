@@ -1,5 +1,5 @@
 import { DB_AUTH_TOKEN, DB_URL } from '$env/static/private'
-import { createClient, LibsqlError, type Transaction } from '@libsql/client'
+import { createClient, LibsqlError } from '@libsql/client'
 import type { Sql } from 'sql-template-tag'
 
 export const db = createClient({
@@ -21,14 +21,4 @@ export async function query<T>(query: Sql) {
 		console.error(err)
 		return { rows: null, err: err as LibsqlError }
 	}
-}
-
-/**
- * Small wrapper around tx.execute to use sql templates,
- * and specify the type of the result.
- * We don't handle errors, since it's used in a transaction.
- */
-export async function tx_query<T = unknown>(tx: Transaction, query: Sql): Promise<T[]> {
-	const { rows } = await tx.execute({ sql: query.sql, args: query.values as any[] })
-	return rows as T[]
 }

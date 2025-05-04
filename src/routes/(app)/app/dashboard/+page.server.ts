@@ -1,6 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
-import { db, query, tx_query } from '$lib/server/db'
+import { query } from '$lib/server/db'
 import type { Calendar } from '$lib/server/types'
 import { DEFAULT_COLOR } from '$lib/config'
 import sql from 'sql-template-tag'
@@ -11,47 +11,35 @@ export const load: PageServerLoad = async (event) => {
 	if (!user) error(401, 'Unauthorized')
 
 	const users_query = sql`
-	SELECT name, default_calendar_id FROM users WHERE id = ${user.id}
-	`
+	SELECT name FROM users WHERE id = ${user.id}`
 
-	const { rows: users } = await query<{
-		name: string
-		default_calendar_id: string | null
-	}>(users_query)
+	const { rows: users } = await query<{ name: string }>(users_query)
 
-	if (!users?.length) {
-		error(404, 'User not found.')
-	}
+	if (!users?.length) error(404, 'User not found.')
 
-	const { default_calendar_id, name } = users[0]
+	const { name } = users[0]
 
 	const calendars_query = sql`
 	SELECT
-		c.id,
-		c.name,
-		cp.permission_level,
-		cp.approved_at,
-		cp.revokable
+		id,
+		name,
+		is_default_calendar
 	FROM
-		calendar_permissions AS cp
-	INNER JOIN
-		calendars c ON c.id = cp.calendar_id
+		calendars
 	WHERE
-		cp.user_id = ${user.id}
+		user_id = ${user.id}
 	ORDER BY
 		name ASC
 	`
 
-	const { rows, err } = await query<
-		Calendar & { approved_at: string | null; revokable: number }
-	>(calendars_query)
+	const { rows: calendars, err } =
+		await query<Pick<Calendar, 'id' | 'name' | 'is_default_calendar'>>(
+			calendars_query
+		)
 
 	if (err) error(500, 'Database error.')
 
-	const calendars = rows.filter((calendar) => calendar.approved_at)
-	const pending_shares = rows.filter((calendar) => !calendar.approved_at)
-
-	return { calendars, pending_shares, name, default_calendar_id }
+	return { name, calendars }
 }
 
 export const actions: Actions = {
@@ -66,109 +54,18 @@ export const actions: Actions = {
 			return fail(400, { action: 'create', error: 'Name is required.', name })
 		}
 
-		const tx = await db.transaction('write')
-
 		const calendar_id = await snowflake.generate()
 
-		try {
-			const insert_query = sql`
-			INSERT INTO calendars (id, name, default_color)
-			VALUES (${calendar_id}, ${name}, ${DEFAULT_COLOR})`
+		const insert_query = sql`
+		INSERT INTO calendars (id, name, user_id, default_color)
+		VALUES (${calendar_id}, ${name}, ${user.id}, ${DEFAULT_COLOR})`
 
-			await tx_query(tx, insert_query)
+		const { err } = await query(insert_query)
 
-			const owner_query = sql`
-			INSERT INTO calendar_permissions
-			(calendar_id, user_id, permission_level, approved_at, revokable)
-			VALUES (${calendar_id}, ${user.id}, 'owner', CURRENT_TIMESTAMP, FALSE)`
-
-			await tx_query(tx, owner_query)
-
-			await tx.commit()
-			tx.close()
-		} catch (err) {
-			console.error('transaction failed', err)
-			tx.close()
+		if (err) {
 			return fail(500, { action: 'create', error: 'Database error.', name })
 		}
 
 		redirect(302, `/app/calendar/${calendar_id}`)
-	},
-
-	accept_share: async (event) => {
-		const user = event.locals.user
-		if (!user) error(401, 'Unauthorized')
-
-		const form_data = await event.request.formData()
-		const calendar_id = form_data.get('calendar_id') as string | null
-
-		if (!calendar_id) {
-			return fail(400, { action: 'share', error: 'Calendar ID is required.' })
-		}
-
-		const accept_query = sql`
-		UPDATE calendar_permissions
-		SET approved_at = CURRENT_TIMESTAMP
-		WHERE calendar_id = ${calendar_id}
-		AND user_id = ${user.id}
-		AND approved_at IS NULL`
-
-		const { err } = await query(accept_query)
-		if (err) {
-			return fail(500, { action: 'share', error: 'Database error.' })
-		}
-
-		return { success: true }
-	},
-
-	reject_share: async (event) => {
-		const user = event.locals.user
-		if (!user) error(401, 'Unauthorized')
-
-		const form_data = await event.request.formData()
-		const calendar_id = form_data.get('calendar_id') as string | null
-
-		if (!calendar_id) {
-			return fail(400, { action: 'share', error: 'Calendar ID is required.' })
-		}
-
-		const reject_query = sql`
-		DELETE FROM calendar_permissions
-		WHERE calendar_id = ${calendar_id}
-		AND user_id = ${user.id}
-		AND approved_at IS NULL`
-
-		const { err } = await query(reject_query)
-		if (err) {
-			return fail(500, { action: 'share', error: 'Database error.' })
-		}
-
-		return { success: true }
-	},
-
-	revoke_access: async (event) => {
-		const user = event.locals.user
-		if (!user) error(401, 'Unauthorized')
-
-		const form_data = await event.request.formData()
-		const calendar_id = form_data.get('calendar_id') as string | null
-
-		if (!calendar_id) {
-			return fail(400, { action: 'revoke', error: 'Calendar ID is required.' })
-		}
-
-		const revoke_query = sql`
-		DELETE FROM calendar_permissions
-		WHERE calendar_id = ${calendar_id}
-		AND user_id = ${user.id}
-		AND approved_at IS NOT NULL
-		AND revokable = TRUE`
-
-		const { err } = await query(revoke_query)
-		if (err) {
-			return fail(500, { action: 'revoke', error: 'Database error.' })
-		}
-
-		return { success: true }
 	}
 }

@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
-	import IconButton from '$lib/components/IconButton.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
-	import { PERMISSION_ICONS } from '$lib/config'
-	import { faCheckCircle, faUser } from '@fortawesome/free-regular-svg-icons'
-	import { faSignOut, faXmark } from '@fortawesome/free-solid-svg-icons'
+	import { faCalendar, faUser } from '@fortawesome/free-regular-svg-icons'
+	import { faSignOut } from '@fortawesome/free-solid-svg-icons'
 	import Fa from 'svelte-fa'
 
 	let { form, data } = $props()
@@ -24,56 +22,6 @@
 
 <p>Hey, {data.name}!</p>
 
-{#if data.pending_shares.length}
-	<section class="card">
-		<h2>Pending Share Offers</h2>
-		<ul class="list no-bullets">
-			{#each data.pending_shares as calendar}
-				<li>
-					<div class="share">
-						<div>
-							<span class="icon-wrapper">
-								<Fa icon={PERMISSION_ICONS[calendar.permission_level]} />
-							</span>
-							<span>{calendar.name}</span>
-						</div>
-
-						<menu>
-							<form action="?/reject_share" method="POST" use:enhance>
-								<input
-									type="hidden"
-									name="calendar_id"
-									value={calendar.id}
-								/>
-								<IconButton
-									small={true}
-									aria_label="reject share"
-									icon={faXmark}
-								/>
-							</form>
-							<form action="?/accept_share" method="POST" use:enhance>
-								<input
-									type="hidden"
-									name="calendar_id"
-									value={calendar.id}
-								/>
-								<IconButton
-									small={true}
-									aria_label="accept share"
-									icon={faCheckCircle}
-								/>
-							</form>
-						</menu>
-					</div>
-				</li>
-			{/each}
-		</ul>
-		{#if form?.action === 'share' && form?.error}
-			<p class="error">{form.error}</p>
-		{/if}
-	</section>
-{/if}
-
 <section class="card">
 	<h2>Calendars</h2>
 	<ul class="list no-bullets">
@@ -82,25 +30,15 @@
 				<div class="item">
 					<div>
 						<span class="icon-wrapper">
-							<Fa icon={PERMISSION_ICONS[calendar.permission_level]} />
+							<Fa icon={faCalendar} />
 						</span>
 						<a href="/app/calendar/{calendar.id}">
 							{calendar.name}
 						</a>
-						{#if data.default_calendar_id === calendar.id}
+						{#if calendar.is_default_calendar}
 							<span class="secondary">(default)</span>
 						{/if}
 					</div>
-					{#if calendar.revokable}
-						<form action="?/revoke_access" method="POST" use:enhance>
-							<input type="hidden" name="calendar_id" value={calendar.id} />
-							<IconButton
-								small={true}
-								aria_label="revoke access"
-								icon={faXmark}
-							/>
-						</form>
-					{/if}
 				</div>
 			</li>
 		{/each}
@@ -130,16 +68,6 @@
 	.icon-wrapper {
 		display: inline-block;
 		width: 1.25rem;
-	}
-
-	.share {
-		display: flex;
-		justify-content: space-between;
-
-		menu {
-			display: flex;
-			gap: 0.5rem;
-		}
 	}
 
 	.item {

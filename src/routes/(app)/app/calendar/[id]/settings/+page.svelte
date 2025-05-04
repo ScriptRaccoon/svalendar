@@ -72,102 +72,42 @@
 	{/if}
 </section>
 
-<section class="card">
-	<h2>Default Calendar</h2>
-	<p>Set a calendar as default so that it is selected by default when you log in.</p>
-	<form method="POST" action="?/set_default" use:enhance>
-		<button class="button">Set Default</button>
-	</form>
+{#if calendar.is_default_calendar}
+	<section class="card">
+		<h2>Default Calendar</h2>
+		<p>
+			This is your default calendar. This means that it cannot be deleted, that it
+			is opened by default after login, and that all events shared with your account
+			will be added to this calendar.
+		</p>
+	</section>
+{/if}
 
-	{#if form?.error && form.action === 'set_default'}
-		<p class="error">{form.error}</p>
-	{/if}
+{#if !calendar.is_default_calendar}
+	<section class="card">
+		<h2>Danger Zone</h2>
 
-	{#if form?.success && form.action === 'set_default'}
-		<p>Calendar has been set as default.</p>
-	{/if}
-</section>
+		<form method="POST" action="?/delete" use:enhance>
+			{#if confirm_deletion}
+				<button type="submit" class="button danger">Delete</button>
+				<button type="button" class="button" onclick={cancel_deletion}
+					>Cancel</button
+				>
+			{:else}
+				<button type="button" class="button danger" onclick={ask_for_confirmation}
+					>Delete</button
+				>
+			{/if}
+			{#if confirm_deletion}
+				<p>
+					Are you sure? All the data inside the calendar will be deleted
+					permanently.
+				</p>
+			{/if}
+		</form>
 
-<section class="card">
-	<h2>Sharing</h2>
-	<p>Share your calendar with other users to collaborate.</p>
-	<form action="?/share" method="POST" use:enhance>
-		<div class="input-group">
-			<label for="username">User name</label>
-			<input type="text" id="username" name="username" required />
-		</div>
-		<div class="input-group">
-			<label for="permission_level">Permission level</label>
-			<select name="permission_level" id="permission_level">
-				<option value="read">Read</option>
-				<option value="write">Write</option>
-				<option value="owner">Owner</option>
-			</select>
-		</div>
-		<button class="button">Share</button>
-	</form>
-
-	{#if form?.error && form.action === 'share'}
-		<p class="error">{form.error}</p>
-	{/if}
-
-	{#if data.shares.length > 0}
-		<p>The calendar is shared with:</p>
-		<ul class="list">
-			{#each data.shares as share}
-				<li>
-					<div class="share">
-						{share.user_name} ({share.permission_level} access)
-						{#if !share.approved_at}
-							&ndash; Pending
-						{/if}
-						<form action="?/unshare" method="POST" use:enhance>
-							<input type="hidden" name="user_id" value={share.user_id} />
-							<IconButton
-								aria_label="remove share"
-								icon={faXmark}
-								small={true}
-							/>
-						</form>
-					</div>
-				</li>
-			{/each}
-		</ul>
-
-		{#if form?.error && form.action === 'unshare'}
+		{#if form?.error && form.action === 'delete'}
 			<p class="error">{form.error}</p>
 		{/if}
-	{/if}
-</section>
-
-<section class="card">
-	<h2>Danger Zone</h2>
-
-	<form method="POST" action="?/delete" use:enhance>
-		{#if confirm_deletion}
-			<button type="submit" class="button danger">Delete</button>
-			<button type="button" class="button" onclick={cancel_deletion}>Cancel</button>
-		{:else}
-			<button type="button" class="button danger" onclick={ask_for_confirmation}
-				>Delete</button
-			>
-		{/if}
-		{#if confirm_deletion}
-			<p>
-				Are you sure? All the data inside the calendar will be deleted
-				permanently.
-			</p>
-		{/if}
-	</form>
-
-	{#if form?.error && form.action === 'delete'}
-		<p class="error">{form.error}</p>
-	{/if}
-</section>
-
-<style>
-	.share {
-		display: flex;
-		justify-content: space-between;
-	}
-</style>
+	</section>
+{/if}
