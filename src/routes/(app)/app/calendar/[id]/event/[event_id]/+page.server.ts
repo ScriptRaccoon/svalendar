@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { query } from '$lib/server/db'
+import { batch, query } from '$lib/server/db'
 import type { EventParticipant, CalendarEventEncrypted } from '$lib/server/types'
 import type { Actions } from './$types'
 import { fail } from '@sveltejs/kit'
@@ -159,7 +159,14 @@ export const actions: Actions = {
 		INSERT INTO event_participants (event_id, user_id, role, status)
 		VALUES (${event_id}, ${participant_id}, 'attendee', 'pending')`
 
-		const { err } = await query(insert_query)
+		const visibility_query = sql`
+		INSERT INTO event_visibilities (event_id, calendar_id)
+		SELECT ${event_id}, c.id
+		FROM calendars c
+		WHERE c.user_id = ${participant_id} AND c.is_default_calendar = TRUE
+		`
+
+		const { err } = await batch([insert_query, visibility_query])
 
 		if (err) {
 			const is_invited = err.code === 'SQLITE_CONSTRAINT_PRIMARYKEY'
