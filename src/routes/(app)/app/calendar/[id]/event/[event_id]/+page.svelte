@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
 	import { goto } from '$app/navigation'
+	import { page } from '$app/state'
 	import EventInput from '$lib/components/EventInput.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
@@ -55,16 +56,35 @@
 	<p class="error">{form.error}</p>
 {/if}
 
-<form class="participants" method="POST" action="?/add_participant" use:enhance>
-	<h2>Participants</h2>
+<!-- TOOD: improve styling  -->
+
+<p></p>
+
+<h2>Participants</h2>
+
+<form method="POST" action="?/accept_event" use:enhance>
 	<ul class="list">
 		{#each data.participants as participant (participant.id)}
 			<li>
 				{participant.name} ({participant.role}) &ndash; {participant.status}
+				{#if participant.id === page.data.user?.id}
+					<button class="button" disabled={participant.status === 'accepted'}>
+						Accept
+					</button>
+					<button
+						class="button"
+						formaction="?/decline_event"
+						disabled={participant.status === 'declined'}
+					>
+						Decline
+					</button>
+				{/if}
 			</li>
 		{/each}
 	</ul>
+</form>
 
+<form method="POST" action="?/add_participant" use:enhance>
 	<div class="input-group">
 		<label for="participant_name">Participant</label>
 		<input type="text" id="participant_name" name="participant_name" required />
@@ -82,9 +102,5 @@
 		.button.danger {
 			margin-right: auto;
 		}
-	}
-
-	.participants {
-		margin-top: 2rem;
 	}
 </style>

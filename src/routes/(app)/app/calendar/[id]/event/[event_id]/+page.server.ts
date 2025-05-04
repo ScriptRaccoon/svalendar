@@ -176,5 +176,43 @@ export const actions: Actions = {
 		}
 
 		return { success: true }
+	},
+
+	accept_event: async (event) => {
+		const user = event.locals.user
+		if (!user) error(401, 'Unauthorized')
+
+		const event_id = event.params.event_id
+
+		const accept_query = sql`
+		UPDATE event_participants
+		SET status = 'accepted'
+		WHERE event_id = ${event_id} AND user_id = ${user.id}`
+
+		const { err } = await query(accept_query)
+		if (err) {
+			return fail(500, { error: 'Database error.' })
+		}
+
+		return { success: true }
+	},
+
+	decline_event: async (event) => {
+		const user = event.locals.user
+		if (!user) error(401, 'Unauthorized')
+
+		const event_id = event.params.event_id
+
+		const reject_query = sql`
+		UPDATE event_participants
+		SET status = 'declined'
+		WHERE event_id = ${event_id} AND user_id = ${user.id}`
+
+		const { err } = await query(reject_query)
+		if (err) {
+			return fail(500, { error: 'Database error.' })
+		}
+
+		return { success: true }
 	}
 }

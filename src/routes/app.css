@@ -125,6 +125,11 @@ button:focus-visible {
 	&.danger {
 		background-color: var(--button-danger-color);
 	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: initial;
+	}
 }
 
 .input-group {
