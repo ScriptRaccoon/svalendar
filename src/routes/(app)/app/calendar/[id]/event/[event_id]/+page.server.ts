@@ -18,15 +18,18 @@ export const load: PageServerLoad = async (event) => {
 
 	const event_query = sql`
     SELECT
-        id, calendar_id,
+        e.id,
 		title_encrypted, title_iv, title_tag,
 		description_encrypted, description_iv, description_tag,
 		location_encrypted, location_iv, location_tag,
 		start_time, end_time, event_date, color
     FROM
-        events
-    WHERE
-        id = ${event_id}
+        event_visibilities v
+	INNER JOIN
+		events e ON e.id = v.event_id
+	WHERE
+		v.calendar_id = ${calendar_id}
+		AND v.event_id = ${event_id}
     `
 
 	const { rows, err } = await query<CalendarEventEncrypted>(event_query)

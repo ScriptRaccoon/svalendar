@@ -8,14 +8,15 @@
 	type Props = {
 		event: CalendarEvent
 		hours_diff: number
+		calendar_id: string
 	}
 
-	let { event, hours_diff }: Props = $props()
+	let { event, hours_diff, calendar_id }: Props = $props()
 </script>
 
 <a
 	class="event"
-	href="/app/calendar/{event.calendar_id}/event/{event.id}"
+	href="/app/calendar/{calendar_id}/event/{event.id}"
 	style:--color={EVENTS_COLORS_DICTIONARY[event.color]}
 >
 	<div class="header">

@@ -23,7 +23,6 @@ CREATE INDEX IF NOT EXISTS idx_user_id ON calendars (user_id);
 
 CREATE TABLE IF NOT EXISTS events (
     id TEXT PRIMARY KEY,
-    calendar_id TEXT NOT NULL,
     title_encrypted TEXT NOT NULL,
     title_iv TEXT NOT NULL,
     title_tag TEXT NOT NULL,
@@ -37,10 +36,15 @@ CREATE TABLE IF NOT EXISTS events (
     start_time TEXT NOT NULL,
     end_time TEXT NOT NULL,
     color TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (calendar_id) REFERENCES calendars (id) ON DELETE CASCADE
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_calendar_id ON events (calendar_id);
-
 CREATE INDEX IF NOT EXISTS idx_date ON events (event_date);
+
+CREATE TABLE IF NOT EXISTS event_visibilities (
+    event_id TEXT NOT NULL,
+    calendar_id TEXT NOT NULL,
+    PRIMARY KEY (event_id, calendar_id),
+    FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE,
+    FOREIGN KEY (calendar_id) REFERENCES calendars (id) ON DELETE CASCADE
+);

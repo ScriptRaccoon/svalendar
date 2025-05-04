@@ -86,13 +86,15 @@ export async function get_validated_event(
     SELECT
         title_encrypted, title_iv, title_tag
     FROM
-        events
+        event_visibilities v
+	INNER JOIN
+		events e ON e.id = v.event_id
     WHERE
-        calendar_id = ${calendar_id}
+        v.calendar_id = ${calendar_id}
 		AND event_date = ${date}
         AND end_time > ${start_time}
         AND start_time < ${end_time}
-		AND (${event_id} IS NULL OR id != ${event_id})
+		AND (${event_id} IS NULL OR e.id != ${event_id})
     LIMIT 1
     `
 
@@ -122,7 +124,7 @@ export async function get_validated_event(
 }
 
 export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarEvent {
-	const { id, calendar_id, start_time, end_time, event_date, color } = event
+	const { id, start_time, end_time, event_date, color } = event
 
 	const title = decrypt({
 		data: event.title_encrypted,
@@ -144,7 +146,6 @@ export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarE
 
 	return {
 		id,
-		calendar_id,
 		start_time,
 		end_time,
 		event_date,

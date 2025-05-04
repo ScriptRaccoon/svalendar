@@ -61,6 +61,7 @@ export const actions: Actions = {
 
 			return { success: true, name }
 		} catch (err) {
+			console.error(err)
 			const name_is_taken =
 				err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_UNIQUE'
 			return name_is_taken

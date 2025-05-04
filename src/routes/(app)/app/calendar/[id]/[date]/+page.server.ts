@@ -35,15 +35,17 @@ export const load: PageServerLoad = async (event) => {
 
 	const events_query = sql`
 	SELECT
-		id, calendar_id,
+		e.id,
 		title_encrypted, title_iv, title_tag,
 		description_encrypted, description_iv, description_tag,
 		location_encrypted, location_iv, location_tag,
 		start_time, end_time, event_date, color
 	FROM
-		events
+		event_visibilities v
+	INNER JOIN
+		events e ON e.id = v.event_id
 	WHERE
-		calendar_id = ${calendar_id}
+		v.calendar_id = ${calendar_id}
 		AND event_date = ${today}
 	ORDER BY
 		start_time ASC

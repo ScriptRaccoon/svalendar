@@ -12,7 +12,6 @@ export type Calendar = {
 
 export type CalendarEvent = {
 	id: string
-	calendar_id: string
 	title: string
 	description: string
 	location: string
@@ -24,7 +23,6 @@ export type CalendarEvent = {
 
 export type CalendarEventEncrypted = {
 	id: string
-	calendar_id: string
 	title_encrypted: string
 	title_iv: string
 	title_tag: string

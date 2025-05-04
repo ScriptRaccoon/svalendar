@@ -123,7 +123,7 @@
 			style:--hours-start={get_hours(event.start_time)}
 			style:--hours-diff={hours_diff}
 		>
-			<EventPreview {event} {hours_diff} />
+			<EventPreview {event} {hours_diff} calendar_id={calendar.id} />
 		</div>
 	{/each}
 </div>
