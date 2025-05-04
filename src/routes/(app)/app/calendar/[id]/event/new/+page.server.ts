@@ -38,9 +38,9 @@ export const actions: Actions = {
 			return fail(status, { error: error_message, ...fields })
 		}
 
-		const encrypted_title_data = encrypt(fields.title)
-		const encrypted_description_data = encrypt(fields.description)
-		const encrypted_location_data = encrypt(fields.location)
+		const encrypted_title = encrypt(fields.title)
+		const encrypted_description = encrypt(fields.description)
+		const encrypted_location = encrypt(fields.location)
 
 		const event_id = await snowflake.generate()
 
@@ -53,15 +53,15 @@ export const actions: Actions = {
 			start_time, end_time, event_date, color, link)
         VALUES
             (${event_id},
-			${encrypted_title_data.data},
-			${encrypted_title_data.iv},
-			${encrypted_title_data.tag},
-			${encrypted_description_data.data},
-			${encrypted_description_data.iv},
-			${encrypted_description_data.tag},
-			${encrypted_location_data.data},
-			${encrypted_location_data.iv},
-			${encrypted_location_data.tag},
+			${encrypted_title.data},
+			${encrypted_title.iv},
+			${encrypted_title.tag},
+			${encrypted_description.data},
+			${encrypted_description.iv},
+			${encrypted_description.tag},
+			${encrypted_location.data},
+			${encrypted_location.iv},
+			${encrypted_location.tag},
 			${fields.start_time},
 			${fields.end_time},
 			${fields.date},
