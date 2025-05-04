@@ -72,53 +72,62 @@
 
 <!-- TOOD: improve styling  -->
 
-<p></p>
+<section class="participants">
+	<h2>Participants</h2>
 
-<h2>Participants</h2>
-
-<form method="POST" action="?/accept_event" use:enhance>
-	<ul class="list no-bullets">
-		{#each data.participants as participant (participant.id)}
-			<li>
-				<div class="participant_item">
-					<div>
-						<Fa icon={PARTICIPATION_ICONS[participant.status]} />
-						&nbsp;
-						{participant.name} ({participant.role})
+	<form method="POST" action="?/accept_event" use:enhance>
+		<ul class="list no-bullets">
+			{#each data.participants as participant (participant.id)}
+				<li>
+					<div class="participant_item">
+						<div>
+							<span class="icon {participant.status}">
+								<Fa icon={PARTICIPATION_ICONS[participant.status]} />
+							</span>
+							&nbsp;
+							<span class="participant_name {participant.status}">
+								{participant.name} ({participant.role})
+							</span>
+						</div>
+						<div>
+							{#if participant.id === page.data.user?.id}
+								<button
+									class="button"
+									formaction="?/decline_event"
+									disabled={participant.status === 'declined'}
+								>
+									Decline
+								</button>
+								<button
+									class="button"
+									disabled={participant.status === 'accepted'}
+								>
+									Accept
+								</button>
+							{/if}
+						</div>
 					</div>
-					<div>
-						{#if participant.id === page.data.user?.id}
-							<button
-								class="button"
-								formaction="?/decline_event"
-								disabled={participant.status === 'declined'}
-							>
-								Decline
-							</button>
-							<button
-								class="button"
-								disabled={participant.status === 'accepted'}
-							>
-								Accept
-							</button>
-						{/if}
-					</div>
-				</div>
-			</li>
-		{/each}
-	</ul>
-</form>
-
-{#if my_role == 'organizer'}
-	<form method="POST" action="?/add_participant" use:enhance>
-		<div class="input-group">
-			<label for="participant_name">Participant</label>
-			<input type="text" id="participant_name" name="participant_name" required />
-		</div>
-
-		<button class="button">Add</button>
+				</li>
+			{/each}
+		</ul>
 	</form>
-{/if}
+
+	{#if my_role == 'organizer'}
+		<form method="POST" action="?/add_participant" use:enhance>
+			<div class="input-group">
+				<label for="participant_name">Participant</label>
+				<input
+					type="text"
+					id="participant_name"
+					name="participant_name"
+					required
+				/>
+			</div>
+
+			<button class="button">Add</button>
+		</form>
+	{/if}
+</section>
 
 <style>
 	menu {
@@ -131,9 +140,27 @@
 		}
 	}
 
+	.participants {
+		margin-top: 2.5rem;
+	}
+
 	.participant_item {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+	}
+
+	.participant_name.declined {
+		text-decoration: line-through;
+		color: var(--secondary-font-color);
+	}
+
+	.participant_item .icon {
+		&.accepted {
+			color: var(--title-color);
+		}
+		&.declined {
+			color: var(--error-color);
+		}
 	}
 </style>
