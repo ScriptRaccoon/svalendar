@@ -49,6 +49,13 @@ export const time_schema = z
 		message: 'Invalid time format. Expected HH:MM.'
 	})
 
+export const url_schema = z
+	.string({
+		required_error: 'URL is required.',
+		invalid_type_error: 'URL must be a string.'
+	})
+	.url('Invalid URL format.')
+
 export const hour_schema = z.number().int().min(0).max(23)
 
 export function get_error_messages(error: ZodError): string {

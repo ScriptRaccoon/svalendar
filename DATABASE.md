@@ -32,6 +32,7 @@ erDiagram
     TEXT start_time
     TEXT end_time
     TEXT color
+    TEXT link
     TIMESTAMP created_at
   }
   event_visibilites {

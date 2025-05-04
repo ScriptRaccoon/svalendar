@@ -39,6 +39,7 @@
 		date={event.event_date}
 		location={event.location}
 		color={event.color}
+		link={event.link}
 		readonly={my_role === 'attendee'}
 	/>
 

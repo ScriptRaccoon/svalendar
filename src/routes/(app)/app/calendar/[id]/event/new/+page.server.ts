@@ -50,7 +50,7 @@ export const actions: Actions = {
 			title_encrypted, title_iv, title_tag,
 			description_encrypted, description_iv, description_tag,		
 			location_encrypted, location_iv, location_tag,
-			start_time, end_time, event_date, color)
+			start_time, end_time, event_date, color, link)
         VALUES
             (${event_id},
 			${encrypted_title_data.data},
@@ -65,7 +65,8 @@ export const actions: Actions = {
 			${fields.start_time},
 			${fields.end_time},
 			${fields.date},
-			${fields.color})`
+			${fields.color},
+			${fields.link})`
 
 		const visibility_query = sql`
 		INSERT INTO event_visibilities (event_id, calendar_id)

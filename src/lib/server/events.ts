@@ -1,6 +1,6 @@
 import { COLOR_IDS, MINIMAL_EVENT_DURATION } from '$lib/config'
 import sql from 'sql-template-tag'
-import { date_schema, time_schema, get_error_messages } from './schemas'
+import { date_schema, time_schema, get_error_messages, url_schema } from './schemas'
 import { query } from './db'
 import type {
 	CalendarEvent,
@@ -22,6 +22,7 @@ export async function get_validated_event(
 	const date = form_data.get('date') as string
 	const location = form_data.get('location') as string
 	const color = form_data.get('color') as string | null
+	const link = form_data.get('link') as string | null
 
 	const fields = {
 		title,
@@ -30,7 +31,8 @@ export async function get_validated_event(
 		end_time,
 		date,
 		location,
-		color
+		color,
+		link
 	}
 
 	if (!title || !start_time || !end_time || !date || !color) {
@@ -87,6 +89,15 @@ export async function get_validated_event(
 		return { status: 400, error_message: 'Invalid color.', fields }
 	}
 
+	const link_validation = url_schema.safeParse(link)
+	if (link && !link_validation.success) {
+		return {
+			status: 400,
+			error_message: get_error_messages(link_validation.error),
+			fields
+		}
+	}
+
 	const overlap_query = sql`
     SELECT
         title_encrypted, title_iv, title_tag
@@ -129,7 +140,7 @@ export async function get_validated_event(
 }
 
 export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarEvent {
-	const { id, status, start_time, end_time, event_date, color } = event
+	const { id, status, start_time, end_time, event_date, color, link } = event
 
 	const title = decrypt({
 		data: event.title_encrypted,
@@ -156,6 +167,7 @@ export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarE
 		end_time,
 		event_date,
 		color,
+		link,
 		title,
 		description,
 		location

@@ -27,6 +27,7 @@ export type CalendarEvent = {
 	end_time: string
 	event_date: string
 	color: string
+	link: string
 }
 
 export type CalendarEventEncrypted = {
@@ -45,6 +46,7 @@ export type CalendarEventEncrypted = {
 	end_time: string
 	event_date: string
 	color: string
+	link: string
 }
 
 export type EventTitleEncrypted = Pick<

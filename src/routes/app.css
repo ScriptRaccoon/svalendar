@@ -22,6 +22,7 @@
 	--focus-color: white;
 	--title-color: rgb(15, 125, 15);
 	--icon-bg-color: #e6e6e6;
+	--highlight-link-color: rgb(42, 135, 172);
 }
 
 :root[data-theme='dark'] {
@@ -37,6 +38,7 @@
 	--focus-color: #2e2e2e;
 	--title-color: yellow;
 	--icon-bg-color: #444;
+	--highlight-link-color: skyblue;
 }
 
 body {
@@ -54,6 +56,11 @@ a {
 	&:focus-visible {
 		outline: 1px solid var(--secondary-font-color);
 		outline-offset: 2px;
+	}
+
+	&.highlight {
+		color: var(--highlight-link-color);
+		text-decoration-color: var(--highlight-link-color);
 	}
 }
 

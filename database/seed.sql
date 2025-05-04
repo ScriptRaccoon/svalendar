@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS events (
     start_time TEXT NOT NULL,
     end_time TEXT NOT NULL,
     color TEXT NOT NULL,
+    link TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

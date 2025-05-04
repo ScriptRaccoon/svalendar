@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { faExternalLink } from '@fortawesome/free-solid-svg-icons'
 	import ColorPicker from './ColorPicker.svelte'
+	import Fa from 'svelte-fa'
 
 	type Props = {
 		title: string
@@ -9,6 +11,7 @@
 		end_time: string
 		date: string
 		color: string
+		link: string
 		readonly: boolean
 	}
 
@@ -20,8 +23,11 @@
 		end_time,
 		date,
 		color: current_color,
+		link,
 		readonly
 	}: Props = $props()
+
+	let link_state = $state(link)
 </script>
 
 <div class="input-group">
@@ -71,3 +77,24 @@
 </div>
 
 <ColorPicker label="Color" {current_color} {readonly} />
+
+<div class="input-group">
+	{#if !readonly}
+		<label for="link">Link <span class="smaller">&nbsp;(optional)</span></label>
+		<input type="url" id="link" name="link" {readonly} bind:value={link_state} />
+	{/if}
+	{#if link_state}
+		<div class="link-preview">
+			<a href={link_state} target="_blank" class="highlight">
+				{link_state}
+				<Fa icon={faExternalLink} scale={0.75} />
+			</a>
+		</div>
+	{/if}
+</div>
+
+<style>
+	.link-preview {
+		padding-block: 0.5rem;
+	}
+</style>

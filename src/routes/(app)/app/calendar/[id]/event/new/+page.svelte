@@ -34,6 +34,7 @@
 		date={form?.date ?? data.date ?? ''}
 		location={form?.location ?? ''}
 		color={form?.color ?? data.color ?? ''}
+		link={form?.link ?? ''}
 		readonly={false}
 	/>
 

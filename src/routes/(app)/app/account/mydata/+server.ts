@@ -6,6 +6,9 @@ import type { CalendarEventEncrypted } from '$lib/server/types'
 import type { CalendarEvent } from '$lib/server/types'
 import { decrypt_calendar_event } from '$lib/server/events'
 
+/**
+ * @deprecated
+ */
 export const GET: RequestHandler = async (event) => {
 	const user = event.locals.user
 	if (!user) error(401, 'Unauthorized')
