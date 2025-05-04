@@ -16,8 +16,6 @@ export const load: PageServerLoad = async (event) => {
 	const calendar_id = event.params.id
 	const event_id = event.params.event_id
 
-	// TODO: use batches
-
 	const event_query = sql`
     SELECT
         e.id, p.status,
@@ -30,44 +28,49 @@ export const load: PageServerLoad = async (event) => {
 	INNER JOIN
 		events e ON e.id = v.event_id
 	INNER JOIN
-		event_participants p ON p.event_id = e.id AND p.user_id = ${user.id}
+		event_participants p ON
+		p.event_id = e.id AND p.user_id = ${user.id}
 	WHERE
 		v.calendar_id = ${calendar_id}
 		AND v.event_id = ${event_id}
     `
 
-	const { rows: rows_calendars, err: err_calendars } =
-		await query<CalendarEventEncrypted>(event_query)
-	if (err_calendars) error(500, 'Database error.')
-	if (!rows_calendars.length) error(404, 'Event not found.')
-
-	const calendar_event = decrypt_calendar_event(rows_calendars[0])
-
 	const participants_query = sql`
-	SELECT u.id, u.name, p.role, p.status
-	FROM event_participants p
-	INNER JOIN users u ON u.id = p.user_id
-	WHERE p.event_id = ${event_id}
-	ORDER BY u.name ASC
+	SELECT
+		u.id, u.name, p.role, p.status
+	FROM
+		event_participants p
+	INNER JOIN
+		users u ON u.id = p.user_id
+	WHERE
+		p.event_id = ${event_id}
+	ORDER BY
+		u.name ASC
 	`
-
-	const { rows: participants, err: err_participants } =
-		await query<EventParticipant>(participants_query)
-
-	if (err_participants) error(500, 'Database error.')
 
 	const my_role_query = sql`
-	SELECT role FROM event_participants
-	WHERE event_id = ${event_id} AND user_id = ${user.id}
+	SELECT
+		role
+	FROM
+		event_participants
+	WHERE
+		event_id = ${event_id}
+		AND user_id = ${user.id}
 	`
 
-	const { rows: my_role_rows } = await query<{ role: EventParticipant['role'] }>(
-		my_role_query
-	)
+	const { results, err } = await batch<
+		[CalendarEventEncrypted[], EventParticipant[], Pick<EventParticipant, 'role'>[]]
+	>([event_query, participants_query, my_role_query])
 
-	if (!my_role_rows?.length) error(500, 'Database error.')
+	if (err) error(500, 'Database error.')
 
-	const { role: my_role } = my_role_rows[0]
+	const [encrypted_events, participants, roles] = results
+
+	if (!encrypted_events.length) error(404, 'Event not found.')
+	if (!roles.length) error(403, 'You are not allowed to view this event.')
+
+	const calendar_event = decrypt_calendar_event(encrypted_events[0])
+	const my_role = roles[0].role
 
 	return { calendar_id, event: calendar_event, participants, my_role }
 }

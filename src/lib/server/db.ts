@@ -25,19 +25,19 @@ export async function query<T>(query: Sql) {
 
 /**
  * Small wrapper around db.batch to handle errors
- * and use sql templates.
+ * and use sql templates, and specify the type of the result.
  */
-export async function batch(queries: Sql[]) {
+export async function batch<T extends any[][]>(queries: Sql[]) {
 	try {
-		await db.batch(
+		const results = await db.batch(
 			queries.map((query) => ({
 				sql: query.sql,
 				args: query.values as any[]
 			}))
 		)
-		return { err: null }
+		return { results: results.map(({ rows }) => rows) as T, err: null }
 	} catch (err) {
 		console.error(err)
-		return { err: err as LibsqlError }
+		return { results: null, err: err as LibsqlError }
 	}
 }
