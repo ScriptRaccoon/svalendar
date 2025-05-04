@@ -36,16 +36,6 @@
 		readonly={false}
 	/>
 
-	<strong>Participants</strong>
-	<!-- TODO: make this list editable for organizers -->
-	<ul class="list">
-		{#each data.participants as participant (participant.id)}
-			<li>
-				{participant.name} ({participant.role}) &ndash; {participant.status}
-			</li>
-		{/each}
-	</ul>
-
 	<menu>
 		<button class="button danger" type="submit" formaction="?/delete">
 			Delete Event
@@ -65,6 +55,24 @@
 	<p class="error">{form.error}</p>
 {/if}
 
+<form class="participants" method="POST" action="?/add_participant" use:enhance>
+	<h2>Participants</h2>
+	<ul class="list">
+		{#each data.participants as participant (participant.id)}
+			<li>
+				{participant.name} ({participant.role}) &ndash; {participant.status}
+			</li>
+		{/each}
+	</ul>
+
+	<div class="input-group">
+		<label for="participant_name">Participant</label>
+		<input type="text" id="participant_name" name="participant_name" required />
+	</div>
+
+	<button class="button">Add</button>
+</form>
+
 <style>
 	menu {
 		display: flex;
@@ -74,5 +82,9 @@
 		.button.danger {
 			margin-right: auto;
 		}
+	}
+
+	.participants {
+		margin-top: 2rem;
 	}
 </style>

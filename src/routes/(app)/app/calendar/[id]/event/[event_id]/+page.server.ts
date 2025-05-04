@@ -121,5 +121,53 @@ export const actions: Actions = {
 		const date = form_data.get('date')
 
 		redirect(302, `/app/calendar/${calendar_id}/${date}`)
+	},
+
+	add_participant: async (event) => {
+		const user = event.locals.user
+		if (!user) error(401, 'Unauthorized')
+
+		const event_id = event.params.event_id
+
+		const form_data = await event.request.formData()
+		const participant_name = form_data.get('participant_name') as string | null
+
+		// TODO: show specific errors to the new form
+
+		if (!participant_name) {
+			return fail(400, { error: 'Participant name is required.' })
+		}
+
+		const user_query = sql`
+		SELECT id as participant_id from users WHERE name = ${participant_name}
+		`
+
+		const { rows: user_rows, err: err_user } = await query<{
+			participant_id: string
+		}>(user_query)
+		if (err_user) {
+			return fail(500, { error: 'Database error.' })
+		}
+
+		if (!user_rows.length) {
+			return fail(404, { error: 'User not found.' })
+		}
+
+		const { participant_id } = user_rows[0]
+
+		const insert_query = sql`
+		INSERT INTO event_participants (event_id, user_id, role, status)
+		VALUES (${event_id}, ${participant_id}, 'attendee', 'pending')`
+
+		const { err } = await query(insert_query)
+
+		if (err) {
+			const is_invited = err.code === 'SQLITE_CONSTRAINT_PRIMARYKEY'
+			return is_invited
+				? fail(400, { error: 'User is already invited.' })
+				: fail(500, { error: 'Database error.' })
+		}
+
+		return { success: true }
 	}
 }
