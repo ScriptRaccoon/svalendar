@@ -1,4 +1,5 @@
-import { faCalendar, faEye, faPenToSquare } from '@fortawesome/free-regular-svg-icons'
+import { faCheckCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
+import { faBan } from '@fortawesome/free-solid-svg-icons'
 
 export const EVENT_COLORS = [
 	{ id: 'red', value: 'hsl(0deg, 70%, 40%)' },
@@ -24,3 +25,9 @@ export const COLOR_IDS = EVENT_COLORS.map((color) => color.id) as [string, ...st
 export const DEFAULT_COLOR = 'blue'
 
 export const MINIMAL_EVENT_DURATION = 10 // in minutes
+
+export const PARTICIPATION_ICONS = {
+	pending: faQuestionCircle,
+	accepted: faCheckCircle,
+	declined: faBan
+} as const

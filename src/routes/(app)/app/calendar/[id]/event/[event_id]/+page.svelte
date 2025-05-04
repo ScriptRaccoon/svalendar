@@ -4,7 +4,9 @@
 	import { page } from '$app/state'
 	import EventInput from '$lib/components/EventInput.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
+	import { PARTICIPATION_ICONS } from '$lib/config.js'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
+	import Fa from 'svelte-fa'
 
 	let { data, form } = $props()
 	let event = $derived(data.event)
@@ -75,22 +77,33 @@
 <h2>Participants</h2>
 
 <form method="POST" action="?/accept_event" use:enhance>
-	<ul class="list">
+	<ul class="list no-bullets">
 		{#each data.participants as participant (participant.id)}
 			<li>
-				{participant.name} ({participant.role}) &ndash; {participant.status}
-				{#if participant.id === page.data.user?.id}
-					<button class="button" disabled={participant.status === 'accepted'}>
-						Accept
-					</button>
-					<button
-						class="button"
-						formaction="?/decline_event"
-						disabled={participant.status === 'declined'}
-					>
-						Decline
-					</button>
-				{/if}
+				<div class="participant_item">
+					<div>
+						<Fa icon={PARTICIPATION_ICONS[participant.status]} />
+						&nbsp;
+						{participant.name} ({participant.role})
+					</div>
+					<div>
+						{#if participant.id === page.data.user?.id}
+							<button
+								class="button"
+								formaction="?/decline_event"
+								disabled={participant.status === 'declined'}
+							>
+								Decline
+							</button>
+							<button
+								class="button"
+								disabled={participant.status === 'accepted'}
+							>
+								Accept
+							</button>
+						{/if}
+					</div>
+				</div>
 			</li>
 		{/each}
 	</ul>
@@ -116,5 +129,11 @@
 		.button.danger {
 			margin-right: auto;
 		}
+	}
+
+	.participant_item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
 </style>
