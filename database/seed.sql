@@ -44,7 +44,19 @@ CREATE INDEX IF NOT EXISTS idx_date ON events (event_date);
 CREATE TABLE IF NOT EXISTS event_visibilities (
     event_id TEXT NOT NULL,
     calendar_id TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (event_id, calendar_id),
     FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE,
     FOREIGN KEY (calendar_id) REFERENCES calendars (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS event_participants (
+    event_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    role TEXT DEFAULT "attendee" CHECK (role IN ('attendee', 'organizer')),
+    status TEXT DEFAULT "pending" CHECK (status IN ('pending', 'accepted', 'declined')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (event_id, user_id),
+    FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );

@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
-import type { CalendarEventEncrypted } from '$lib/server/types'
+import type { EventParticipant, CalendarEventEncrypted } from '$lib/server/types'
 import type { Actions } from './$types'
 import { fail } from '@sveltejs/kit'
 import { redirect } from '@sveltejs/kit'
@@ -32,13 +32,25 @@ export const load: PageServerLoad = async (event) => {
 		AND v.event_id = ${event_id}
     `
 
-	const { rows, err } = await query<CalendarEventEncrypted>(event_query)
-	if (err) error(500, 'Database error.')
-	if (!rows.length) error(404, 'Event not found.')
+	const { rows: rows_calendars, err: err_calendars } =
+		await query<CalendarEventEncrypted>(event_query)
+	if (err_calendars) error(500, 'Database error.')
+	if (!rows_calendars.length) error(404, 'Event not found.')
 
-	const calendar_event = decrypt_calendar_event(rows[0])
+	const calendar_event = decrypt_calendar_event(rows_calendars[0])
 
-	return { calendar_id, event: calendar_event }
+	const participants_query = sql`
+	SELECT u.id, u.name, p.role, p.status
+	FROM event_participants p
+	INNER JOIN users u ON u.id = p.user_id
+	WHERE p.event_id = ${event_id}`
+
+	const { rows: participants, err: err_participants } =
+		await query<EventParticipant>(participants_query)
+
+	if (err_participants) error(500, 'Database error.')
+
+	return { calendar_id, event: calendar_event, participants }
 }
 
 export const actions: Actions = {

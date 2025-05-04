@@ -36,6 +36,16 @@
 		readonly={false}
 	/>
 
+	<strong>Participants</strong>
+	<!-- TODO: make this list editable for organizers -->
+	<ul class="list">
+		{#each data.participants as participant (participant.id)}
+			<li>
+				{participant.name} ({participant.role}) &ndash; {participant.status}
+			</li>
+		{/each}
+	</ul>
+
 	<menu>
 		<button class="button danger" type="submit" formaction="?/delete">
 			Delete Event

@@ -71,7 +71,11 @@ export const actions: Actions = {
 		INSERT INTO event_visibilities (event_id, calendar_id)
 		VALUES (${event_id}, ${calendar_id})`
 
-		const { err } = await batch([insert_query, visibility_query])
+		const participants_query = sql`
+		INSERT INTO event_participants (event_id, user_id, role, status)
+		VALUES (${event_id}, ${user.id}, 'organizer', 'accepted')`
+
+		const { err } = await batch([insert_query, visibility_query, participants_query])
 
 		if (err) {
 			return fail(500, { error: 'Database error.', ...fields })

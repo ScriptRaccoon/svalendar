@@ -42,3 +42,10 @@ export type EventTitleEncrypted = Pick<
 	CalendarEventEncrypted,
 	'title_encrypted' | 'title_iv' | 'title_tag'
 >
+
+export type EventParticipant = {
+	id: string
+	name: string
+	role: 'attendee' | 'organizer'
+	status: 'pending' | 'accepted' | 'declined'
+}
