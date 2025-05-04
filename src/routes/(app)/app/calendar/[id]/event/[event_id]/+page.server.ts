@@ -47,7 +47,9 @@ export const load: PageServerLoad = async (event) => {
 	SELECT u.id, u.name, p.role, p.status
 	FROM event_participants p
 	INNER JOIN users u ON u.id = p.user_id
-	WHERE p.event_id = ${event_id}`
+	WHERE p.event_id = ${event_id}
+	ORDER BY u.name ASC
+	`
 
 	const { rows: participants, err: err_participants } =
 		await query<EventParticipant>(participants_query)
