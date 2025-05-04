@@ -60,3 +60,12 @@ CREATE TABLE IF NOT EXISTS event_participants (
     FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS blocked_users (
+    user_id TEXT NOT NULL,
+    blocked_user_id TEXT NOT NULL CHECK (user_id != blocked_user_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, blocked_user_id),
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (blocked_user_id) REFERENCES users (id) ON DELETE CASCADE
+);

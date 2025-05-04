@@ -191,11 +191,22 @@ export const actions: Actions = {
 		}
 
 		const user_query = sql`
-		SELECT id as participant_id from users WHERE name = ${participant_name}
+		SELECT
+			id as participant_id,
+			EXISTS (
+				SELECT 1
+				FROM blocked_users b
+				WHERE b.blocked_user_id = ${user.id} AND b.user_id = users.id
+			) as is_blocked
+		FROM
+			users
+		WHERE
+			name = ${participant_name}
 		`
 
 		const { rows: user_rows, err: err_user } = await query<{
 			participant_id: string
+			is_blocked: number // 0 or 1
 		}>(user_query)
 
 		if (err_user) {
@@ -206,7 +217,14 @@ export const actions: Actions = {
 			return fail(404, { action: 'add_participant', error: 'User not found.' })
 		}
 
-		const { participant_id } = user_rows[0]
+		const { participant_id, is_blocked } = user_rows[0]
+
+		if (is_blocked) {
+			return fail(403, {
+				action: 'add_participant',
+				error: 'You are not allowed to invite this user.'
+			})
+		}
 
 		const insert_query = sql`
 		INSERT INTO event_participants (event_id, user_id, role, status)

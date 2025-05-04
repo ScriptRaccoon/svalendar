@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
+	import IconButton from '$lib/components/IconButton.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import { theme } from '$lib/states.svelte'
-	import { faList, faSignOut } from '@fortawesome/free-solid-svg-icons'
+	import { faList, faSignOut, faXmark } from '@fortawesome/free-solid-svg-icons'
 
 	let { data, form } = $props()
 
@@ -95,6 +96,39 @@
 </section>
 
 <section class="card">
+	<h2>Blocked Users</h2>
+
+	<ul class="list">
+		{#each data.blocked_users as user (user.id)}
+			<li>
+				<div class="blocked_user">
+					<span>{user.name}</span>
+					<form action="?/unblock" method="POST" use:enhance>
+						<input type="hidden" name="blocked_user_id" value={user.id} />
+						<IconButton aria_label="unblock" icon={faXmark} small={true} />
+					</form>
+				</div>
+			</li>
+		{/each}
+	</ul>
+
+	<p>Block users to prevent them from inviting you to events.</p>
+
+	<form method="POST" action="?/block" use:enhance>
+		<div class="input-group">
+			<label for="blocked_username">Username</label>
+			<input type="text" id="blocked_username" name="blocked_username" required />
+		</div>
+
+		<button class="button" type="submit">Block User</button>
+	</form>
+
+	{#if form?.error && form.action === 'block'}
+		<p class="error">{form.error}</p>
+	{/if}
+</section>
+
+<section class="card">
 	<h2>My Data</h2>
 	<p>
 		To download your data in JSON format, follow
@@ -132,5 +166,10 @@
 <style>
 	.password-form {
 		margin-top: 1.5rem;
+	}
+
+	.blocked_user {
+		display: flex;
+		justify-content: space-between;
 	}
 </style>
