@@ -20,7 +20,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const event_query = sql`
     SELECT
-        e.id,
+        e.id, p.status,
 		title_encrypted, title_iv, title_tag,
 		description_encrypted, description_iv, description_tag,
 		location_encrypted, location_iv, location_tag,
@@ -29,6 +29,8 @@ export const load: PageServerLoad = async (event) => {
         event_visibilities v
 	INNER JOIN
 		events e ON e.id = v.event_id
+	INNER JOIN
+		event_participants p ON p.event_id = e.id AND p.user_id = ${user.id}
 	WHERE
 		v.calendar_id = ${calendar_id}
 		AND v.event_id = ${event_id}

@@ -15,7 +15,7 @@
 </script>
 
 <a
-	class="event"
+	class="event {event.status}"
 	href="/app/calendar/{calendar_id}/event/{event.id}"
 	style:--color={EVENTS_COLORS_DICTIONARY[event.color]}
 >
@@ -48,6 +48,14 @@
 		padding: 0.5rem;
 		border-radius: 0.25rem;
 		height: 100%;
+	}
+
+	.event.pending {
+		border: 2px dashed var(--font-color);
+	}
+
+	.event.declined {
+		opacity: 0.5;
 	}
 
 	.header {

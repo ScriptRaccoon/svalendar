@@ -37,7 +37,8 @@ export const GET: RequestHandler = async (event) => {
         start_time, end_time, event_date, color
     FROM
         events e
-    INNER JOIN calendars c ON c.id = e.calendar_id
+    INNER JOIN
+       calendars c ON c.id = e.calendar_id
     WHERE
         c.user_id = ${user.id}
     ORDER BY

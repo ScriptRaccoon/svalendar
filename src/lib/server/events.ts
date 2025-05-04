@@ -124,7 +124,7 @@ export async function get_validated_event(
 }
 
 export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarEvent {
-	const { id, start_time, end_time, event_date, color } = event
+	const { id, status, start_time, end_time, event_date, color } = event
 
 	const title = decrypt({
 		data: event.title_encrypted,
@@ -146,6 +146,7 @@ export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarE
 
 	return {
 		id,
+		status,
 		start_time,
 		end_time,
 		event_date,

@@ -10,8 +10,16 @@ export type Calendar = {
 	is_default_calendar: number // 0 or 1
 }
 
+export type EventParticipant = {
+	id: string
+	name: string
+	role: 'attendee' | 'organizer'
+	status: 'pending' | 'accepted' | 'declined'
+}
+
 export type CalendarEvent = {
 	id: string
+	status: EventParticipant['status']
 	title: string
 	description: string
 	location: string
@@ -23,6 +31,7 @@ export type CalendarEvent = {
 
 export type CalendarEventEncrypted = {
 	id: string
+	status: EventParticipant['status']
 	title_encrypted: string
 	title_iv: string
 	title_tag: string
@@ -42,10 +51,3 @@ export type EventTitleEncrypted = Pick<
 	CalendarEventEncrypted,
 	'title_encrypted' | 'title_iv' | 'title_tag'
 >
-
-export type EventParticipant = {
-	id: string
-	name: string
-	role: 'attendee' | 'organizer'
-	status: 'pending' | 'accepted' | 'declined'
-}
