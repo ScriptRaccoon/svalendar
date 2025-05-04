@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
+	import AppMenu from '$lib/components/AppMenu.svelte'
 	import IconButton from '$lib/components/IconButton.svelte'
-	import IconLink from '$lib/components/IconLink.svelte'
 	import { theme } from '$lib/states.svelte'
-	import { faList, faSignOut, faXmark } from '@fortawesome/free-solid-svg-icons'
+	import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 	let { data, form } = $props()
 
@@ -24,10 +24,7 @@
 
 <header class="app-header">
 	<h1>Account</h1>
-	<menu class="menu">
-		<IconLink href="/app/dashboard" icon={faList} aria_label="Dashboard" />
-		<IconLink href="/app/logout" icon={faSignOut} aria_label="Logout" preload="off" />
-	</menu>
+	<AppMenu />
 </header>
 
 <section class="card">

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation'
+	import AppMenu from '$lib/components/AppMenu.svelte'
 	import EventPreview from '$lib/components/EventPreview.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import type { Calendar, CalendarEvent } from '$lib/server/types'
@@ -8,7 +9,6 @@
 		faCaretLeft,
 		faCaretRight,
 		faCog,
-		faList,
 		faPlus
 	} from '@fortawesome/free-solid-svg-icons'
 	import { format, addDays } from 'date-fns'
@@ -69,9 +69,14 @@
 			<span class="calendar_name">{calendar.name}</span>
 		</h1>
 
-		<menu class="menu">
-			<IconLink href="/app/dashboard" icon={faList} aria_label="Dashboard" />
+		<AppMenu />
+	</header>
 
+	<header class="app-header">
+		<h2 class="no-margin">
+			{format(today, 'EEEE, dd MMMM yyyy')}
+		</h2>
+		<menu class="menu">
 			<IconLink
 				href="/app/calendar/{calendar.id}/settings"
 				aria_label="Settings"
@@ -84,14 +89,7 @@
 				aria_label="New Event"
 				icon={faPlus}
 			/>
-		</menu>
-	</header>
 
-	<header class="app-header">
-		<h2 class="no-margin">
-			{format(today, 'EEEE, dd MMMM yyyy')}
-		</h2>
-		<menu class="menu">
 			<IconLink
 				href="/app/calendar/{calendar.id}/{yesterday}"
 				icon={faCaretLeft}

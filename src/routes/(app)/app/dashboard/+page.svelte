@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
-	import IconLink from '$lib/components/IconLink.svelte'
-	import { faCalendar, faUser } from '@fortawesome/free-regular-svg-icons'
-	import { faSignOut } from '@fortawesome/free-solid-svg-icons'
+	import AppMenu from '$lib/components/AppMenu.svelte'
+	import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 	import Fa from 'svelte-fa'
 
 	let { form, data } = $props()
@@ -14,10 +13,7 @@
 
 <header class="app-header">
 	<h1>Dashboard</h1>
-	<menu class="menu">
-		<IconLink href="/app/account" icon={faUser} aria_label="Account" />
-		<IconLink href="/app/logout" icon={faSignOut} aria_label="Logout" preload="off" />
-	</menu>
+	<AppMenu />
 </header>
 
 <p>Hey, {data.name}!</p>
