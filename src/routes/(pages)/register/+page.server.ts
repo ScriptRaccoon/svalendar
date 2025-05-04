@@ -1,11 +1,10 @@
 import type { Actions } from './$types'
 import { fail } from '@sveltejs/kit'
-import { db } from '$lib/server/db'
+import { batch } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import { name_schema, password_schema } from '$lib/server/schemas'
 import { DEFAULT_COLOR } from '$lib/config'
 import sql from 'sql-template-tag'
-import { LibsqlError } from '@libsql/client'
 import { snowflake } from '$lib/server/snowflake'
 import { get_error_messages } from '$lib/server/schemas'
 
@@ -40,33 +39,28 @@ export const actions: Actions = {
 
 		const password_hash = await bcrypt.hash(password!, 10)
 
-		try {
-			const user_id = await snowflake.generate()
-			const calendar_id = await snowflake.generate()
+		const user_id = await snowflake.generate()
+		const calendar_id = await snowflake.generate()
 
-			const user_query = sql`
+		const user_query = sql`
 			INSERT INTO users (id, name, password_hash)
 			VALUES (${user_id}, ${name}, ${password_hash})`
 
-			const calendar_query = sql`
+		const calendar_query = sql`
 			INSERT INTO calendars
 				(id, name, user_id, default_color, is_default_calendar)
 			VALUES
 				(${calendar_id}, 'Default', ${user_id}, ${DEFAULT_COLOR}, TRUE)`
 
-			await db.batch([
-				{ sql: user_query.sql, args: user_query.values as any[] },
-				{ sql: calendar_query.sql, args: calendar_query.values as any[] }
-			])
+		const { err } = await batch([user_query, calendar_query])
 
-			return { success: true, name }
-		} catch (err) {
-			console.error(err)
-			const name_is_taken =
-				err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_UNIQUE'
+		if (err) {
+			const name_is_taken = err.code === 'SQLITE_CONSTRAINT_UNIQUE'
 			return name_is_taken
 				? fail(400, { error: 'User with that name already exists.', name })
 				: fail(500, { error: 'Database error.', name })
 		}
+
+		return { success: true, name }
 	}
 }

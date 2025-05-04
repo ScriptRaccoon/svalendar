@@ -2,7 +2,7 @@ import { DB_AUTH_TOKEN, DB_URL } from '$env/static/private'
 import { createClient, LibsqlError } from '@libsql/client'
 import type { Sql } from 'sql-template-tag'
 
-export const db = createClient({
+const db = createClient({
 	url: DB_URL,
 	authToken: DB_AUTH_TOKEN
 })
@@ -20,5 +20,24 @@ export async function query<T>(query: Sql) {
 	} catch (err) {
 		console.error(err)
 		return { rows: null, err: err as LibsqlError }
+	}
+}
+
+/**
+ * Small wrapper around db.batch to handle errors
+ * and use sql templates.
+ */
+export async function batch(queries: Sql[]) {
+	try {
+		await db.batch(
+			queries.map((query) => ({
+				sql: query.sql,
+				args: query.values as any[]
+			}))
+		)
+		return { err: null }
+	} catch (err) {
+		console.error(err)
+		return { err: err as LibsqlError }
 	}
 }

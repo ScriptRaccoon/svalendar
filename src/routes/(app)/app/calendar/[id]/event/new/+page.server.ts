@@ -1,6 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
-import { db } from '$lib/server/db'
+import { batch } from '$lib/server/db'
 import { encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
 import { get_validated_event } from '$lib/server/events'
@@ -71,13 +71,9 @@ export const actions: Actions = {
 		INSERT INTO event_visibilities (event_id, calendar_id)
 		VALUES (${event_id}, ${calendar_id})`
 
-		try {
-			await db.batch([
-				{ sql: insert_query.sql, args: insert_query.values as any[] },
-				{ sql: visibility_query.sql, args: visibility_query.values as any[] }
-			])
-		} catch (err) {
-			console.error('failed to create event', err)
+		const { err } = await batch([insert_query, visibility_query])
+
+		if (err) {
 			return fail(500, { error: 'Database error.', ...fields })
 		}
 
