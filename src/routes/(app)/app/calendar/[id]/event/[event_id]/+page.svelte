@@ -32,13 +32,13 @@
 
 <form method="POST" action="?/update" use:enhance>
 	<EventInput
-		title={form?.title ?? event.title}
-		description={form?.description ?? event.description}
-		start_time={form?.start_time ?? event.start_time}
-		end_time={form?.end_time ?? event.end_time}
-		date={form?.date ?? event.event_date}
-		location={form?.location ?? event.location}
-		color={form?.color ?? event.color}
+		title={event.title}
+		description={event.description}
+		start_time={event.start_time}
+		end_time={event.end_time}
+		date={event.event_date}
+		location={event.location}
+		color={event.color}
 		readonly={my_role === 'attendee'}
 	/>
 
@@ -64,13 +64,11 @@
 			</button>
 		</menu>
 	{/if}
+
+	{#if form?.action === 'update' && form.error}
+		<p class="error">{form.error}</p>
+	{/if}
 </form>
-
-{#if form?.error}
-	<p class="error">{form.error}</p>
-{/if}
-
-<!-- TOOD: improve styling  -->
 
 <section class="participants">
 	<h2>Participants</h2>
@@ -110,6 +108,9 @@
 				</li>
 			{/each}
 		</ul>
+		{#if form?.action === 'respond' && form.error}
+			<p class="error">{form.error}</p>
+		{/if}
 	</form>
 
 	{#if my_role == 'organizer'}
@@ -125,6 +126,10 @@
 			</div>
 
 			<button class="button">Add</button>
+
+			{#if form?.action === 'add_participant' && form.error}
+				<p class="error">{form.error}</p>
+			{/if}
 		</form>
 	{/if}
 </section>

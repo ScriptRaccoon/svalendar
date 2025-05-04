@@ -7,7 +7,7 @@ import { fail } from '@sveltejs/kit'
 import { redirect } from '@sveltejs/kit'
 import { encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
-import { decrypt_calendar_event, get_validated_event } from '$lib/server/events'
+import { decrypt_calendar_event, get_role, get_validated_event } from '$lib/server/events'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -77,10 +77,16 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		// TODO: check if user is organizer of event
-
 		const calendar_id = event.params.id
 		const event_id = event.params.event_id
+
+		const role = await get_role(user.id, event_id)
+		if (role !== 'organizer') {
+			return fail(403, {
+				action: 'update',
+				error: 'You are not allowed to edit this event.'
+			})
+		}
 
 		const form_data = await event.request.formData()
 
@@ -91,7 +97,7 @@ export const actions: Actions = {
 		)
 
 		if (error_message) {
-			return fail(status, { error: error_message, ...fields })
+			return fail(status, { action: 'update', error: error_message })
 		}
 
 		const encrypted_title = encrypt(fields.title)
@@ -119,7 +125,7 @@ export const actions: Actions = {
 		`
 
 		const { err } = await query(events_query)
-		if (err) return fail(500, { error: 'Database error.', ...fields })
+		if (err) return fail(500, { action: 'update', error: 'Database error.' })
 
 		redirect(302, `/app/calendar/${calendar_id}/${fields.date}`)
 	},
@@ -128,17 +134,28 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		// TODO: check if user is organizer of event
-
 		const calendar_id = event.params.id
 		const event_id = event.params.event_id
+
+		const role = await get_role(user.id, event_id)
+		if (role !== 'organizer') {
+			return fail(403, {
+				action: 'update',
+				error: 'You are not allowed to delete this event.'
+			})
+		}
 
 		const delete_query = sql`
         DELETE FROM events
         WHERE id = ${event_id}`
 
 		const { err } = await query(delete_query)
-		if (err) return fail(500, { error: 'Database error.' })
+		if (err) {
+			return fail(500, {
+				action: 'update',
+				error: 'Database error.'
+			})
+		}
 
 		const form_data = await event.request.formData()
 		const date = form_data.get('date')
@@ -150,17 +167,24 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		// TODO: check if user is organizer of event
-
 		const event_id = event.params.event_id
+
+		const role = await get_role(user.id, event_id)
+		if (role !== 'organizer') {
+			return fail(403, {
+				action: 'add_participant',
+				error: 'You are not allowed to add participants.'
+			})
+		}
 
 		const form_data = await event.request.formData()
 		const participant_name = form_data.get('participant_name') as string | null
 
-		// TODO: show specific errors to the new form
-
 		if (!participant_name) {
-			return fail(400, { error: 'Participant name is required.' })
+			return fail(400, {
+				action: 'add_participant',
+				error: 'Participant name is required.'
+			})
 		}
 
 		const user_query = sql`
@@ -170,12 +194,13 @@ export const actions: Actions = {
 		const { rows: user_rows, err: err_user } = await query<{
 			participant_id: string
 		}>(user_query)
+
 		if (err_user) {
-			return fail(500, { error: 'Database error.' })
+			return fail(500, { action: 'add_participant', error: 'Database error.' })
 		}
 
 		if (!user_rows.length) {
-			return fail(404, { error: 'User not found.' })
+			return fail(404, { action: 'add_participant', error: 'User not found.' })
 		}
 
 		const { participant_id } = user_rows[0]
@@ -196,8 +221,14 @@ export const actions: Actions = {
 		if (err) {
 			const is_invited = err.code === 'SQLITE_CONSTRAINT_PRIMARYKEY'
 			return is_invited
-				? fail(400, { error: 'User is already invited.' })
-				: fail(500, { error: 'Database error.' })
+				? fail(400, {
+						action: 'add_participant',
+						error: 'User is already invited.'
+					})
+				: fail(500, {
+						action: 'add_participant',
+						error: 'Database error.'
+					})
 		}
 
 		return { success: true }
@@ -216,7 +247,7 @@ export const actions: Actions = {
 
 		const { err } = await query(accept_query)
 		if (err) {
-			return fail(500, { error: 'Database error.' })
+			return fail(500, { action: 'respond', error: 'Database error.' })
 		}
 
 		return { success: true }
@@ -235,7 +266,7 @@ export const actions: Actions = {
 
 		const { err } = await query(reject_query)
 		if (err) {
-			return fail(500, { error: 'Database error.' })
+			return fail(500, { action: 'respond', error: 'Database error.' })
 		}
 
 		return { success: true }
@@ -245,11 +276,16 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		// TODO: check if user is attendee or organizer.
-		// if organizer, find another organizer and set them as the new organizer
-
 		const event_id = event.params.event_id
 		const calendar_id = event.params.id
+
+		const role = await get_role(user.id, event_id)
+		if (role === 'organizer') {
+			return fail(403, {
+				action: 'update',
+				error: 'Organizers can only delete events.'
+			})
+		}
 
 		const participants_query = sql`
 		DELETE FROM event_participants
@@ -262,7 +298,7 @@ export const actions: Actions = {
 		const { err } = await batch([participants_query, visibility_query])
 
 		if (err) {
-			return fail(500, { error: 'Database error.' })
+			return fail(500, { action: 'update', error: 'Database error.' })
 		}
 
 		redirect(302, `/app/calendar/${calendar_id}`)

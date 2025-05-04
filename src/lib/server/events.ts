@@ -2,7 +2,12 @@ import { COLOR_IDS, MINIMAL_EVENT_DURATION } from '$lib/config'
 import sql from 'sql-template-tag'
 import { date_schema, time_schema, get_error_messages } from './schemas'
 import { query } from './db'
-import type { CalendarEvent, CalendarEventEncrypted, EventTitleEncrypted } from './types'
+import type {
+	CalendarEvent,
+	CalendarEventEncrypted,
+	EventParticipant,
+	EventTitleEncrypted
+} from './types'
 import { decrypt } from './encryption'
 
 export async function get_validated_event(
@@ -155,4 +160,17 @@ export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarE
 		description,
 		location
 	}
+}
+
+export async function get_role(
+	user_id: string,
+	event_id: string
+): Promise<EventParticipant['role'] | null> {
+	const role_query = sql`
+	SELECT role FROM event_participants
+	WHERE event_id = ${event_id} AND user_id = ${user_id}`
+
+	const { rows } = await query<{ role: EventParticipant['role'] }>(role_query)
+
+	return rows?.length ? rows[0].role : null
 }
