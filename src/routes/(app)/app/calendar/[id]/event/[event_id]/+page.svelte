@@ -8,14 +8,17 @@
 
 	let { data, form } = $props()
 	let event = $derived(data.event)
+	let my_role = $derived(data.my_role)
+
+	let title = $derived(my_role === 'organizer' ? 'Edit Event' : 'Event Details')
 </script>
 
 <svelte:head>
-	<title>Edit Event</title>
+	<title>{title}</title>
 </svelte:head>
 
 <header class="app-header">
-	<h1>Edit Event</h1>
+	<h1>{title}</h1>
 	<menu class="menu">
 		<IconLink
 			href={`/app/calendar/${data.calendar_id}/${event.event_date}`}
@@ -34,22 +37,31 @@
 		date={form?.date ?? event.event_date}
 		location={form?.location ?? event.location}
 		color={form?.color ?? event.color}
-		readonly={false}
+		readonly={my_role === 'attendee'}
 	/>
 
-	<menu>
-		<button class="button danger" type="submit" formaction="?/delete">
-			Delete Event
-		</button>
-		<button
-			class="button"
-			type="button"
-			onclick={() => goto(`/app/calendar/${data.calendar_id}/${event.event_date}`)}
-		>
-			Cancel
-		</button>
-		<button class="button" type="submit">Save</button>
-	</menu>
+	{#if my_role === 'organizer'}
+		<menu>
+			<button class="button danger" type="submit" formaction="?/delete">
+				Delete Event
+			</button>
+			<button
+				class="button"
+				type="button"
+				onclick={() =>
+					goto(`/app/calendar/${data.calendar_id}/${event.event_date}`)}
+			>
+				Cancel
+			</button>
+			<button class="button" type="submit">Save</button>
+		</menu>
+	{:else}
+		<menu>
+			<button class="button danger" type="submit" formaction="?/remove">
+				Remove from Calendar
+			</button>
+		</menu>
+	{/if}
 </form>
 
 {#if form?.error}
@@ -84,14 +96,16 @@
 	</ul>
 </form>
 
-<form method="POST" action="?/add_participant" use:enhance>
-	<div class="input-group">
-		<label for="participant_name">Participant</label>
-		<input type="text" id="participant_name" name="participant_name" required />
-	</div>
+{#if my_role == 'organizer'}
+	<form method="POST" action="?/add_participant" use:enhance>
+		<div class="input-group">
+			<label for="participant_name">Participant</label>
+			<input type="text" id="participant_name" name="participant_name" required />
+		</div>
 
-	<button class="button">Add</button>
-</form>
+		<button class="button">Add</button>
+	</form>
+{/if}
 
 <style>
 	menu {

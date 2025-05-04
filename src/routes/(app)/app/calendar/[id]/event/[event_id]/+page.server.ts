@@ -16,6 +16,8 @@ export const load: PageServerLoad = async (event) => {
 	const calendar_id = event.params.id
 	const event_id = event.params.event_id
 
+	// TODO: use batches
+
 	const event_query = sql`
     SELECT
         e.id,
@@ -50,13 +52,28 @@ export const load: PageServerLoad = async (event) => {
 
 	if (err_participants) error(500, 'Database error.')
 
-	return { calendar_id, event: calendar_event, participants }
+	const my_role_query = sql`
+	SELECT role FROM event_participants
+	WHERE event_id = ${event_id} AND user_id = ${user.id}
+	`
+
+	const { rows: my_role_rows } = await query<{ role: EventParticipant['role'] }>(
+		my_role_query
+	)
+
+	if (!my_role_rows?.length) error(500, 'Database error.')
+
+	const { role: my_role } = my_role_rows[0]
+
+	return { calendar_id, event: calendar_event, participants, my_role }
 }
 
 export const actions: Actions = {
 	update: async (event) => {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
+
+		// TODO: check if user is organizer of event
 
 		const calendar_id = event.params.id
 		const event_id = event.params.event_id
@@ -107,6 +124,8 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
+		// TODO: check if user is organizer of event
+
 		const calendar_id = event.params.id
 		const event_id = event.params.event_id
 
@@ -126,6 +145,8 @@ export const actions: Actions = {
 	add_participant: async (event) => {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
+
+		// TODO: check if user is organizer of event
 
 		const event_id = event.params.event_id
 
@@ -214,5 +235,32 @@ export const actions: Actions = {
 		}
 
 		return { success: true }
+	},
+
+	remove: async (event) => {
+		const user = event.locals.user
+		if (!user) error(401, 'Unauthorized')
+
+		// TODO: check if user is attendee or organizer.
+		// if organizer, find another organizer and set them as the new organizer
+
+		const event_id = event.params.event_id
+		const calendar_id = event.params.id
+
+		const participants_query = sql`
+		DELETE FROM event_participants
+		WHERE event_id = ${event_id} AND user_id = ${user.id}`
+
+		const visibility_query = sql`
+		DELETE FROM event_visibilities
+		WHERE event_id = ${event_id} AND calendar_id = ${calendar_id}`
+
+		const { err } = await batch([participants_query, visibility_query])
+
+		if (err) {
+			return fail(500, { error: 'Database error.' })
+		}
+
+		redirect(302, `/app/calendar/${calendar_id}`)
 	}
 }
