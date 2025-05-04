@@ -55,7 +55,6 @@ export const load: PageServerLoad = async (event) => {
 
 	const { rows, err: err_events } = await query<CalendarEventEncrypted>(events_query)
 	if (err_events) error(500, 'Database error.')
-	console.info('rows', rows)
 
 	const events: CalendarEvent[] = rows.map(decrypt_calendar_event)
 
