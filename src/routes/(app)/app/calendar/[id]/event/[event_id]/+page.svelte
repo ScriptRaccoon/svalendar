@@ -68,7 +68,7 @@
 	{/if}
 
 	{#if form?.action === 'update' && form.error}
-		<p class="error">{form.error}</p>
+		<div class="error">{form.error}</div>
 	{/if}
 </form>
 
@@ -130,7 +130,7 @@
 			<button class="button">Add</button>
 
 			{#if form?.action === 'add_participant' && form.error}
-				<p class="error">{form.error}</p>
+				<div class="error">{form.error}</div>
 			{/if}
 		</form>
 	{/if}

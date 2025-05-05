@@ -39,9 +39,6 @@
 			</li>
 		{/each}
 	</ul>
-	{#if form?.action === 'revoke' && form?.error}
-		<p class="error">{form.error}</p>
-	{/if}
 </section>
 
 <section class="card">
@@ -56,7 +53,7 @@
 	</form>
 
 	{#if form?.action === 'create' && form?.error}
-		<p class="error">{form.error}</p>
+		<div class="error">{form.error}</div>
 	{/if}
 </section>
 

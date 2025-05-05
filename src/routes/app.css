@@ -181,7 +181,13 @@ input[type='number'] {
 }
 
 .error {
+	margin-top: 1rem;
 	color: var(--error-color);
+}
+
+.message {
+	margin-top: 1rem;
+	color: var(--title-color);
 }
 
 .secondary {

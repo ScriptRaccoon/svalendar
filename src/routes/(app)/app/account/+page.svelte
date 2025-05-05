@@ -40,11 +40,11 @@
 	</form>
 
 	{#if form?.error && form.action === 'name'}
-		<p class="error">{form.error}</p>
+		<div class="error">{form.error}</div>
 	{/if}
 
 	{#if form?.success && form.action === 'name'}
-		<p>Name updated successfully.</p>
+		<div class="message">Name updated successfully.</div>
 	{/if}
 
 	<form class="password-form" method="POST" action="?/password" use:enhance>
@@ -73,11 +73,11 @@
 	</form>
 
 	{#if form?.error && form.action === 'password'}
-		<p class="error">{form.error}</p>
+		<div class="error">{form.error}</div>
 	{/if}
 
 	{#if form?.success && form.action === 'password'}
-		<p>Password updated successfully.</p>
+		<div class="message">Password updated successfully.</div>
 	{/if}
 </section>
 
@@ -115,7 +115,7 @@
 		</ul>
 
 		{#if form?.error && form.action === 'template'}
-			<p class="error">{form.error}</p>
+			<div class="error">{form.error}</div>
 		{/if}
 	{:else}
 		<p>No templates created. Edit an event to save it as a template for later use.</p>
@@ -151,16 +151,16 @@
 	</form>
 
 	{#if form?.error && form.action === 'block'}
-		<p class="error">{form.error}</p>
+		<div class="error">{form.error}</div>
 	{/if}
 </section>
 
 <section class="card">
 	<h2>My Data</h2>
-	<p>
+	<div>
 		To download your data in JSON format, follow
 		<a href="/app/account/mydata">this link</a>.
-	</p>
+	</div>
 </section>
 
 <section class="card">
@@ -186,7 +186,7 @@
 	</form>
 
 	{#if form?.error && form.action === 'delete'}
-		<p class="error">{form.error}</p>
+		<div class="error">{form.error}</div>
 	{/if}
 </section>
 

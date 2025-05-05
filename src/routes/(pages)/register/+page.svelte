@@ -48,9 +48,11 @@
 </form>
 
 {#if form?.error}
-	<p class="error">{form.error}</p>
+	<div class="error">{form.error}</div>
 {/if}
 
 {#if form?.success}
-	<p>Your account has been created. You can now <a href="/login">login</a>.</p>
+	<div class="message">
+		Your account has been created. You can now <a href="/login">login</a>.
+	</div>
 {/if}

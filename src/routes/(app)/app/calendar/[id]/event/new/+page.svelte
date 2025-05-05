@@ -65,7 +65,7 @@
 </form>
 
 {#if form?.error}
-	<p class="error">{form.error}</p>
+	<div class="error">{form.error}</div>
 {/if}
 
 <style>

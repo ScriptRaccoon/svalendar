@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
 	import ColorPicker from '$lib/components/ColorPicker.svelte'
-	import IconButton from '$lib/components/IconButton.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
@@ -64,11 +63,11 @@
 	</form>
 
 	{#if form?.error && form.action === 'edit'}
-		<p class="error">{form.error}</p>
+		<div class="error">{form.error}</div>
 	{/if}
 
 	{#if form?.success && form.action === 'edit'}
-		<p>Calendar updated successfully.</p>
+		<div class="message">Calendar updated successfully.</div>
 	{/if}
 </section>
 
@@ -107,7 +106,7 @@
 		</form>
 
 		{#if form?.error && form.action === 'delete'}
-			<p class="error">{form.error}</p>
+			<div class="error">{form.error}</div>
 		{/if}
 	</section>
 {/if}
