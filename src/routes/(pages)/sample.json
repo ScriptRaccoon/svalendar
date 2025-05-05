@@ -1,6 +1,5 @@
 {
 	"id": "7324016421137027072",
-	"calendar_id": "7324001482313830400",
 	"title_encrypted": "7kXuvZWyDE4GEiZfo/g=",
 	"title_iv": "kI0Bms8Gm/J2BN4C",
 	"title_tag": "SnotrLyrV9TOE2gSAka8cA==",
@@ -14,5 +13,6 @@
 	"start_time": "18:00",
 	"end_time": "18:30",
 	"created_at": "2025-04-25 12:11:36",
-	"color": "red"
+	"color": "red",
+	"link": "https://www.humaneworld.org"
 }

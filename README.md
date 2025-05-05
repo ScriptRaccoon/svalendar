@@ -7,10 +7,12 @@ Svalendar is a calendar application for managing events and schedules.
 ## Features
 
 - **Mobile-Friendly**: Responsive design for mobile, tablet, and desktop devices.
+- **Event Sharing**: Share events with other users who can accept or decline invitations.
+- **Multiple Calendars**: Supports creating and managing separate calendars.
+- **Event Templates**: Create reusable templates to quickly set up new events.
 - **No Vendor Lock-In**: Does not rely on third-party services like Google or Microsoft.
 - **Backup to JSON**: Allows exporting calendars to a JSON file.
-- **Multiple Calendars**: Supports creating and managing separate calendars.
-- **Calendar Sharing**: Enables sharing calendars with other users with three permission levels: _read_, _write_, and _owner_.
+- **Block Users**: Block specific users to prevent receiving event invites from them.
 
 ## Tech Stack
 
@@ -18,6 +20,4 @@ Svalendar is a calendar application for managing events and schedules.
 - **Database**: Uses SQLite for data storage.
 - **Authentication**: Self-made authentication system for user management.
 
-## Favicon Source
-
-<https://loading.io/icon/cgof25>
+Favicon Source: <https://loading.io/icon/cgof25>

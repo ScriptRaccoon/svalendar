@@ -24,6 +24,18 @@
 			mobile devices, tablets, and desktops.
 		</li>
 		<li>
+			<strong>Event Sharing:</strong> Share events with other users, who can accept or
+			decline invitations.
+		</li>
+		<li>
+			<strong>Multiple Calendars:</strong> Create and manage separate calendars for different
+			purposes.
+		</li>
+		<li>
+			<strong>Event Templates:</strong> Create reusable templates to quickly set up new
+			events.
+		</li>
+		<li>
 			<strong>Open Source:</strong> The code is open for anyone to view, contribute
 			to, or host themselves.
 			<a href="http://github.com/ScriptRaccoon/svalendar" target="_blank"
@@ -39,8 +51,8 @@
 			easy data portability.
 		</li>
 		<li>
-			<strong>Multiple Calendars:</strong> Create and manage separate calendars for different
-			purposes.
+			<strong>Block Users:</strong> Block specific users to prevent receiving event invites
+			from them.
 		</li>
 	</ul>
 </section>
