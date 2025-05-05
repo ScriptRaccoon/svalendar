@@ -43,12 +43,9 @@
 		readonly={my_role === 'attendee'}
 	/>
 
-	{#if my_role === 'organizer'}
-		<menu>
-			<button class="button danger" formaction="?/delete"> Delete Event </button>
-			<button class="button" formaction="?/save_template">
-				Save as Template
-			</button>
+	<menu class="update-menu">
+		{#if my_role === 'organizer'}
+			<button class="button" type="submit">Save</button>
 			<button
 				class="button"
 				type="button"
@@ -57,22 +54,23 @@
 			>
 				Cancel
 			</button>
-			<button class="button" type="submit">Save</button>
-		</menu>
-	{:else}
-		<menu>
+			<button class="button" formaction="?/save_template">
+				Save as Template
+			</button>
+			<button class="button danger" formaction="?/delete"> Delete Event </button>
+		{:else}
 			<button class="button danger" type="submit" formaction="?/remove">
 				Remove from Calendar
 			</button>
-		</menu>
-	{/if}
+		{/if}
+	</menu>
 
 	{#if form?.action === 'update' && form.error}
 		<div class="error">{form.error}</div>
 	{/if}
 </form>
 
-<section class="participants">
+<section>
 	<h2>Participants</h2>
 
 	<form method="POST" action="?/accept_event" use:enhance>
@@ -137,9 +135,9 @@
 </section>
 
 <style>
-	menu {
+	.update-menu {
 		display: flex;
-		justify-content: space-between;
+		flex-direction: row-reverse;
 		gap: 0.5rem;
 
 		.button.danger {
@@ -147,7 +145,7 @@
 		}
 	}
 
-	.participants {
+	section {
 		margin-top: 2.5rem;
 	}
 
