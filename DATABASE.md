@@ -35,13 +35,13 @@ erDiagram
     TEXT link
     TIMESTAMP created_at
   }
-  event_visibilites {
+  event_visibilities {
     TEXT event_id PK, FK
     TEXT calendar_id PK, FK
     TIMESTAMP created_at
   }
-  event_visibilites }o--|| events : "event_id"
-  event_visibilites }o--|| calendars : "calendar_id"
+  event_visibilities }o--|| events : "event_id"
+  event_visibilities }o--|| calendars : "calendar_id"
   event_participants {
     TEXT event_id PK, FK
     TEXT user_id PK, FK
@@ -58,4 +58,24 @@ erDiagram
   }
   blocked_users }o--|| users : "user_id"
   blocked_users }o--|| users : "blocked_user_id"
+  templates {
+    TEXT id PK
+    TEXT user_id FK
+    TEXT title_encrypted
+    TEXT title_iv
+    TEXT title_tag
+    TEXT description_encrypted
+    TEXT description_iv
+    TEXT description_tag
+    TEXT location_encrypted
+    TEXT location_iv
+    TEXT location_tag
+    TEXT start_time
+    TEXT end_time
+    TEXT color
+    TEXT link
+    INTEGER used_count
+    TIMESTAMP created_at
+  }
+  templates }o--|| users : "user_id"
 ```
