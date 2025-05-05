@@ -70,3 +70,25 @@ CREATE TABLE IF NOT EXISTS blocked_users (
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (blocked_user_id) REFERENCES users (id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS templates (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    title_encrypted TEXT NOT NULL,
+    title_iv TEXT NOT NULL,
+    title_tag TEXT NOT NULL,
+    description_encrypted TEXT NOT NULL,
+    description_iv TEXT NOT NULL,
+    description_tag TEXT NOT NULL,
+    location_encrypted TEXT NOT NULL,
+    location_iv TEXT NOT NULL,
+    location_tag TEXT NOT NULL,
+    start_time TEXT NOT NULL,
+    end_time TEXT NOT NULL,
+    color TEXT NOT NULL,
+    link TEXT NOT NULL,
+    used_count INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_template_user_id ON templates (user_id);

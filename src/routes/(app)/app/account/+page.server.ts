@@ -5,6 +5,7 @@ import { batch, query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import sql from 'sql-template-tag'
 import { get_error_messages } from '$lib/server/schemas'
+import { decrypt } from '$lib/server/encryption'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -18,19 +19,44 @@ export const load: PageServerLoad = async (event) => {
 	INNER JOIN blocked_users ON users.id = blocked_users.blocked_user_id
 	WHERE blocked_users.user_id = ${user.id}`
 
+	const templates_query = sql`
+	SELECT id, title_encrypted, title_iv, title_tag
+	FROM templates
+	WHERE user_id = ${user.id}
+	ORDER BY created_at DESC
+	`
+
 	const { results, err } = await batch<
-		[{ name: string }[], { id: string; name: string }[]]
-	>([username_query, blocked_users_query])
+		[
+			{ name: string }[],
+			{ id: string; name: string }[],
+			{
+				id: string
+				title_encrypted: string
+				title_iv: string
+				title_tag: string
+			}[]
+		]
+	>([username_query, blocked_users_query, templates_query])
 
 	if (err) error(500, 'Database error.')
 
-	const [users, blocked_users] = results
+	const [users, blocked_users, encrypted_templates] = results
 
 	if (!users.length) error(404, 'User not found.')
 
 	const { name } = users[0]
 
-	return { name, blocked_users }
+	const templates = encrypted_templates.map((template) => ({
+		id: template.id,
+		title: decrypt({
+			data: template.title_encrypted,
+			iv: template.title_iv,
+			tag: template.title_tag
+		})
+	}))
+
+	return { name, blocked_users, templates }
 }
 
 export const actions: Actions = {
@@ -187,5 +213,26 @@ export const actions: Actions = {
 		if (err) return fail(500, { action: 'block', error: 'Database error.' })
 
 		return { action: 'block', success: true }
+	},
+
+	remove_template: async (event) => {
+		const user = event.locals.user
+		if (!user) error(401, 'Unauthorized')
+
+		const form_data = await event.request.formData()
+		const template_id = form_data.get('template_id') as string | null
+
+		if (!template_id) {
+			return fail(400, { action: 'template', error: 'No template id provided' })
+		}
+
+		const remove_template_query = sql`
+		DELETE FROM templates
+		WHERE id = ${template_id} AND user_id = ${user.id}`
+
+		const { err } = await query(remove_template_query)
+		if (err) return fail(500, { action: 'template', error: 'Database error.' })
+
+		return { action: 'template', success: true }
 	}
 }

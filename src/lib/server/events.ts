@@ -5,14 +5,16 @@ import { query } from './db'
 import type {
 	CalendarEvent,
 	CalendarEventEncrypted,
+	EncryptedEventTemplate,
 	EventParticipant,
+	EventTemplate,
 	EventTitleEncrypted
 } from './types'
 import { decrypt } from './encryption'
 
 export async function get_validated_event(
 	form_data: FormData,
-	calendar_id: string,
+	calendar_id: string | null = null, // null for templates
 	event_id: string | null = null // is null for new events
 ) {
 	const title = form_data.get('title') as string
@@ -98,6 +100,10 @@ export async function get_validated_event(
 		}
 	}
 
+	if (!calendar_id) {
+		return { status: 200, error_message: null, fields }
+	}
+
 	const overlap_query = sql`
     SELECT
         title_encrypted, title_iv, title_tag
@@ -166,6 +172,39 @@ export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarE
 		start_time,
 		end_time,
 		event_date,
+		color,
+		link,
+		title,
+		description,
+		location
+	}
+}
+
+export function decrypt_event_template(event: EncryptedEventTemplate): EventTemplate {
+	const { id, start_time, end_time, color, link } = event
+
+	const title = decrypt({
+		data: event.title_encrypted,
+		iv: event.title_iv,
+		tag: event.title_tag
+	})
+
+	const description = decrypt({
+		data: event.description_encrypted,
+		iv: event.description_iv,
+		tag: event.description_tag
+	})
+
+	const location = decrypt({
+		data: event.location_encrypted,
+		iv: event.location_iv,
+		tag: event.location_tag
+	})
+
+	return {
+		id,
+		start_time,
+		end_time,
 		color,
 		link,
 		title,

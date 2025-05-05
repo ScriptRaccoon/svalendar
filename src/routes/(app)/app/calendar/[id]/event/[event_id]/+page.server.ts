@@ -8,6 +8,7 @@ import { redirect } from '@sveltejs/kit'
 import { encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
 import { decrypt_calendar_event, get_role, get_validated_event } from '$lib/server/events'
+import { snowflake } from '$lib/server/snowflake'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -321,6 +322,61 @@ export const actions: Actions = {
 
 		if (err) {
 			return fail(500, { action: 'update', error: 'Database error.' })
+		}
+
+		redirect(302, `/app/calendar/${calendar_id}`)
+	},
+
+	save_template: async (event) => {
+		const user = event.locals.user
+		if (!user) error(401, 'Unauthorized')
+
+		const calendar_id = event.params.id
+
+		const form_data = await event.request.formData()
+
+		const { status, fields, error_message } = await get_validated_event(form_data)
+
+		if (error_message) {
+			return fail(status, { action: 'update', error: error_message })
+		}
+
+		const template_id = await snowflake.generate()
+
+		const encrypted_title = encrypt(fields.title)
+		const encrypted_description = encrypt(fields.description)
+		const encrypted_location = encrypt(fields.location)
+
+		const template_query = sql`
+        INSERT INTO templates
+			(id, user_id,
+			title_encrypted, title_iv, title_tag,
+			description_encrypted, description_iv, description_tag,		
+			location_encrypted, location_iv, location_tag,
+			start_time, end_time, color, link)
+        VALUES
+            (${template_id},
+			${user.id},
+			${encrypted_title.data},
+			${encrypted_title.iv},
+			${encrypted_title.tag},
+			${encrypted_description.data},
+			${encrypted_description.iv},
+			${encrypted_description.tag},
+			${encrypted_location.data},
+			${encrypted_location.iv},
+			${encrypted_location.tag},
+			${fields.start_time},
+			${fields.end_time},
+			${fields.color},
+			${fields.link})`
+
+		const { err } = await query(template_query)
+		if (err) {
+			return fail(500, {
+				action: 'update',
+				error: 'Database error.'
+			})
 		}
 
 		redirect(302, `/app/calendar/${calendar_id}`)

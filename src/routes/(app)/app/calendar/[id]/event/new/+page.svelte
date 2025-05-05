@@ -25,16 +25,34 @@
 	</menu>
 </header>
 
+{#if data.templates.length}
+	<details class="templates-details">
+		<summary>Use template</summary>
+		<ul class="list">
+			{#each data.templates as template}
+				<li>
+					<a
+						href={`/app/calendar/${data.calendar_id}/event/new?template=${template.id}&date=${data.date}`}
+						class="template"
+					>
+						{template.title}
+					</a>
+				</li>
+			{/each}
+		</ul>
+	</details>
+{/if}
+
 <form method="POST" use:enhance>
 	<EventInput
-		title={form?.title ?? ''}
-		description={form?.description ?? ''}
+		title={form?.title ?? data.title ?? ''}
+		description={form?.description ?? data.description ?? ''}
 		start_time={form?.start_time ?? data.start_time ?? ''}
 		end_time={form?.end_time ?? data.end_time ?? ''}
 		date={form?.date ?? data.date ?? ''}
-		location={form?.location ?? ''}
+		location={form?.location ?? data.location ?? ''}
 		color={form?.color ?? data.color ?? ''}
-		link={form?.link ?? ''}
+		link={form?.link ?? data.link ?? ''}
 		readonly={false}
 	/>
 
@@ -54,5 +72,9 @@
 	menu {
 		display: flex;
 		justify-content: space-between;
+	}
+
+	.templates-details {
+		margin-bottom: 1rem;
 	}
 </style>

@@ -93,6 +93,36 @@
 </section>
 
 <section class="card">
+	<h2>Templates</h2>
+
+	{#if data.templates.length}
+		<ul class="list">
+			{#each data.templates as template (template.id)}
+				<li>
+					<div class="template">
+						<span>{template.title}</span>
+						<form action="?/remove_template" method="POST" use:enhance>
+							<input type="hidden" name="template_id" value={template.id} />
+							<IconButton
+								aria_label="remove template"
+								icon={faXmark}
+								small={true}
+							/>
+						</form>
+					</div>
+				</li>
+			{/each}
+		</ul>
+
+		{#if form?.error && form.action === 'template'}
+			<p class="error">{form.error}</p>
+		{/if}
+	{:else}
+		<p>No templates created. Edit an event to save it as a template for later use.</p>
+	{/if}
+</section>
+
+<section class="card">
 	<h2>Blocked Users</h2>
 
 	<ul class="list">
@@ -165,7 +195,8 @@
 		margin-top: 1.5rem;
 	}
 
-	.blocked_user {
+	.blocked_user,
+	.template {
 		display: flex;
 		justify-content: space-between;
 	}

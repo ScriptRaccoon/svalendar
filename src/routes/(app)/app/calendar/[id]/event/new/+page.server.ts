@@ -1,10 +1,11 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
-import { batch } from '$lib/server/db'
-import { encrypt } from '$lib/server/encryption'
+import { batch, query } from '$lib/server/db'
+import { decrypt, encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
-import { get_validated_event } from '$lib/server/events'
+import { decrypt_event_template, get_validated_event } from '$lib/server/events'
 import { snowflake } from '$lib/server/snowflake'
+import type { EncryptedEventTemplate, EventTemplate } from '$lib/server/types'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -12,12 +13,74 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendar_id = event.params.id
 
+	const template_id = event.url.searchParams.get('template')
+	const date = event.url.searchParams.get('date')
+
+	if (template_id) {
+		const template_query = sql`
+		SELECT
+			id, title_encrypted, title_iv, title_tag,
+			description_encrypted, description_iv, description_tag,		
+			location_encrypted, location_iv, location_tag,
+			start_time, end_time, color, link
+		FROM templates
+		WHERE id = ${template_id}
+		AND user_id = ${user.id}
+		`
+
+		const { rows, err } = await query<EncryptedEventTemplate>(template_query)
+		if (err) error(500, 'Database error.')
+		if (!rows.length) error(404, 'Template not found')
+
+		const template: EventTemplate = decrypt_event_template(rows[0])
+
+		const used_query = sql`
+		UPDATE templates
+		SET used_count = used_count + 1
+		WHERE id = ${template_id}
+		AND user_id = ${user.id}
+		`
+
+		await query(used_query)
+
+		return {
+			calendar_id,
+			templates: [],
+			date,
+			...template
+		}
+	}
+
 	const start_time = event.url.searchParams.get('start_time')
 	const end_time = event.url.searchParams.get('end_time')
-	const date = event.url.searchParams.get('date')
 	const color = event.url.searchParams.get('color')
 
-	return { calendar_id, start_time, end_time, date, color }
+	const templates_query = sql`
+	SELECT id, title_encrypted, title_iv, title_tag
+	FROM templates
+	WHERE user_id = ${user.id}
+	ORDER BY used_count DESC
+	`
+
+	const { rows: encrypted_templates, err } = await query<{
+		id: string
+		title_encrypted: string
+		title_iv: string
+		title_tag: string
+	}>(templates_query)
+
+	if (err) error(500, 'Database error.')
+
+	const templates = encrypted_templates.map((template) => ({
+		id: template.id,
+		title: decrypt({
+			data: template.title_encrypted,
+			iv: template.title_iv,
+			tag: template.title_tag
+		})
+	}))
+
+	return { calendar_id, start_time, end_time, date, color, templates }
 }
 
 export const actions: Actions = {

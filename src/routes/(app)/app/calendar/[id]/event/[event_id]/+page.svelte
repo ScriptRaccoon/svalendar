@@ -45,8 +45,9 @@
 
 	{#if my_role === 'organizer'}
 		<menu>
-			<button class="button danger" type="submit" formaction="?/delete">
-				Delete Event
+			<button class="button danger" formaction="?/delete"> Delete Event </button>
+			<button class="button" formaction="?/save_template">
+				Save as Template
 			</button>
 			<button
 				class="button"
@@ -139,7 +140,7 @@
 	menu {
 		display: flex;
 		justify-content: space-between;
-		gap: 1rem;
+		gap: 0.5rem;
 
 		.button.danger {
 			margin-right: auto;
