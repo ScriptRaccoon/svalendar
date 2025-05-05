@@ -159,8 +159,6 @@ export const actions: Actions = {
 			return fail(400, { action: 'block', error: 'No username provided' })
 		}
 
-		console.info('block ...', blocked_username)
-
 		const block_query = sql`
 		INSERT INTO
 			blocked_users (user_id, blocked_user_id)
