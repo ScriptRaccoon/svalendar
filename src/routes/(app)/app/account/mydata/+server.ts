@@ -6,9 +6,7 @@ import type { CalendarEventEncrypted } from '$lib/server/types'
 import type { CalendarEvent } from '$lib/server/types'
 import { decrypt_calendar_event } from '$lib/server/events'
 
-/**
- * @deprecated
- */
+// Not fully uptodate. But should be enough for now.
 export const GET: RequestHandler = async (event) => {
 	const user = event.locals.user
 	if (!user) error(401, 'Unauthorized')
@@ -23,7 +21,9 @@ export const GET: RequestHandler = async (event) => {
 	if (err_users) error(500, 'Database error.')
 
 	const calendars_query = sql`
-    SELECT id, name, default_color, created_at, is_default_calendar
+    SELECT
+        id, name, default_color, default_start_hour,
+        created_at, is_default_calendar
     FROM calendars
     WHERE user_id = ${user.id}
     `
@@ -33,15 +33,17 @@ export const GET: RequestHandler = async (event) => {
 
 	const events_query = sql`
     SELECT
-        e.id, e.calendar_id,
+        e.id,
         title_encrypted, title_iv, title_tag,
         description_encrypted, description_iv, description_tag,
         location_encrypted, location_iv, location_tag,
-        start_time, end_time, event_date, color
+        start_time, end_time, event_date, color, link
     FROM
-        events e
+        calendars c
     INNER JOIN
-       calendars c ON c.id = e.calendar_id
+        event_visibilities v ON c.id = v.calendar_id
+    INNER JOIN
+        events e ON e.id = v.event_id
     WHERE
         c.user_id = ${user.id}
     ORDER BY
