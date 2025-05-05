@@ -58,6 +58,13 @@
 		justify-content: space-between;
 		flex-wrap: wrap;
 		max-width: 26rem;
-		gap: 0.25rem;
+		gap: 0.5rem 0.25rem;
+	}
+
+	@media (max-width: 420px) {
+		.colors {
+			display: grid;
+			grid-template-columns: repeat(5, 1fr);
+		}
 	}
 </style>

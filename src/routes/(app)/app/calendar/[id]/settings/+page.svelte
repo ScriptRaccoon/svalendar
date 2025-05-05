@@ -43,7 +43,7 @@
 		</div>
 
 		<div class="input-group">
-			<label for="default_start_hour">Default Start Hour</label>
+			<label for="default_start_hour">Default Start Hour*</label>
 			<input
 				type="number"
 				name="default_start_hour"
@@ -52,6 +52,12 @@
 				value={calendar.default_start_hour}
 			/>
 		</div>
+
+		<p>
+			*The default start hour determines the default hour at which a new event
+			starts unless otherwise specified. Also, the calendar will be scrolled to this
+			hour when opened.
+		</p>
 
 		<ColorPicker
 			label="Default Color"
