@@ -91,6 +91,7 @@ h2 {
 	display: grid;
 	grid-template-columns: 1fr auto;
 	padding-block: 1rem;
+	gap: 0.5rem;
 
 	.menu {
 		display: flex;
