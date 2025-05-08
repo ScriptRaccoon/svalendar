@@ -3,3 +3,12 @@ export function add_days(date: string | Date, days: number): string {
 	date_obj.setDate(date_obj.getDate() + days)
 	return date_obj.toLocaleDateString('en-CA')
 }
+
+export function get_hours(time: string) {
+	const [hour, minute] = time.split(':').map(Number)
+	return hour + minute / 60
+}
+
+export function get_hours_diff(start_time: string, end_time: string) {
+	return get_hours(end_time) - get_hours(start_time)
+}

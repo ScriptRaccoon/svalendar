@@ -5,7 +5,7 @@
 	import EventPreview from '$lib/components/EventPreview.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import type { Calendar, CalendarEvent } from '$lib/server/types'
-	import { add_days } from '$lib/utils'
+	import { add_days, get_hours, get_hours_diff } from '$lib/utils'
 	import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 	import {
 		faCaretLeft,
@@ -24,17 +24,6 @@
 	let yesterday = $derived(add_days(today, -1))
 
 	const TIME_SLOT_HEIGHT = 70 // in pixels
-
-	function get_hours(time: string) {
-		const [hour, minute] = time.split(':').map(Number)
-		return hour + minute / 60
-	}
-
-	function get_hours_diff(start_time: string, end_time: string) {
-		const [start_hour, start_minute] = start_time.split(':').map(Number)
-		const [end_hour, end_minute] = end_time.split(':').map(Number)
-		return end_hour - start_hour + (end_minute - start_minute) / 60
-	}
 
 	const new_event_url = (start_hour: number) => {
 		const start_time = `${start_hour.toString().padStart(2, '0')}:00`
