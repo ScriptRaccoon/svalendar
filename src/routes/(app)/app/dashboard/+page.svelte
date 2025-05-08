@@ -23,19 +23,13 @@
 	<ul class="list no-bullets">
 		{#each data.calendars as calendar}
 			<li>
-				<div class="item">
-					<div>
-						<span class="icon-wrapper">
-							<Fa icon={faCalendar} />
-						</span>
-						<a href="/app/calendar/{calendar.id}">
-							{calendar.name}
-						</a>
-						{#if calendar.is_default_calendar}
-							<span class="secondary">(default)</span>
-						{/if}
-					</div>
-				</div>
+				<Fa icon={faCalendar} />&nbsp;
+				<a href="/app/calendar/{calendar.id}">
+					{calendar.name}
+				</a>
+				{#if calendar.is_default_calendar}
+					<span class="secondary">&nbsp;(default)</span>
+				{/if}
 			</li>
 		{/each}
 	</ul>
@@ -59,13 +53,4 @@
 </section>
 
 <style>
-	.icon-wrapper {
-		display: inline-block;
-		width: 1.25rem;
-	}
-
-	.item {
-		display: flex;
-		justify-content: space-between;
-	}
 </style>
