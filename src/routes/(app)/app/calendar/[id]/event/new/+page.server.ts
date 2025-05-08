@@ -5,7 +5,7 @@ import { decrypt, encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
 import { decrypt_event_template, get_validated_event } from '$lib/server/events'
 import { snowflake } from '$lib/server/snowflake'
-import type { EncryptedEventTemplate, EventTemplate } from '$lib/server/types'
+import type { CalendarTemplateEncrypted, CalendarTemplate } from '$lib/server/types'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -28,11 +28,11 @@ export const load: PageServerLoad = async (event) => {
 		AND user_id = ${user.id}
 		`
 
-		const { rows, err } = await query<EncryptedEventTemplate>(template_query)
+		const { rows, err } = await query<CalendarTemplateEncrypted>(template_query)
 		if (err) error(500, 'Database error.')
 		if (!rows.length) error(404, 'Template not found')
 
-		const template: EventTemplate = decrypt_event_template(rows[0])
+		const template: CalendarTemplate = decrypt_event_template(rows[0])
 
 		const used_query = sql`
 		UPDATE templates

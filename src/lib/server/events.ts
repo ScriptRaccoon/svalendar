@@ -13,10 +13,10 @@ import { query } from './db'
 import type {
 	CalendarEvent,
 	CalendarEventEncrypted,
-	EncryptedEventTemplate,
-	EventParticipant,
-	EventTemplate,
-	EventTitleEncrypted
+	CalendarTemplate,
+	CalendarTemplateEncrypted,
+	EventTitleEncrypted,
+	EventParticipant
 } from './types'
 import { decrypt } from './encryption'
 
@@ -181,72 +181,81 @@ export async function get_validated_event(
 	return { status: 200, error_message: null, fields }
 }
 
-export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarEvent {
-	const { id, status, start_time, end_time, event_date, color, link } = event
+/**
+ * Auxiliary type to unify events and templates
+ */
+type CalendarEntry<T> = {
+	title: string
+	description: string
+	location: string
+} & T
+
+/**
+ * Auxiliary type to unify events and templates (encrypted)
+ */
+type CalendarEntryEncrypted<T> = {
+	title_encrypted: string
+	title_iv: string
+	title_tag: string
+	description_encrypted: string
+	description_iv: string
+	description_tag: string
+	location_encrypted: string
+	location_iv: string
+	location_tag: string
+} & T
+
+/**
+ * Decrypts title, description and location of an entry.
+ */
+function decrypt_calender_entry<T>(entry: CalendarEntryEncrypted<T>): CalendarEntry<T> {
+	const {
+		title_encrypted,
+		title_iv,
+		title_tag,
+		description_encrypted,
+		description_iv,
+		description_tag,
+		location_encrypted,
+		location_iv,
+		location_tag,
+		...rest
+	} = entry
 
 	const title = decrypt({
-		data: event.title_encrypted,
-		iv: event.title_iv,
-		tag: event.title_tag
+		data: title_encrypted,
+		iv: title_iv,
+		tag: title_tag
 	})
 
 	const description = decrypt({
-		data: event.description_encrypted,
-		iv: event.description_iv,
-		tag: event.description_tag
+		data: description_encrypted,
+		iv: description_iv,
+		tag: description_tag
 	})
 
 	const location = decrypt({
-		data: event.location_encrypted,
-		iv: event.location_iv,
-		tag: event.location_tag
+		data: location_encrypted,
+		iv: location_iv,
+		tag: location_tag
 	})
 
 	return {
-		id,
-		status,
-		start_time,
-		end_time,
-		event_date,
-		color,
-		link,
 		title,
 		description,
-		location
+		location,
+		...(rest as T)
 	}
 }
 
-export function decrypt_event_template(event: EncryptedEventTemplate): EventTemplate {
-	const { id, start_time, end_time, color, link } = event
+export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarEvent {
+	return decrypt_calender_entry(event)
+}
 
-	const title = decrypt({
-		data: event.title_encrypted,
-		iv: event.title_iv,
-		tag: event.title_tag
-	})
-
-	const description = decrypt({
-		data: event.description_encrypted,
-		iv: event.description_iv,
-		tag: event.description_tag
-	})
-
-	const location = decrypt({
-		data: event.location_encrypted,
-		iv: event.location_iv,
-		tag: event.location_tag
-	})
-
-	return {
-		id,
-		start_time,
-		end_time,
-		color,
-		link,
-		title,
-		description,
-		location
-	}
+export function decrypt_event_template(
+	template: CalendarTemplateEncrypted
+): CalendarTemplate {
+	return decrypt_calender_entry(template)
 }
 
 export async function get_role(

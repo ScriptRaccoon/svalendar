@@ -54,6 +54,9 @@ export type EventTitleEncrypted = Pick<
 	'title_encrypted' | 'title_iv' | 'title_tag'
 >
 
-export type EncryptedEventTemplate = Omit<CalendarEventEncrypted, 'status' | 'event_date'>
+export type CalendarTemplate = Omit<CalendarEvent, 'status' | 'event_date'>
 
-export type EventTemplate = Omit<CalendarEvent, 'status' | 'event_date'>
+export type CalendarTemplateEncrypted = Omit<
+	CalendarEventEncrypted,
+	'status' | 'event_date'
+>
