@@ -133,15 +133,17 @@
 	{/if}
 </section>
 
-<section aria-label="delete event">
-	<form action="?/delete" method="POST" use:enhance>
-		<input type="hidden" name="date" value={event.event_date} />
-		<button class="button danger delete_btn">Delete Event</button>
-		{#if form?.action === 'delete' && form.error}
-			<p class="error">{form.error}</p>
-		{/if}
-	</form>
-</section>
+{#if my_role === 'organizer'}
+	<section aria-label="delete event">
+		<form action="?/delete" method="POST" use:enhance>
+			<input type="hidden" name="date" value={event.event_date} />
+			<button class="button danger delete_btn">Delete Event</button>
+			{#if form?.action === 'delete' && form.error}
+				<p class="error">{form.error}</p>
+			{/if}
+		</form>
+	</section>
+{/if}
 
 <style>
 	.update-menu {
