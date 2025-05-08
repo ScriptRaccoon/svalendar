@@ -146,10 +146,16 @@
 	<form method="POST" action="?/block" use:enhance>
 		<div class="input-group">
 			<label for="blocked_username">Username</label>
-			<input type="text" id="blocked_username" name="blocked_username" required />
+			<div class="input-with-button">
+				<input
+					type="text"
+					id="blocked_username"
+					name="blocked_username"
+					required
+				/>
+				<button class="button" type="submit">Block User</button>
+			</div>
 		</div>
-
-		<button class="button" type="submit">Block User</button>
 	</form>
 
 	{#if form?.error && form.action === 'block'}

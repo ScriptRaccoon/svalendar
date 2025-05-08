@@ -46,10 +46,11 @@
 	<form action="?/create_calendar" method="POST" use:enhance>
 		<div class="input-group">
 			<label for="name">Name</label>
-			<input type="text" id="name" name="name" required />
+			<div class="input-with-button">
+				<input type="text" id="name" name="name" required />
+				<button class="button">Create</button>
+			</div>
 		</div>
-
-		<button class="button">Create</button>
 	</form>
 
 	{#if form?.action === 'create' && form?.error}

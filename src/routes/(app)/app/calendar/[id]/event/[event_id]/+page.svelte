@@ -116,15 +116,16 @@
 		<form method="POST" action="?/add_participant" use:enhance>
 			<div class="input-group">
 				<label for="participant_name">Participant</label>
-				<input
-					type="text"
-					id="participant_name"
-					name="participant_name"
-					required
-				/>
+				<div class="input-with-button">
+					<input
+						type="text"
+						id="participant_name"
+						name="participant_name"
+						required
+					/>
+					<button class="button">Add</button>
+				</div>
 			</div>
-
-			<button class="button">Add</button>
 
 			{#if form?.action === 'add_participant' && form.error}
 				<div class="error">{form.error}</div>
