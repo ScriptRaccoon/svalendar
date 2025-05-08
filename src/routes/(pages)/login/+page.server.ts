@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken'
 import { JWT_SECRET } from '$env/static/private'
 import { RateLimiter } from '$lib/server/rate-limiter'
 import sql from 'sql-template-tag'
+import { dev } from '$app/environment'
 
 const login_rate_limiter = new RateLimiter(5, 60 * 1000) // 5 attempts per minute
 
@@ -24,7 +25,7 @@ export const actions: Actions = {
 		}
 
 		const ip = event.getClientAddress()
-		if (login_rate_limiter.is_rate_limited(ip)) {
+		if (!dev && login_rate_limiter.is_rate_limited(ip)) {
 			return fail(429, {
 				error: 'Too many requests. Please try again later.',
 				name
