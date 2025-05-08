@@ -86,17 +86,17 @@
 								{participant.name} ({participant.role})
 							</span>
 						</div>
-						<div>
+						<div class="participant_actions">
 							{#if participant.id === page.data.user?.id}
 								<button
-									class="button"
+									class="button small"
 									formaction="?/decline_event"
 									disabled={participant.status === 'declined'}
 								>
 									Decline
 								</button>
 								<button
-									class="button"
+									class="button small"
 									disabled={participant.status === 'accepted'}
 								>
 									Accept
@@ -162,11 +162,6 @@
 		align-items: center;
 	}
 
-	.participant_name.declined {
-		text-decoration: line-through;
-		color: var(--secondary-font-color);
-	}
-
 	.participant_item .icon {
 		&.accepted {
 			color: var(--title-color);
@@ -174,6 +169,18 @@
 		&.declined {
 			color: var(--error-color);
 		}
+	}
+
+	.participant_name {
+		&.declined {
+			text-decoration: line-through;
+			color: var(--secondary-font-color);
+		}
+	}
+
+	.participant_actions {
+		display: flex;
+		gap: 0.25rem;
 	}
 
 	.delete_btn {

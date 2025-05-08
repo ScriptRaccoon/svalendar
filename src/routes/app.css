@@ -138,6 +138,11 @@ button:focus-visible {
 		opacity: 0.5;
 		cursor: initial;
 	}
+
+	&.small {
+		padding: 0.1rem 0.4rem;
+		font-size: 0.875rem;
+	}
 }
 
 .input-group {
