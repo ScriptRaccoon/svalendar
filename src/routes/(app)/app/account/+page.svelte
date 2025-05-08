@@ -118,7 +118,9 @@
 			<div class="error">{form.error}</div>
 		{/if}
 	{:else}
-		<p>No templates created. Edit an event to save it as a template for later use.</p>
+		<div>
+			No templates created. Edit an event to save it as a template for later use.
+		</div>
 	{/if}
 </section>
 

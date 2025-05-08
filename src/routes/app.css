@@ -231,3 +231,9 @@ pre {
 .smaller {
 	font-size: 0.825rem;
 }
+
+.explanation {
+	font-size: 0.825rem;
+	line-height: 1.4;
+	color: var(--secondary-font-color);
+}

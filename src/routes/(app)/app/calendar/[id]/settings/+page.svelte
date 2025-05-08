@@ -53,7 +53,7 @@
 			/>
 		</div>
 
-		<p>
+		<p class="explanation">
 			*The default start hour determines the default hour at which a new event
 			starts unless otherwise specified. Also, the calendar will be scrolled to this
 			hour when opened.
