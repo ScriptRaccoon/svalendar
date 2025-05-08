@@ -17,7 +17,7 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
 	default: async (event) => {
 		const form_data = await event.request.formData()
-		const name = form_data.get('name') as string | null
+		const name = form_data.get('name') as string
 
 		if (!name) {
 			return fail(400, { error: 'Name is required.', name })
@@ -31,7 +31,7 @@ export const actions: Actions = {
 			})
 		}
 
-		const password = form_data.get('password') as string | null
+		const password = form_data.get('password') as string
 
 		const user_query = sql`
 		SELECT users.id, password_hash, calendars.id as default_calendar_id

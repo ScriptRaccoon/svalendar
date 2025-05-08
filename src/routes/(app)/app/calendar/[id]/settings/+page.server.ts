@@ -47,8 +47,8 @@ export const actions: Actions = {
 
 		const form_data = await event.request.formData()
 		const calendar_id = event.params.id
-		const name = form_data.get('name') as string | null
-		const default_color = form_data.get('color') as string | null
+		const name = form_data.get('name') as string
+		const default_color = form_data.get('color') as string
 		const default_start_hour = Number(form_data.get('default_start_hour'))
 
 		const name_validation = calendar_name_schema.safeParse(name)

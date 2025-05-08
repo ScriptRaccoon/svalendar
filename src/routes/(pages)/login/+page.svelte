@@ -18,7 +18,7 @@
 <form method="POST" use:enhance>
 	<div class="input-group">
 		<label for="name">Username</label>
-		<input type="text" id="name" name="name" required value={form?.name} />
+		<input type="text" id="name" name="name" value={form?.name} />
 	</div>
 
 	<div class="input-group">

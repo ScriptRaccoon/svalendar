@@ -32,7 +32,7 @@ export async function get_validated_event(
 	const date = form_data.get('date') as string
 	const location = form_data.get('location') as string
 	const color = form_data.get('color') as string | null
-	const link = form_data.get('link') as string | null
+	const link = form_data.get('link') as string
 
 	const fields = {
 		title,

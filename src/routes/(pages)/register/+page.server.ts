@@ -11,9 +11,9 @@ import { get_error_messages } from '$lib/server/schemas'
 export const actions: Actions = {
 	default: async (event) => {
 		const form_data = await event.request.formData()
-		const name = form_data.get('name') as string | null
-		const password = form_data.get('password') as string | null
-		const confirm_password = form_data.get('confirm_password') as string | null
+		const name = form_data.get('name') as string
+		const password = form_data.get('password') as string
+		const confirm_password = form_data.get('confirm_password') as string
 
 		const name_validation = name_schema.safeParse(name)
 

@@ -183,7 +183,7 @@ export const actions: Actions = {
 		}
 
 		const form_data = await event.request.formData()
-		const participant_name = form_data.get('participant_name') as string | null
+		const participant_name = form_data.get('participant_name') as string
 
 		if (!participant_name) {
 			return fail(400, {

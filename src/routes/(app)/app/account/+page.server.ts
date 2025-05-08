@@ -66,7 +66,7 @@ export const actions: Actions = {
 
 		const form_data = await event.request.formData()
 
-		const name = form_data.get('name') as string | null
+		const name = form_data.get('name') as string
 
 		const name_validation = name_schema.safeParse(name)
 
@@ -103,8 +103,8 @@ export const actions: Actions = {
 
 		const form_data = await event.request.formData()
 
-		const password = form_data.get('password') as string | null
-		const confirm_password = form_data.get('confirm_password') as string | null
+		const password = form_data.get('password') as string
+		const confirm_password = form_data.get('confirm_password') as string
 
 		const password_validation = password_schema.safeParse(password)
 		if (password_validation.error) {
@@ -154,7 +154,7 @@ export const actions: Actions = {
 
 		const form_data = await event.request.formData()
 
-		const blocked_username = form_data.get('blocked_username') as string | null
+		const blocked_username = form_data.get('blocked_username') as string
 		if (!blocked_username) {
 			return fail(400, { action: 'block', error: 'No username provided' })
 		}
@@ -197,7 +197,7 @@ export const actions: Actions = {
 
 		const form_data = await event.request.formData()
 
-		const blocked_user_id = form_data.get('blocked_user_id') as string | null
+		const blocked_user_id = form_data.get('blocked_user_id') as string
 		if (!blocked_user_id) {
 			return fail(400, { action: 'block', error: 'No user id provided' })
 		}
@@ -218,7 +218,7 @@ export const actions: Actions = {
 		if (!user) error(401, 'Unauthorized')
 
 		const form_data = await event.request.formData()
-		const template_id = form_data.get('template_id') as string | null
+		const template_id = form_data.get('template_id') as string
 
 		if (!template_id) {
 			return fail(400, { action: 'template', error: 'No template id provided' })
