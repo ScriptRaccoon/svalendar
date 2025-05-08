@@ -17,6 +17,7 @@
 			<input
 				type="radio"
 				name="color"
+				class="color"
 				value={color.id}
 				checked={color.id === current_color}
 				style:--color={color.value}
@@ -27,10 +28,25 @@
 </div>
 
 <style>
-	input[type='radio'] {
+	.colors-container {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: 1rem;
+	}
+
+	.colors {
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+
+	.color {
+		--size: 1.3rem;
 		appearance: none;
-		width: 1.5rem;
-		height: 1.5rem;
+		width: var(--size);
+		height: var(--size);
 		border-radius: 50%;
 		background-color: var(--color);
 		cursor: pointer;
@@ -46,25 +62,14 @@
 		}
 	}
 
-	.colors-container {
-		display: grid;
-		grid-template-columns: auto 1fr;
-		gap: 1rem;
-		margin-bottom: 1rem;
-	}
-
-	.colors {
-		display: flex;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		max-width: 26rem;
-		gap: 0.5rem 0.25rem;
-	}
-
-	@media (max-width: 420px) {
+	@media (min-width: 600px) {
 		.colors {
-			display: grid;
-			grid-template-columns: repeat(5, 1fr);
+			max-width: 26rem;
+			gap: 1rem;
+			justify-content: start;
+		}
+		.color {
+			--size: 1.75rem;
 		}
 	}
 </style>
