@@ -19,7 +19,6 @@ export const load: PageServerLoad = async (event) => {
 		return redirect(302, '/app/dashboard')
 	}
 
-	const default_calendar_id = rows[0].default_calendar_id
-
+	const { default_calendar_id } = rows[0]
 	redirect(302, `/app/calendar/${default_calendar_id}`)
 }
