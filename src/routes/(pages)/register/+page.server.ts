@@ -43,14 +43,14 @@ export const actions: Actions = {
 		const calendar_id = await snowflake.generate()
 
 		const user_query = sql`
-			INSERT INTO users (id, name, password_hash)
-			VALUES (${user_id}, ${name}, ${password_hash})`
+		INSERT INTO users (id, name, password_hash)
+		VALUES (${user_id}, ${name}, ${password_hash})`
 
 		const calendar_query = sql`
-			INSERT INTO calendars
-				(id, name, user_id, default_color, is_default_calendar)
-			VALUES
-				(${calendar_id}, 'Default', ${user_id}, ${DEFAULT_COLOR}, TRUE)`
+		INSERT INTO calendars
+			(id, name, user_id, default_color, is_default_calendar)
+		VALUES
+			(${calendar_id}, 'Default', ${user_id}, ${DEFAULT_COLOR}, TRUE)`
 
 		const { err } = await batch([user_query, calendar_query])
 

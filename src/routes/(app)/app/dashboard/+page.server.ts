@@ -11,8 +11,7 @@ export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
 	if (!user) error(401, 'Unauthorized')
 
-	const users_query = sql`
-	SELECT name FROM users WHERE id = ${user.id}`
+	const users_query = sql`SELECT name FROM users WHERE id = ${user.id}`
 
 	const { rows: users } = await query<{ name: string }>(users_query)
 
