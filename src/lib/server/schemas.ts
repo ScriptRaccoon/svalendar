@@ -11,8 +11,18 @@ export const name_schema = z
 	.max(50, {
 		message: 'Name must be at most 50 characters long.'
 	})
-	.regex(/^[a-zA-Z0-9_-]+$/, {
-		message: 'Name can only contain letters, numbers, underscores, and dashes.'
+	.regex(/^[a-zA-Z0-9_ -]+$/, {
+		message:
+			'Name can only contain letters, numbers, underscores, spaces, and dashes.'
+	})
+	.refine((name) => !name.startsWith(' '), {
+		message: 'Name cannot start with a space.'
+	})
+	.refine((name) => !name.endsWith(' '), {
+		message: 'Name cannot end with a space.'
+	})
+	.refine((name) => !name.includes('  '), {
+		message: 'Name cannot contain consecutive spaces.'
 	})
 
 export const password_schema = z
