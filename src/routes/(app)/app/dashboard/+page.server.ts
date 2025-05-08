@@ -5,6 +5,7 @@ import type { Calendar } from '$lib/server/types'
 import { DEFAULT_COLOR } from '$lib/config'
 import sql from 'sql-template-tag'
 import { snowflake } from '$lib/server/snowflake'
+import { calendar_name_schema, get_error_messages } from '$lib/server/schemas'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -48,10 +49,16 @@ export const actions: Actions = {
 		if (!user) error(401, 'Unauthorized')
 
 		const form_data = await event.request.formData()
-		const name = form_data.get('name') as string | null
+		const name = form_data.get('name') as string
 
-		if (!name) {
-			return fail(400, { action: 'create', error: 'Name is required.', name })
+		const name_validation = calendar_name_schema.safeParse(name)
+
+		if (!name_validation.success) {
+			return fail(400, {
+				action: 'create',
+				error: get_error_messages(name_validation.error),
+				name
+			})
 		}
 
 		const calendar_id = await snowflake.generate()

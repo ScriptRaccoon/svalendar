@@ -4,7 +4,11 @@ import { query } from '$lib/server/db'
 import type { Calendar } from '$lib/server/types'
 import { COLOR_IDS } from '$lib/config'
 import sql from 'sql-template-tag'
-import { hour_schema } from '$lib/server/schemas'
+import {
+	calendar_name_schema,
+	get_error_messages,
+	hour_schema
+} from '$lib/server/schemas'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -47,7 +51,14 @@ export const actions: Actions = {
 		const default_color = form_data.get('color') as string | null
 		const default_start_hour = Number(form_data.get('default_start_hour'))
 
-		if (!name) return fail(400, { action: 'edit', error: 'Name is required.' })
+		const name_validation = calendar_name_schema.safeParse(name)
+
+		if (!name_validation.success) {
+			return fail(400, {
+				action: 'edit',
+				error: get_error_messages(name_validation.error)
+			})
+		}
 
 		if (!hour_schema.safeParse(default_start_hour).success) {
 			return fail(400, {

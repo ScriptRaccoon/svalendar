@@ -1,6 +1,14 @@
 import { COLOR_IDS, MINIMAL_EVENT_DURATION } from '$lib/config'
 import sql from 'sql-template-tag'
-import { date_schema, time_schema, get_error_messages, url_schema } from './schemas'
+import {
+	date_schema,
+	time_schema,
+	get_error_messages,
+	url_schema,
+	event_title_schema,
+	event_description_schema,
+	event_location_schema
+} from './schemas'
 import { query } from './db'
 import type {
 	CalendarEvent,
@@ -15,7 +23,7 @@ import { decrypt } from './encryption'
 export async function get_validated_event(
 	form_data: FormData,
 	calendar_id: string | null = null, // null for templates
-	event_id: string | null = null // is null for new events
+	event_id: string | null = null // null for new events
 ) {
 	const title = form_data.get('title') as string
 	const description = form_data.get('description') as string
@@ -41,6 +49,24 @@ export async function get_validated_event(
 		return { status: 400, error_message: 'Fill in the required fields.', fields }
 	}
 
+	const title_validation = event_title_schema.safeParse(title)
+	if (!title_validation.success) {
+		return {
+			status: 400,
+			error_message: get_error_messages(title_validation.error),
+			fields
+		}
+	}
+
+	const description_validation = event_description_schema.safeParse(description)
+	if (!description_validation.success) {
+		return {
+			status: 400,
+			error_message: get_error_messages(description_validation.error),
+			fields
+		}
+	}
+
 	const date_validation = date_schema.safeParse(date)
 	if (!date_validation.success) {
 		return {
@@ -58,11 +84,21 @@ export async function get_validated_event(
 			fields
 		}
 	}
+
 	const end_time_validation = time_schema.safeParse(end_time)
 	if (!end_time_validation.success) {
 		return {
 			status: 400,
 			error_message: get_error_messages(end_time_validation.error),
+			fields
+		}
+	}
+
+	const location_validation = event_location_schema.safeParse(location)
+	if (!location_validation.success) {
+		return {
+			status: 400,
+			error_message: get_error_messages(location_validation.error),
 			fields
 		}
 	}

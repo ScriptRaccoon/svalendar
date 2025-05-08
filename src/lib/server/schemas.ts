@@ -43,6 +43,18 @@ export const password_schema = z
 		message: 'Password must contain at least one letter.'
 	})
 
+export const calendar_name_schema = z
+	.string({
+		required_error: 'Calendar name is required.',
+		invalid_type_error: 'Calendar name must be a string.'
+	})
+	.min(1, {
+		message: 'Calendar name cannot be empty.'
+	})
+	.max(50, {
+		message: 'Calendar name must be at most 50 characters long.'
+	})
+
 export const date_schema = z
 	.string({
 		required_error: 'Date is required.',
@@ -67,6 +79,36 @@ export const url_schema = z
 	.url('Invalid URL format.')
 
 export const hour_schema = z.number().int().min(0).max(23)
+
+export const event_title_schema = z
+	.string({
+		required_error: 'Event title is required.',
+		invalid_type_error: 'Event title must be a string.'
+	})
+	.min(1, {
+		message: 'Event title cannot be empty.'
+	})
+	.max(100, {
+		message: 'Event title must be at most 100 characters long.'
+	})
+
+export const event_description_schema = z
+	.string({
+		required_error: 'Event description is required.',
+		invalid_type_error: 'Event description must be a string.'
+	})
+	.max(1000, {
+		message: 'Event description must be at most 1000 characters long.'
+	})
+
+export const event_location_schema = z
+	.string({
+		required_error: 'Event location is required.',
+		invalid_type_error: 'Event location must be a string.'
+	})
+	.max(100, {
+		message: 'Event location must be at most 100 characters long.'
+	})
 
 export function get_error_messages(error: ZodError): string {
 	return error.errors.map((err) => err.message).join(' ')
