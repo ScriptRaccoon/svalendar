@@ -151,7 +151,12 @@ button:focus-visible {
 	label {
 		display: block;
 		color: var(--secondary-font-color);
-		font-weight: 500;
+		font-size: 0.875rem;
+		margin-bottom: 0.2rem;
+
+		@media (min-width: 600px) {
+			font-size: 1rem;
+		}
 	}
 
 	input,
@@ -231,10 +236,6 @@ pre {
 
 .no-margin {
 	margin: 0;
-}
-
-.smaller {
-	font-size: 0.825rem;
 }
 
 .explanation {
