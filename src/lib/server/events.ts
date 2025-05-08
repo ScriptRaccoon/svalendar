@@ -45,7 +45,7 @@ export async function get_validated_event(
 		link
 	}
 
-	if (!title || !start_time || !end_time || !date || !color) {
+	if (!title || !start_time || !end_time || (calendar_id && !date) || !color) {
 		return { status: 400, error_message: 'Fill in the required fields.', fields }
 	}
 
@@ -68,7 +68,7 @@ export async function get_validated_event(
 	}
 
 	const date_validation = date_schema.safeParse(date)
-	if (!date_validation.success) {
+	if (calendar_id && !date_validation.success) {
 		return {
 			status: 400,
 			error_message: get_error_messages(date_validation.error),
