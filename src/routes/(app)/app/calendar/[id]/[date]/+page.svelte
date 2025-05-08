@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment'
 	import { afterNavigate } from '$app/navigation'
 	import AppMenu from '$lib/components/AppMenu.svelte'
 	import EventPreview from '$lib/components/EventPreview.svelte'
@@ -56,7 +57,17 @@
 			top: TIME_SLOT_HEIGHT * calendar.default_start_hour
 		})
 	})
+
+	const initial_is_mobile = browser && window.innerWidth < 600 ? true : false
+	let is_mobile = $state<boolean>(initial_is_mobile)
+
+	function handle_resize() {
+		if (!browser) return
+		is_mobile = window.innerWidth < 600
+	}
 </script>
+
+<svelte:window onresize={handle_resize} />
 
 <svelte:head>
 	<title>Calendar {calendar.name}</title>
@@ -84,22 +95,24 @@
 				scale={1}
 			/>
 
-			<IconLink
-				href={new_event_url(calendar.default_start_hour)}
-				aria_label="New Event"
-				icon={faPlus}
-			/>
+			{#if !is_mobile}
+				<IconLink
+					href={new_event_url(calendar.default_start_hour)}
+					aria_label="New Event"
+					icon={faPlus}
+				/>
 
-			<IconLink
-				href="/app/calendar/{calendar.id}/{yesterday}"
-				icon={faCaretLeft}
-				aria_label="yesterday"
-			/>
-			<IconLink
-				href="/app/calendar/{calendar.id}/{tomorrow}"
-				icon={faCaretRight}
-				aria_label="tomorrow"
-			/>
+				<IconLink
+					href="/app/calendar/{calendar.id}/{yesterday}"
+					icon={faCaretLeft}
+					aria_label="yesterday"
+				/>
+				<IconLink
+					href="/app/calendar/{calendar.id}/{tomorrow}"
+					icon={faCaretRight}
+					aria_label="tomorrow"
+				/>
+			{/if}
 		</menu>
 	</header>
 </div>
@@ -125,6 +138,27 @@
 		</div>
 	{/each}
 </div>
+
+{#if is_mobile}
+	<menu class="mobile-menu">
+		<IconLink
+			href={new_event_url(calendar.default_start_hour)}
+			aria_label="New Event"
+			icon={faPlus}
+		/>
+
+		<IconLink
+			href="/app/calendar/{calendar.id}/{yesterday}"
+			icon={faCaretLeft}
+			aria_label="yesterday"
+		/>
+		<IconLink
+			href="/app/calendar/{calendar.id}/{tomorrow}"
+			icon={faCaretRight}
+			aria_label="tomorrow"
+		/>
+	</menu>
+{/if}
 
 <style>
 	.sticky {
@@ -165,5 +199,14 @@
 		right: 0;
 		left: 3rem;
 		position: absolute;
+	}
+
+	.mobile-menu {
+		position: fixed;
+		bottom: 1rem;
+		right: 1rem;
+		display: flex;
+		gap: 0.5rem;
+		z-index: 20;
 	}
 </style>
