@@ -145,7 +145,7 @@ export const actions: Actions = {
 		const role = await get_role(user.id, event_id)
 		if (role !== 'organizer') {
 			return fail(403, {
-				action: 'update',
+				action: 'delete',
 				error: 'You are not allowed to delete this event.'
 			})
 		}
@@ -157,7 +157,7 @@ export const actions: Actions = {
 		const { err } = await query(delete_query)
 		if (err) {
 			return fail(500, {
-				action: 'update',
+				action: 'delete',
 				error: 'Database error.'
 			})
 		}

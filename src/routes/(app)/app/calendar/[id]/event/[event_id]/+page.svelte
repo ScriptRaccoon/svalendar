@@ -30,7 +30,7 @@
 	</menu>
 </header>
 
-<form method="POST" action="?/update" use:enhance>
+<form method="POST" use:enhance>
 	<EventInput
 		title={event.title}
 		description={event.description}
@@ -45,7 +45,10 @@
 
 	<menu class="update-menu">
 		{#if my_role === 'organizer'}
-			<button class="button" type="submit">Save</button>
+			<button class="button" formaction="?/update">Save</button>
+			<button class="button" formaction="?/save_template">
+				Save as Template
+			</button>
 			<button
 				class="button"
 				type="button"
@@ -54,12 +57,8 @@
 			>
 				Cancel
 			</button>
-			<button class="button" formaction="?/save_template">
-				Save as Template
-			</button>
-			<button class="button danger" formaction="?/delete"> Delete Event </button>
 		{:else}
-			<button class="button danger" type="submit" formaction="?/remove">
+			<button class="button danger" formaction="?/remove">
 				Remove from Calendar
 			</button>
 		{/if}
@@ -134,15 +133,21 @@
 	{/if}
 </section>
 
+<section aria-label="delete event">
+	<form action="?/delete" method="POST" use:enhance>
+		<input type="hidden" name="date" value={event.event_date} />
+		<button class="button danger delete_btn">Delete Event</button>
+		{#if form?.action === 'delete' && form.error}
+			<p class="error">{form.error}</p>
+		{/if}
+	</form>
+</section>
+
 <style>
 	.update-menu {
 		display: flex;
-		flex-direction: row-reverse;
+		flex-direction: column;
 		gap: 0.5rem;
-
-		.button.danger {
-			margin-right: auto;
-		}
 	}
 
 	section {
@@ -166,6 +171,20 @@
 		}
 		&.declined {
 			color: var(--error-color);
+		}
+	}
+
+	.delete_btn {
+		width: 100%;
+	}
+
+	@media (min-width: 600px) {
+		.update-menu {
+			flex-direction: row;
+		}
+
+		.delete_btn {
+			width: auto;
 		}
 	}
 </style>
