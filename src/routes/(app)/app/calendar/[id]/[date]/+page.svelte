@@ -5,6 +5,7 @@
 	import EventPreview from '$lib/components/EventPreview.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import type { Calendar, CalendarEvent } from '$lib/server/types'
+	import { add_days } from '$lib/utils'
 	import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 	import {
 		faCaretLeft,
@@ -12,7 +13,6 @@
 		faCog,
 		faPlus
 	} from '@fortawesome/free-solid-svg-icons'
-	import { format, addDays } from 'date-fns'
 	import Fa from 'svelte-fa'
 
 	let { data } = $props()
@@ -20,8 +20,8 @@
 	let calendar = $derived<Calendar>(data.calendar)
 	let events = $derived<CalendarEvent[]>(data.events)
 	let today = $derived<string>(data.today)
-	let tomorrow = $derived(format(addDays(today, 1), 'yyyy-MM-dd'))
-	let yesterday = $derived(format(addDays(today, -1), 'yyyy-MM-dd'))
+	let tomorrow = $derived(add_days(today, 1))
+	let yesterday = $derived(add_days(today, -1))
 
 	const TIME_SLOT_HEIGHT = 70 // in pixels
 
@@ -85,7 +85,12 @@
 
 	<header class="app-header">
 		<h2 class="no-margin">
-			{format(today, 'EEEE, dd MMMM yyyy')}
+			{new Date(today).toLocaleDateString('en-US', {
+				weekday: 'long',
+				day: '2-digit',
+				month: 'long',
+				year: 'numeric'
+			})}
 		</h2>
 		<menu class="menu">
 			<IconLink

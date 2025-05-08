@@ -40,7 +40,6 @@
 		"@libsql/client": "^0.15.4",
 		"@skorotkiewicz/snowflake-id": "^1.0.1",
 		"bcryptjs": "^3.0.2",
-		"date-fns": "^4.1.0",
 		"jsonwebtoken": "^9.0.2",
 		"snowflake-id": "^1.1.0",
 		"sql-template-tag": "^5.2.1",
