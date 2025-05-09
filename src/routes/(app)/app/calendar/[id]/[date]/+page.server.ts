@@ -4,6 +4,8 @@ import { query } from '$lib/server/db'
 import sql from 'sql-template-tag'
 import { decrypt_calendar_event } from '$lib/server/events'
 import type { Calendar, CalendarEvent, CalendarEventEncrypted } from '$lib/server/types'
+import { date_schema } from '$lib/server/schemas'
+import { format_error } from '$lib/utils'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -11,6 +13,11 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendar_id = event.params.id
 	const today = event.params.date
+
+	const date_validation = date_schema.safeParse(today)
+	if (!date_validation.success) {
+		return error(400, format_error(date_validation.error))
+	}
 
 	const calendars_query = sql`
 	SELECT
