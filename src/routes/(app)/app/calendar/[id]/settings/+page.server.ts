@@ -4,11 +4,8 @@ import { query } from '$lib/server/db'
 import type { Calendar } from '$lib/server/types'
 import { COLOR_IDS } from '$lib/config'
 import sql from 'sql-template-tag'
-import {
-	calendar_name_schema,
-	get_error_messages,
-	hour_schema
-} from '$lib/server/schemas'
+import { calendar_name_schema, hour_schema } from '$lib/server/schemas'
+import { format_error } from '$lib/utils'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -56,7 +53,7 @@ export const actions: Actions = {
 		if (!name_validation.success) {
 			return fail(400, {
 				action: 'edit',
-				error: get_error_messages(name_validation.error)
+				error: format_error(name_validation.error)
 			})
 		}
 

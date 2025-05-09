@@ -4,8 +4,8 @@ import { name_schema, password_schema } from '$lib/server/schemas'
 import { batch, query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import sql from 'sql-template-tag'
-import { get_error_messages } from '$lib/server/schemas'
 import { decrypt } from '$lib/server/encryption'
+import { format_error } from '$lib/utils'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -73,7 +73,7 @@ export const actions: Actions = {
 		if (name_validation.error) {
 			return fail(400, {
 				action: 'name',
-				error: get_error_messages(name_validation.error)
+				error: format_error(name_validation.error)
 			})
 		}
 
@@ -110,7 +110,7 @@ export const actions: Actions = {
 		if (password_validation.error) {
 			return fail(400, {
 				action: 'password',
-				error: get_error_messages(password_validation.error)
+				error: format_error(password_validation.error)
 			})
 		}
 		if (password !== confirm_password) {

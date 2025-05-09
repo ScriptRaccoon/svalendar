@@ -5,7 +5,8 @@ import type { Calendar } from '$lib/server/types'
 import { DEFAULT_COLOR } from '$lib/config'
 import sql from 'sql-template-tag'
 import { snowflake } from '$lib/server/snowflake'
-import { calendar_name_schema, get_error_messages } from '$lib/server/schemas'
+import { calendar_name_schema } from '$lib/server/schemas'
+import { format_error } from '$lib/utils'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -55,7 +56,7 @@ export const actions: Actions = {
 		if (!name_validation.success) {
 			return fail(400, {
 				action: 'create',
-				error: get_error_messages(name_validation.error),
+				error: format_error(name_validation.error),
 				name
 			})
 		}

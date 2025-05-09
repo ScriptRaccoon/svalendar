@@ -12,8 +12,7 @@
 
 <p class="secondary">
 	Please choose a username and secure password to create an account. If you already have
-	an account, you can
-	<a href="/login">login</a> instead.
+	an account, you can <a href="/login">login</a> instead.
 </p>
 
 <form method="POST" use:enhance>

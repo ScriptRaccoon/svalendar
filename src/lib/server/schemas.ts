@@ -1,4 +1,4 @@
-import { z, ZodError } from 'zod'
+import { z } from 'zod'
 
 export const name_schema = z
 	.string({
@@ -109,7 +109,3 @@ export const event_location_schema = z
 	.max(100, {
 		message: 'Event location must be at most 100 characters long.'
 	})
-
-export function get_error_messages(error: ZodError): string {
-	return error.errors.map((err) => err.message).join(' ')
-}

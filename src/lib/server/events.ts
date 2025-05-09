@@ -3,7 +3,6 @@ import sql from 'sql-template-tag'
 import {
 	date_schema,
 	time_schema,
-	get_error_messages,
 	url_schema,
 	event_title_schema,
 	event_description_schema,
@@ -19,7 +18,11 @@ import type {
 	EventParticipant
 } from './types'
 import { decrypt } from './encryption'
+import { format_error } from '$lib/utils'
 
+/**
+ * Retrieves the event from the form data and validates it.
+ */
 export async function get_validated_event(
 	form_data: FormData,
 	calendar_id: string | null = null, // null for templates
@@ -53,7 +56,7 @@ export async function get_validated_event(
 	if (!title_validation.success) {
 		return {
 			status: 400,
-			error_message: get_error_messages(title_validation.error),
+			error_message: format_error(title_validation.error),
 			fields
 		}
 	}
@@ -62,7 +65,7 @@ export async function get_validated_event(
 	if (!description_validation.success) {
 		return {
 			status: 400,
-			error_message: get_error_messages(description_validation.error),
+			error_message: format_error(description_validation.error),
 			fields
 		}
 	}
@@ -71,7 +74,7 @@ export async function get_validated_event(
 	if (calendar_id && !date_validation.success) {
 		return {
 			status: 400,
-			error_message: get_error_messages(date_validation.error),
+			error_message: format_error(date_validation.error),
 			fields
 		}
 	}
@@ -80,7 +83,7 @@ export async function get_validated_event(
 	if (!start_time_validation.success) {
 		return {
 			status: 400,
-			error_message: get_error_messages(start_time_validation.error),
+			error_message: format_error(start_time_validation.error),
 			fields
 		}
 	}
@@ -89,7 +92,7 @@ export async function get_validated_event(
 	if (!end_time_validation.success) {
 		return {
 			status: 400,
-			error_message: get_error_messages(end_time_validation.error),
+			error_message: format_error(end_time_validation.error),
 			fields
 		}
 	}
@@ -98,7 +101,7 @@ export async function get_validated_event(
 	if (!location_validation.success) {
 		return {
 			status: 400,
-			error_message: get_error_messages(location_validation.error),
+			error_message: format_error(location_validation.error),
 			fields
 		}
 	}
@@ -131,7 +134,7 @@ export async function get_validated_event(
 	if (link && !link_validation.success) {
 		return {
 			status: 400,
-			error_message: get_error_messages(link_validation.error),
+			error_message: format_error(link_validation.error),
 			fields
 		}
 	}
@@ -248,16 +251,25 @@ function decrypt_calender_entry<T>(entry: CalendarEntryEncrypted<T>): CalendarEn
 	}
 }
 
+/**
+ * Decrypts a calendar event.
+ */
 export function decrypt_calendar_event(event: CalendarEventEncrypted): CalendarEvent {
 	return decrypt_calender_entry(event)
 }
 
+/**
+ * Decrypts a calendar template.
+ */
 export function decrypt_event_template(
 	template: CalendarTemplateEncrypted
 ): CalendarTemplate {
 	return decrypt_calender_entry(template)
 }
 
+/**
+ * Retrieves the role of a user in an event.
+ */
 export async function get_role(
 	user_id: string,
 	event_id: string

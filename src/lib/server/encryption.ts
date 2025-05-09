@@ -5,11 +5,7 @@ const key = Buffer.from(ENCRYPTION_KEY, 'hex')
 
 const algorithm = 'aes-256-gcm'
 
-type EncryptedData = {
-	data: string
-	iv: string
-	tag: string
-}
+type EncryptedData = { data: string; iv: string; tag: string }
 
 export function encrypt(text: string): EncryptedData {
 	const iv = randomBytes(12)

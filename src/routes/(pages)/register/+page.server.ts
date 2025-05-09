@@ -6,7 +6,7 @@ import { name_schema, password_schema } from '$lib/server/schemas'
 import { DEFAULT_COLOR } from '$lib/config'
 import sql from 'sql-template-tag'
 import { snowflake } from '$lib/server/snowflake'
-import { get_error_messages } from '$lib/server/schemas'
+import { format_error } from '$lib/utils'
 
 export const actions: Actions = {
 	default: async (event) => {
@@ -19,7 +19,7 @@ export const actions: Actions = {
 
 		if (name_validation.error) {
 			return fail(400, {
-				error: get_error_messages(name_validation.error),
+				error: format_error(name_validation.error),
 				name
 			})
 		}
@@ -28,7 +28,7 @@ export const actions: Actions = {
 
 		if (password_validation.error) {
 			return fail(400, {
-				error: get_error_messages(password_validation.error),
+				error: format_error(password_validation.error),
 				name
 			})
 		}

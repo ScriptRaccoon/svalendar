@@ -48,14 +48,14 @@
 		padding: 0.5rem;
 		border-radius: 0.25rem;
 		height: 100%;
-	}
 
-	.event.pending {
-		border: 2px dashed var(--font-color);
-	}
+		&.pending {
+			border: 2px dashed var(--font-color);
+		}
 
-	.event.declined {
-		opacity: 0.5;
+		&.declined {
+			opacity: 0.5;
+		}
 	}
 
 	.header {

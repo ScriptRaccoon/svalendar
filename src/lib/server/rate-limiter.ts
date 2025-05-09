@@ -13,7 +13,7 @@ export class RateLimiter {
 		this.limiter = new Map<string, RateLimiterEntry>()
 	}
 
-	is_rate_limited(ip: string): boolean {
+	public is_rate_limited(ip: string): boolean {
 		const now = Date.now()
 		const entry = this.limiter.get(ip)
 
@@ -36,7 +36,7 @@ export class RateLimiter {
 		return false
 	}
 
-	clear(ip: string): void {
+	public clear(ip: string): void {
 		this.limiter.delete(ip)
 	}
 }

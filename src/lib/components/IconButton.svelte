@@ -26,11 +26,11 @@
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
-	}
 
-	button.small {
-		width: 1.4rem;
-		height: 1.4rem;
-		font-size: 0.75rem;
+		&.small {
+			width: 1.4rem;
+			height: 1.4rem;
+			font-size: 0.75rem;
+		}
 	}
 </style>

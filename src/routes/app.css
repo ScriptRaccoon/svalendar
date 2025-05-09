@@ -10,35 +10,35 @@
 }
 
 :root {
-	--bg-color: white;
+	--bg-color: #fff;
 	--card-color: #f2f2f2;
 	--font-color: #222;
 	--secondary-font-color: #444;
 	--outline-color: #aaa;
 	--helping-line-color: #e6e6e6;
 	--error-color: red;
-	--primary-color: rgb(15, 125, 15);
-	--button-danger-color: rgb(179, 14, 14);
-	--focus-color: white;
-	--title-color: rgb(15, 125, 15);
+	--primary-color: #0f7d0f;
+	--button-danger-color: #b30e0e;
+	--focus-color: #fff;
+	--title-color: #0f7d0f;
 	--icon-bg-color: #e6e6e6;
-	--highlight-link-color: rgb(42, 135, 172);
+	--highlight-link-color: #2a87ac;
 }
 
 :root[data-theme='dark'] {
 	--bg-color: #222;
 	--card-color: #19191c;
-	--font-color: #ddd;
+	--font-color: #eee;
 	--secondary-font-color: #bbb;
 	--outline-color: #666;
 	--helping-line-color: #333;
-	--error-color: hsl(0, 100%, 65%);
-	--primary-color: rgb(17, 110, 17);
-	--button-danger-color: rgb(179, 14, 14);
+	--error-color: #ff4d4d;
+	--primary-color: #116e11;
+	--button-danger-color: #b30e0e;
 	--focus-color: #2e2e2e;
-	--title-color: yellow;
+	--title-color: #ffff00;
 	--icon-bg-color: #444;
-	--highlight-link-color: skyblue;
+	--highlight-link-color: #87ceeb;
 }
 
 body {
@@ -116,16 +116,16 @@ select {
 
 button {
 	cursor: pointer;
-}
 
-button:focus-visible {
-	outline: 2px solid var(--secondary-font-color);
-	outline-offset: 2px;
+	&:focus-visible {
+		outline: 2px solid var(--secondary-font-color);
+		outline-offset: 2px;
+	}
 }
 
 .button {
 	background-color: var(--primary-color);
-	color: white;
+	color: #fff;
 	padding: 0.15rem 0.6rem;
 	border-radius: 0.25rem;
 	white-space: nowrap;
