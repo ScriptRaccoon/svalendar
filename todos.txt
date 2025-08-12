@@ -1,0 +1,33 @@
+.-----------
+| STRUCTURE
+
+/app/calendar/id/day/date - so add /day
+
+.-----------
+| DESIGN
+
+inconsistent width of buttons: some are full width on mobile, most not.
+
+.-----------
+| BUGS
+
+when editing event is finished in week view, it should go back to week view
+same with new events.
+
+when events from invitations overlap, the UI is a bit
+confusing, in particular if the two evengs have same color.
+and there is no validation at all.
+
+.-----------
+| FEATURE
+
+week display (on desktop)
+
+update /mydata endpoint
+
+.--------------------
+| WILL NOT DO ANYMORE
+
+caching for faster db
+
+feature to move events to different calendars

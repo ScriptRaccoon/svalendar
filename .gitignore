@@ -24,6 +24,3 @@ vite.config.ts.timestamp-*
 
 # Local Database
 database/main.db
-
-# Personal Todos
-todos.txt
