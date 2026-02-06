@@ -3,6 +3,10 @@
 Svalendar is a calendar application for managing events and schedules.
 
 <https://svalendar.netlify.app>
+ 
+<br> 
+<img src="https://github.com/user-attachments/assets/e23aea82-efe5-430a-9f1a-c0f73894925f" width="300" alt="mobile view of calendar" />
+
 
 ## Features
 
