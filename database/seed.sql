@@ -7,9 +7,6 @@ CREATE TABLE IF NOT EXISTS users (
     last_login TIMESTAMP
 );
 
--- index for user names
-CREATE INDEX IF NOT EXISTS idx_name ON users (name);
-
 -- calendars table
 CREATE TABLE IF NOT EXISTS calendars (
     id TEXT PRIMARY KEY,
@@ -23,7 +20,7 @@ CREATE TABLE IF NOT EXISTS calendars (
 );
 
 -- index for calendars per user
-CREATE INDEX IF NOT EXISTS idx_user_id ON calendars (user_id);
+CREATE INDEX IF NOT EXISTS idx_calendar_user_id ON calendars (user_id);
 
 -- calendar events table with encryption, isolated from calendars
 CREATE TABLE IF NOT EXISTS events (

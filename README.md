@@ -3,10 +3,9 @@
 Svalendar is a calendar application for managing events and schedules.
 
 <https://svalendar.netlify.app>
- 
+
 <br> 
 <img src="https://github.com/user-attachments/assets/e23aea82-efe5-430a-9f1a-c0f73894925f" width="300" alt="mobile view of calendar" />
-
 
 ## Features
 
@@ -24,4 +23,90 @@ Svalendar is a calendar application for managing events and schedules.
 - **Database**: Uses SQLite for data storage.
 - **Authentication**: Self-made authentication system for user management.
 
-Favicon Source: <https://loading.io/icon/cgof25>
+## Credits
+
+- **Favicon Source**: <https://loading.io/icon/cgof25>
+
+## Database Structure
+
+```mermaid
+erDiagram
+  users {
+    TEXT id PK
+    TEXT name
+    TEXT password_hash
+    TIMESTAMP created_at
+    TIMESTAMP last_login
+  }
+  calendars {
+    TEXT id PK
+    TEXT name
+    TEXT user_id FK
+    TIMESTAMP created_at
+    TEXT default_color
+    INTEGER default_start_hour
+    BOOLEAN is_default_calendar
+  }
+  calendars ||--o{ users : "user_id"
+  events {
+    TEXT id PK
+    TEXT title_encrypted
+    TEXT title_iv
+    TEXT title_tag
+    TEXT description_encrypted
+    TEXT description_iv
+    TEXT description_tag
+    TEXT location_encrypted
+    TEXT location_iv
+    TEXT location_tag
+    TEXT event_date
+    TEXT start_time
+    TEXT end_time
+    TEXT color
+    TEXT link
+    TIMESTAMP created_at
+  }
+  event_visibilities {
+    TEXT event_id PK, FK
+    TEXT calendar_id PK, FK
+    TIMESTAMP created_at
+  }
+  event_visibilities }o--|| events : "event_id"
+  event_visibilities }o--|| calendars : "calendar_id"
+  event_participants {
+    TEXT event_id PK, FK
+    TEXT user_id PK, FK
+    TEXT role
+    TEXT status
+    TIMESTAMP created_at
+  }
+  event_participants }o--|| events : "event_id"
+  event_participants }o--|| users : "user_id"
+  blocked_users {
+    TEXT user_id PK, FK
+    TEXT blocked_user_id PK, FK
+    TIMESTAMP created_at
+  }
+  blocked_users }o--|| users : "user_id"
+  blocked_users }o--|| users : "blocked_user_id"
+  templates {
+    TEXT id PK
+    TEXT user_id FK
+    TEXT title_encrypted
+    TEXT title_iv
+    TEXT title_tag
+    TEXT description_encrypted
+    TEXT description_iv
+    TEXT description_tag
+    TEXT location_encrypted
+    TEXT location_iv
+    TEXT location_tag
+    TEXT start_time
+    TEXT end_time
+    TEXT color
+    TEXT link
+    INTEGER used_count
+    TIMESTAMP created_at
+  }
+  templates }o--|| users : "user_id"
+```
