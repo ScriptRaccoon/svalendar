@@ -22,7 +22,7 @@ export const load: PageServerLoad = async (event) => {
     SELECT
         e.id, p.status,
 		title_encrypted, description_encrypted, location_encrypted, 
-		start_time, end_time, event_date, color, link
+		start_time, end_time, event_date, color, link_encrypted
     FROM
         event_visibilities v
 	INNER JOIN
@@ -112,6 +112,7 @@ export const actions: Actions = {
 		const encrypted_title = encrypt(fields.title)
 		const encrypted_description = encrypt(fields.description)
 		const encrypted_location = encrypt(fields.location)
+		const encrypted_link = encrypt(fields.link)
 
 		const events_query = sql`
         UPDATE events
@@ -123,7 +124,7 @@ export const actions: Actions = {
                 end_time = ${fields.end_time},
 				event_date = ${fields.date},
                 color = ${fields.color},
-				link = ${fields.link}
+				link_encrypted = ${encrypted_link}
         WHERE
             id = ${event_id}
 		`
@@ -345,12 +346,13 @@ export const actions: Actions = {
 		const encrypted_title = encrypt(fields.title)
 		const encrypted_description = encrypt(fields.description)
 		const encrypted_location = encrypt(fields.location)
+		const encrypted_link = encrypt(fields.link)
 
 		const template_query = sql`
         INSERT INTO templates
 			(id, user_id,
 			title_encrypted, description_encrypted, location_encrypted,
-			start_time, end_time, color, link)
+			start_time, end_time, color, link_encrypted)
         VALUES
             (${template_id},
 			${user.id},
@@ -360,7 +362,7 @@ export const actions: Actions = {
 			${fields.start_time},
 			${fields.end_time},
 			${fields.color},
-			${fields.link})`
+			${encrypted_link})`
 
 		const { err } = await query(template_query)
 		if (err) {

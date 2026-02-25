@@ -22,7 +22,7 @@ export const load: PageServerLoad = async (event) => {
 		SELECT
 			id,
 			title_encrypted, description_encrypted, location_encrypted,
-			start_time, end_time, color, link
+			start_time, end_time, color, link_encrypted
 		FROM templates
 		WHERE id = ${template_id}
 		AND user_id = ${user.id}
@@ -107,6 +107,7 @@ export const actions: Actions = {
 		const encrypted_title = encrypt(fields.title)
 		const encrypted_description = encrypt(fields.description)
 		const encrypted_location = encrypt(fields.location)
+		const encrypted_link = encrypt(fields.link)
 
 		const event_id = await generate_id()
 
@@ -114,7 +115,7 @@ export const actions: Actions = {
         INSERT INTO events
 			(id,
 			title_encrypted, description_encrypted, location_encrypted,
-			start_time, end_time, event_date, color, link)
+			start_time, end_time, event_date, color, link_encrypted)
         VALUES
             (${event_id},
 			${encrypted_title},
@@ -124,7 +125,7 @@ export const actions: Actions = {
 			${fields.end_time},
 			${fields.date},
 			${fields.color},
-			${fields.link})`
+			${encrypted_link})`
 
 		const visibility_query = sql`
 		INSERT INTO event_visibilities (event_id, calendar_id)

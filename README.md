@@ -16,6 +16,7 @@ Svalendar is a calendar application for managing events and schedules.
 - **No Vendor Lock-In**: Does not rely on third-party services like Google or Microsoft.
 - **Backup to JSON**: Allows exporting calendars to a JSON file.
 - **Block Users**: Block specific users to prevent receiving event invites from them.
+- **Encrypted Events**: All events are stored encrypted in the database for security.
 
 ## Tech Stack
 
@@ -57,7 +58,7 @@ erDiagram
     TEXT start_time
     TEXT end_time
     TEXT color
-    TEXT link
+    TEXT link_encrypted
     TIMESTAMP created_at
   }
   event_visibilities {
@@ -92,7 +93,7 @@ erDiagram
     TEXT start_time
     TEXT end_time
     TEXT color
-    TEXT link
+    TEXT link_encrypted
     INTEGER used_count
     TIMESTAMP created_at
   }

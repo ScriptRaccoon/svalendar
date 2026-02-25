@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS events (
     start_time TEXT NOT NULL,
     end_time TEXT NOT NULL,
     color TEXT NOT NULL,
-    link TEXT NOT NULL,
+    link_encrypted TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS templates (
     start_time TEXT NOT NULL,
     end_time TEXT NOT NULL,
     color TEXT NOT NULL,
-    link TEXT NOT NULL,
+    link_encrypted TEXT NOT NULL,
     used_count INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -48,7 +48,11 @@ export async function get_validated_event(
 	}
 
 	if (!title || !start_time || !end_time || (calendar_id && !date) || !color) {
-		return { status: 400, error_message: 'Fill in the required fields.', fields }
+		return {
+			status: 400,
+			error_message: 'Fill in the required fields.',
+			fields
+		}
 	}
 
 	const title_validation = event_title_schema.safeParse(title)
@@ -187,6 +191,7 @@ type CalendarEntry<T> = {
 	title: string
 	description: string
 	location: string
+	link: string
 } & T
 
 /**
@@ -196,22 +201,31 @@ type CalendarEntryEncrypted<T> = {
 	title_encrypted: string
 	description_encrypted: string
 	location_encrypted: string
+	link_encrypted: string
 } & T
 
 /**
  * Decrypts title, description and location of an entry.
  */
 function decrypt_calender_entry<T>(entry: CalendarEntryEncrypted<T>): CalendarEntry<T> {
-	const { title_encrypted, description_encrypted, location_encrypted, ...rest } = entry
+	const {
+		title_encrypted,
+		description_encrypted,
+		location_encrypted,
+		link_encrypted,
+		...rest
+	} = entry
 
 	const title = decrypt(title_encrypted)
 	const description = decrypt(description_encrypted)
 	const location = decrypt(location_encrypted)
+	const link = decrypt(link_encrypted)
 
 	return {
 		title,
 		description,
 		location,
+		link,
 		...(rest as T)
 	}
 }

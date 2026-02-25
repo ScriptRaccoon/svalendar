@@ -35,7 +35,7 @@ export const GET: RequestHandler = async (event) => {
     SELECT
         e.id,
         title_encrypted, description_encrypted, location_encrypted,
-        start_time, end_time, event_date, color, link
+        start_time, end_time, event_date, color, link_encrypted
     FROM
         calendars c
     INNER JOIN

@@ -40,7 +40,7 @@ export type CalendarEventEncrypted = {
 	end_time: string
 	event_date: string
 	color: string
-	link: string
+	link_encrypted: string
 }
 
 export type CalendarTemplate = Omit<CalendarEvent, 'status' | 'event_date'>

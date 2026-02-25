@@ -45,7 +45,7 @@ export const load: PageServerLoad = async (event) => {
 	SELECT
 		e.id, p.status,
 		title_encrypted, description_encrypted, location_encrypted,
-		start_time, end_time, event_date, color, link
+		start_time, end_time, event_date, color, link_encrypted
 	FROM
 		event_visibilities v
 	INNER JOIN

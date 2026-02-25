@@ -74,9 +74,9 @@
 	<h2 class="large">Data Security</h2>
 
 	<p>
-		The titles, descriptions, and locations of all calendar events are encrypted in
-		the database. This means that even if someone gains access to the database, they
-		cannot read your event details without the encryption keys.
+		The titles, descriptions, locations, and links of all calendar events are
+		encrypted in the database. This means that even if someone gains access to the
+		database, they cannot read your event details without the encryption key.
 	</p>
 
 	<details>
@@ -88,7 +88,7 @@
 				be saved in the database similar to this:
 			</p>
 			<pre>{JSON.stringify(sample, null, 4)}</pre>
-			<p>The title, description, and location are all encrypted.</p>
+			<p>The title, description, location, and link are all encrypted.</p>
 		</div>
 	</details>
 </section>
