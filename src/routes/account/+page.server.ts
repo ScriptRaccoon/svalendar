@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs'
 import sql from 'sql-template-tag'
 import { decrypt } from '$lib/server/encryption'
 import { format_error } from '$lib/server/utils'
-import { set_auth_cookie } from '$lib/server/auth'
+import { remove_auth_cookie, set_auth_cookie } from '$lib/server/auth'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -133,8 +133,7 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		event.cookies.delete('jwt', { path: '/' })
-		delete event.locals.user
+		remove_auth_cookie(event)
 
 		const delete_user_query = sql`
 		DELETE FROM users
