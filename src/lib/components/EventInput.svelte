@@ -30,7 +30,7 @@
 		colors
 	}: Props = $props()
 
-	let link_state = $state(link)
+	let link_state = $derived(link)
 </script>
 
 <div class="input-group">
