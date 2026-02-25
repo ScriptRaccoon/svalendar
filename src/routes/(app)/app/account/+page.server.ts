@@ -5,11 +5,11 @@ import { batch, query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import sql from 'sql-template-tag'
 import { decrypt } from '$lib/server/encryption'
-import { format_error } from '$lib/utils'
+import { format_error } from '$lib/server/utils'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
-	if (!user) throw error(401, 'Unauthorized')
+	if (!user) error(401, 'Unauthorized')
 
 	const username_query = sql`SELECT name FROM users WHERE id = ${user.id}`
 
@@ -28,14 +28,14 @@ export const load: PageServerLoad = async (event) => {
 
 	const { results, err } = await batch<
 		[
-			{ name: string }[],
-			{ id: string; name: string }[],
+			{ name: string },
+			{ id: string; name: string },
 			{
 				id: string
 				title_encrypted: string
 				title_iv: string
 				title_tag: string
-			}[]
+			}
 		]
 	>([username_query, blocked_users_query, templates_query])
 
@@ -64,9 +64,9 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		const form_data = await event.request.formData()
+		const form = await event.request.formData()
 
-		const name = form_data.get('name') as string
+		const name = form.get('name') as string
 
 		const name_validation = name_schema.safeParse(name)
 
@@ -101,10 +101,10 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		const form_data = await event.request.formData()
+		const form = await event.request.formData()
 
-		const password = form_data.get('password') as string
-		const confirm_password = form_data.get('confirm_password') as string
+		const password = form.get('password') as string
+		const confirm_password = form.get('confirm_password') as string
 
 		const password_validation = password_schema.safeParse(password)
 		if (password_validation.error) {
@@ -152,9 +152,9 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		const form_data = await event.request.formData()
+		const form = await event.request.formData()
 
-		const blocked_username = form_data.get('blocked_username') as string
+		const blocked_username = form.get('blocked_username') as string
 		if (!blocked_username) {
 			return fail(400, { action: 'block', error: 'No username provided' })
 		}
@@ -195,9 +195,9 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		const form_data = await event.request.formData()
+		const form = await event.request.formData()
 
-		const blocked_user_id = form_data.get('blocked_user_id') as string
+		const blocked_user_id = form.get('blocked_user_id') as string
 		if (!blocked_user_id) {
 			return fail(400, { action: 'block', error: 'No user id provided' })
 		}
@@ -217,8 +217,8 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		const form_data = await event.request.formData()
-		const template_id = form_data.get('template_id') as string
+		const form = await event.request.formData()
+		const template_id = form.get('template_id') as string
 
 		if (!template_id) {
 			return fail(400, { action: 'template', error: 'No template id provided' })

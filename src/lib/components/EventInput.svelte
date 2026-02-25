@@ -2,6 +2,7 @@
 	import { faExternalLink } from '@fortawesome/free-solid-svg-icons'
 	import ColorPicker from './ColorPicker.svelte'
 	import Fa from 'svelte-fa'
+	import type { Color } from '$lib/server/types'
 
 	type Props = {
 		title: string
@@ -13,6 +14,7 @@
 		color: string
 		link: string
 		readonly: boolean
+		colors: readonly Color[]
 	}
 
 	let {
@@ -24,7 +26,8 @@
 		date,
 		color: current_color,
 		link,
-		readonly
+		readonly,
+		colors
 	}: Props = $props()
 
 	let link_state = $state(link)
@@ -76,7 +79,7 @@
 	<input type="text" id="location" name="location" value={location} {readonly} />
 </div>
 
-<ColorPicker label="Color" {current_color} {readonly} />
+<ColorPicker {colors} label="Color" {current_color} {readonly} />
 
 <div class="input-group">
 	{#if !readonly}

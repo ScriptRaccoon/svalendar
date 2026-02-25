@@ -8,11 +8,12 @@ import { redirect } from '@sveltejs/kit'
 import { encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
 import { decrypt_calendar_event, get_role, get_validated_event } from '$lib/server/events'
-import { snowflake } from '$lib/server/snowflake'
+import { generate_id } from '$lib/server/snowflake'
+import { EVENT_COLORS } from '$lib/server/config'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
-	if (!user) throw error(401, 'Unauthorized')
+	if (!user) error(401, 'Unauthorized')
 
 	const calendar_id = event.params.id
 	const event_id = event.params.event_id
@@ -60,7 +61,7 @@ export const load: PageServerLoad = async (event) => {
 	`
 
 	const { results, err } = await batch<
-		[CalendarEventEncrypted[], EventParticipant[], Pick<EventParticipant, 'role'>[]]
+		[CalendarEventEncrypted, EventParticipant, Pick<EventParticipant, 'role'>]
 	>([event_query, participants_query, my_role_query])
 
 	if (err) error(500, 'Database error.')
@@ -73,7 +74,13 @@ export const load: PageServerLoad = async (event) => {
 	const calendar_event = decrypt_calendar_event(encrypted_events[0])
 	const my_role = roles[0].role
 
-	return { calendar_id, event: calendar_event, participants, my_role }
+	return {
+		calendar_id,
+		event: calendar_event,
+		participants,
+		my_role,
+		colors: EVENT_COLORS
+	}
 }
 
 export const actions: Actions = {
@@ -92,10 +99,10 @@ export const actions: Actions = {
 			})
 		}
 
-		const form_data = await event.request.formData()
+		const form = await event.request.formData()
 
 		const { status, fields, error_message } = await get_validated_event(
-			form_data,
+			form,
 			calendar_id,
 			event_id
 		)
@@ -162,8 +169,8 @@ export const actions: Actions = {
 			})
 		}
 
-		const form_data = await event.request.formData()
-		const date = form_data.get('date')
+		const form = await event.request.formData()
+		const date = form.get('date')
 
 		redirect(302, `/app/calendar/${calendar_id}/${date}`)
 	},
@@ -182,8 +189,8 @@ export const actions: Actions = {
 			})
 		}
 
-		const form_data = await event.request.formData()
-		const participant_name = form_data.get('participant_name') as string
+		const form = await event.request.formData()
+		const participant_name = form.get('participant_name') as string
 
 		if (!participant_name) {
 			return fail(400, {
@@ -333,15 +340,15 @@ export const actions: Actions = {
 
 		const calendar_id = event.params.id
 
-		const form_data = await event.request.formData()
+		const form = await event.request.formData()
 
-		const { status, fields, error_message } = await get_validated_event(form_data)
+		const { status, fields, error_message } = await get_validated_event(form)
 
 		if (error_message) {
 			return fail(status, { action: 'update', error: error_message })
 		}
 
-		const template_id = await snowflake.generate()
+		const template_id = await generate_id()
 
 		const encrypted_title = encrypt(fields.title)
 		const encrypted_description = encrypt(fields.description)

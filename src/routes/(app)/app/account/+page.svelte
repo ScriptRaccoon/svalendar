@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms'
 	import AppMenu from '$lib/components/AppMenu.svelte'
 	import IconButton from '$lib/components/IconButton.svelte'
-	import { theme } from '$lib/states.svelte'
+	import { theme, toggle_theme } from '$lib/client/theme.svelte'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 	let { data, form } = $props()
@@ -83,7 +83,7 @@
 
 <section class="card">
 	<h2>Appearance</h2>
-	<button class="button" onclick={theme.toggle}>
+	<button class="button" onclick={toggle_theme}>
 		{#if theme.value === 'dark'}
 			Switch to Light Mode
 		{:else}

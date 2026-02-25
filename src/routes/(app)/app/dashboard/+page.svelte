@@ -51,6 +51,3 @@
 		<div class="error">{form.error}</div>
 	{/if}
 </section>
-
-<style>
-</style>

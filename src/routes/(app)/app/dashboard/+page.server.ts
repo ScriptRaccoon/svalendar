@@ -2,11 +2,11 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
 import type { Calendar } from '$lib/server/types'
-import { DEFAULT_COLOR } from '$lib/config'
+import { DEFAULT_COLOR_ID } from '$lib/server/config'
 import sql from 'sql-template-tag'
-import { snowflake } from '$lib/server/snowflake'
+import { generate_id } from '$lib/server/snowflake'
 import { calendar_name_schema } from '$lib/server/schemas'
-import { format_error } from '$lib/utils'
+import { format_error } from '$lib/server/utils'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -48,8 +48,8 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		const form_data = await event.request.formData()
-		const name = form_data.get('name') as string
+		const form = await event.request.formData()
+		const name = form.get('name') as string
 
 		const name_validation = calendar_name_schema.safeParse(name)
 
@@ -61,16 +61,20 @@ export const actions: Actions = {
 			})
 		}
 
-		const calendar_id = await snowflake.generate()
+		const calendar_id = await generate_id()
 
 		const insert_query = sql`
 		INSERT INTO calendars (id, name, user_id, default_color)
-		VALUES (${calendar_id}, ${name}, ${user.id}, ${DEFAULT_COLOR})`
+		VALUES (${calendar_id}, ${name}, ${user.id}, ${DEFAULT_COLOR_ID})`
 
 		const { err } = await query(insert_query)
 
 		if (err) {
-			return fail(500, { action: 'create', error: 'Database error.', name })
+			return fail(500, {
+				action: 'create',
+				error: 'Database error.',
+				name
+			})
 		}
 
 		redirect(302, `/app/calendar/${calendar_id}`)

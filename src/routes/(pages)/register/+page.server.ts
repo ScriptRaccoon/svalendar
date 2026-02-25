@@ -3,17 +3,17 @@ import { fail } from '@sveltejs/kit'
 import { batch } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import { name_schema, password_schema } from '$lib/server/schemas'
-import { DEFAULT_COLOR } from '$lib/config'
+import { DEFAULT_COLOR_ID } from '$lib/server/config'
 import sql from 'sql-template-tag'
-import { snowflake } from '$lib/server/snowflake'
-import { format_error } from '$lib/utils'
+import { generate_id } from '$lib/server/snowflake'
+import { format_error } from '$lib/server/utils'
 
 export const actions: Actions = {
 	default: async (event) => {
-		const form_data = await event.request.formData()
-		const name = form_data.get('name') as string
-		const password = form_data.get('password') as string
-		const confirm_password = form_data.get('confirm_password') as string
+		const form = await event.request.formData()
+		const name = form.get('name') as string
+		const password = form.get('password') as string
+		const confirm_password = form.get('confirm_password') as string
 
 		const name_validation = name_schema.safeParse(name)
 
@@ -37,10 +37,10 @@ export const actions: Actions = {
 			return fail(400, { error: 'Passwords do not match.', name })
 		}
 
-		const password_hash = await bcrypt.hash(password!, 10)
+		const password_hash = await bcrypt.hash(password, 10)
 
-		const user_id = await snowflake.generate()
-		const calendar_id = await snowflake.generate()
+		const user_id = await generate_id()
+		const calendar_id = await generate_id()
 
 		const user_query = sql`
 		INSERT INTO users (id, name, password_hash)
@@ -50,7 +50,7 @@ export const actions: Actions = {
 		INSERT INTO calendars
 			(id, name, user_id, default_color, is_default_calendar)
 		VALUES
-			(${calendar_id}, 'Default', ${user_id}, ${DEFAULT_COLOR}, TRUE)`
+			(${calendar_id}, 'Default', ${user_id}, ${DEFAULT_COLOR_ID}, TRUE)`
 
 		const { err } = await batch([user_query, calendar_query])
 

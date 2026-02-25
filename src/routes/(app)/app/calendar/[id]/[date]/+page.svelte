@@ -5,7 +5,7 @@
 	import EventPreview from '$lib/components/EventPreview.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
 	import type { Calendar, CalendarEvent } from '$lib/server/types'
-	import { add_days, get_hours, get_hours_diff } from '$lib/utils'
+	import { add_days, get_hours, get_hours_diff } from '$lib/client/utils'
 	import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 	import {
 		faCaretLeft,
@@ -128,7 +128,12 @@
 			style:--hours-start={get_hours(event.start_time)}
 			style:--hours-diff={hours_diff}
 		>
-			<EventPreview {event} {hours_diff} calendar_id={calendar.id} />
+			<EventPreview
+				{event}
+				{hours_diff}
+				calendar_id={calendar.id}
+				color_value={data.color_dict[event.color]}
+			/>
 		</div>
 	{/each}
 </div>

@@ -2,10 +2,10 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { query } from '$lib/server/db'
 import type { Calendar } from '$lib/server/types'
-import { COLOR_IDS } from '$lib/config'
+import { COLOR_IDS, EVENT_COLORS } from '$lib/server/config'
 import sql from 'sql-template-tag'
 import { calendar_name_schema, hour_schema } from '$lib/server/schemas'
-import { format_error } from '$lib/utils'
+import { format_error } from '$lib/server/utils'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -34,7 +34,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const calendar = rows[0]
 
-	return { calendar }
+	return { calendar, event_colors: EVENT_COLORS }
 }
 
 export const actions: Actions = {
@@ -42,11 +42,11 @@ export const actions: Actions = {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
-		const form_data = await event.request.formData()
+		const form = await event.request.formData()
 		const calendar_id = event.params.id
-		const name = form_data.get('name') as string
-		const default_color = form_data.get('color') as string
-		const default_start_hour = Number(form_data.get('default_start_hour'))
+		const name = form.get('name') as string
+		const default_color = form.get('color') as string
+		const default_start_hour = Number(form.get('default_start_hour'))
 
 		const name_validation = calendar_name_schema.safeParse(name)
 
@@ -60,7 +60,7 @@ export const actions: Actions = {
 		if (!hour_schema.safeParse(default_start_hour).success) {
 			return fail(400, {
 				action: 'edit',
-				error: 'Invalid Start Hour'
+				error: 'Invalid Default Start Hour'
 			})
 		}
 

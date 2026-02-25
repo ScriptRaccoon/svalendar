@@ -1,5 +1,3 @@
-import type { ZodError } from 'zod'
-
 export function add_days(date: string | Date, days: number): string {
 	const date_obj = new Date(date)
 	date_obj.setDate(date_obj.getDate() + days)
@@ -13,8 +11,4 @@ export function get_hours(time: string) {
 
 export function get_hours_diff(start_time: string, end_time: string) {
 	return get_hours(end_time) - get_hours(start_time)
-}
-
-export function format_error(error: ZodError): string {
-	return error.errors.map((err) => err.message).join(' ')
 }

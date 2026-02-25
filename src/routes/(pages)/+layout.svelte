@@ -7,15 +7,6 @@
 <div class="wrapper">
 	<Header />
 	<main>
-		{@render children?.()}
+		{@render children()}
 	</main>
 </div>
-
-<style>
-	.wrapper {
-		padding-inline: 0.75rem;
-		max-width: 42rem;
-		margin-inline: auto;
-		margin-bottom: 2rem;
-	}
-</style>

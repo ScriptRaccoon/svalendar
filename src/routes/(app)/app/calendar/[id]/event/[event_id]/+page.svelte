@@ -4,7 +4,8 @@
 	import { page } from '$app/state'
 	import EventInput from '$lib/components/EventInput.svelte'
 	import IconLink from '$lib/components/IconLink.svelte'
-	import { PARTICIPATION_ICONS } from '$lib/config.js'
+	import { faCheckCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
+	import { faBan } from '@fortawesome/free-solid-svg-icons'
 	import { faXmark } from '@fortawesome/free-solid-svg-icons'
 	import Fa from 'svelte-fa'
 
@@ -13,6 +14,12 @@
 	let my_role = $derived(data.my_role)
 
 	let title = $derived(my_role === 'organizer' ? 'Edit Event' : 'Event Details')
+
+	const PARTICIPATION_ICONS = {
+		pending: faQuestionCircle,
+		accepted: faCheckCircle,
+		declined: faBan
+	} as const
 </script>
 
 <svelte:head>
@@ -41,6 +48,7 @@
 		color={event.color}
 		link={event.link}
 		readonly={my_role === 'attendee'}
+		colors={data.colors}
 	/>
 
 	<menu class="update-menu">

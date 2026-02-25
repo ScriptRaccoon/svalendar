@@ -60,6 +60,7 @@
 		</p>
 
 		<ColorPicker
+			colors={data.event_colors}
 			label="Default Color"
 			current_color={calendar.default_color}
 			readonly={false}

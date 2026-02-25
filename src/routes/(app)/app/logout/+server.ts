@@ -1,8 +1,8 @@
 import { redirect } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
+import { remove_auth_cookie } from '$lib/server/auth'
 
 export const GET: RequestHandler = async (event) => {
-	event.cookies.delete('jwt', { path: '/' })
-	delete event.locals.user
+	remove_auth_cookie(event)
 	redirect(302, '/login')
 }

@@ -1,19 +1,20 @@
 <script lang="ts">
-	import { EVENT_COLORS } from '$lib/config'
+	import type { Color } from '$lib/server/types'
 
 	type Props = {
+		colors: readonly Color[]
 		current_color: string | null
 		label: string
 		readonly: boolean
 	}
 
-	let { label, current_color, readonly }: Props = $props()
+	let { colors, label, current_color, readonly }: Props = $props()
 </script>
 
 <div class="colors-container">
 	<span class="secondary">{label}</span>
 	<div class="colors">
-		{#each EVENT_COLORS as color (color.id)}
+		{#each colors as color (color.id)}
 			<input
 				type="radio"
 				name="color"

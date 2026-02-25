@@ -60,3 +60,12 @@ export type CalendarTemplateEncrypted = Omit<
 	CalendarEventEncrypted,
 	'status' | 'event_date'
 >
+
+export type Color = {
+	readonly id: string
+	readonly value: string
+}
+
+export type Arrayed<T extends readonly unknown[]> = {
+	[K in keyof T]: T[K][]
+}

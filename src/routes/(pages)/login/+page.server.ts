@@ -2,11 +2,10 @@ import type { Actions, PageServerLoad } from './$types'
 import { fail, redirect } from '@sveltejs/kit'
 import { query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
-import { JWT_SECRET } from '$env/static/private'
 import { RateLimiter } from '$lib/server/rate-limiter'
 import sql from 'sql-template-tag'
 import { dev } from '$app/environment'
+import { set_auth_cookie } from '$lib/server/auth'
 
 const login_rate_limiter = new RateLimiter(5, 60 * 1000) // 5 attempts per minute
 
@@ -17,8 +16,8 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
 	default: async (event) => {
-		const form_data = await event.request.formData()
-		const name = form_data.get('name') as string
+		const form = await event.request.formData()
+		const name = form.get('name') as string
 
 		if (!name) {
 			return fail(400, { error: 'Name is required.', name })
@@ -32,7 +31,7 @@ export const actions: Actions = {
 			})
 		}
 
-		const password = form_data.get('password') as string
+		const password = form.get('password') as string
 
 		const user_query = sql`
 		SELECT users.id, password_hash, calendars.id as default_calendar_id
@@ -57,20 +56,14 @@ export const actions: Actions = {
 		const { password_hash, id, default_calendar_id } = rows[0]
 
 		const pw_is_correct = await bcrypt.compare(password!, password_hash)
+
 		if (!pw_is_correct) {
 			return fail(400, { error: 'Invalid name or password.', name })
 		}
 
 		login_rate_limiter.clear(ip)
 
-		const token = jwt.sign({ id }, JWT_SECRET)
-
-		event.cookies.set('jwt', token, {
-			httpOnly: true,
-			maxAge: 60 * 60 * 24 * 7, // 1 week
-			path: '/',
-			secure: true
-		})
+		set_auth_cookie(event, { id })
 
 		const login_query = sql`
 		UPDATE users

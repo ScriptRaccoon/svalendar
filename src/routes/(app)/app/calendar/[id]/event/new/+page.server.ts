@@ -4,8 +4,9 @@ import { batch, query } from '$lib/server/db'
 import { decrypt, encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
 import { decrypt_event_template, get_validated_event } from '$lib/server/events'
-import { snowflake } from '$lib/server/snowflake'
+import { generate_id } from '$lib/server/snowflake'
 import type { CalendarTemplateEncrypted, CalendarTemplate } from '$lib/server/types'
+import { EVENT_COLORS } from '$lib/server/config'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -47,7 +48,8 @@ export const load: PageServerLoad = async (event) => {
 			calendar_id,
 			templates: [],
 			date,
-			...template
+			...template,
+			colors: EVENT_COLORS
 		}
 	}
 
@@ -80,7 +82,15 @@ export const load: PageServerLoad = async (event) => {
 		})
 	}))
 
-	return { calendar_id, start_time, end_time, date, color, templates }
+	return {
+		calendar_id,
+		start_time,
+		end_time,
+		date,
+		color,
+		templates,
+		colors: EVENT_COLORS
+	}
 }
 
 export const actions: Actions = {
@@ -90,10 +100,10 @@ export const actions: Actions = {
 
 		const calendar_id = event.params.id
 
-		const form_data = await event.request.formData()
+		const form = await event.request.formData()
 
 		const { status, fields, error_message } = await get_validated_event(
-			form_data,
+			form,
 			calendar_id
 		)
 
@@ -105,7 +115,7 @@ export const actions: Actions = {
 		const encrypted_description = encrypt(fields.description)
 		const encrypted_location = encrypt(fields.location)
 
-		const event_id = await snowflake.generate()
+		const event_id = await generate_id()
 
 		const insert_query = sql`
         INSERT INTO events

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { EVENTS_COLORS_DICTIONARY } from '$lib/config'
 	import type { CalendarEvent } from '$lib/server/types'
 	import { faClockFour } from '@fortawesome/free-regular-svg-icons'
 	import { faLocationDot } from '@fortawesome/free-solid-svg-icons'
@@ -9,15 +8,16 @@
 		event: CalendarEvent
 		hours_diff: number
 		calendar_id: string
+		color_value: string
 	}
 
-	let { event, hours_diff, calendar_id }: Props = $props()
+	let { event, hours_diff, calendar_id, color_value }: Props = $props()
 </script>
 
 <a
 	class="event {event.status}"
 	href="/app/calendar/{calendar_id}/event/{event.id}"
-	style:--color={EVENTS_COLORS_DICTIONARY[event.color]}
+	style:--color={color_value}
 >
 	<div class="header">
 		<div class="title">

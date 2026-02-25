@@ -54,6 +54,7 @@
 		color={form?.color ?? data.color ?? ''}
 		link={form?.link ?? data.link ?? ''}
 		readonly={false}
+		colors={data.colors}
 	/>
 
 	<menu>

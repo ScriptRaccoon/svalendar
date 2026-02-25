@@ -1,4 +1,4 @@
-import { COLOR_IDS, MINIMAL_EVENT_DURATION } from '$lib/config'
+import { COLOR_IDS, MINIMAL_EVENT_DURATION } from '$lib/server/config'
 import sql from 'sql-template-tag'
 import {
 	date_schema,
@@ -18,24 +18,24 @@ import type {
 	EventParticipant
 } from './types'
 import { decrypt } from './encryption'
-import { format_error } from '$lib/utils'
+import { format_error } from '$lib/server/utils'
 
 /**
  * Retrieves the event from the form data and validates it.
  */
 export async function get_validated_event(
-	form_data: FormData,
+	form: FormData,
 	calendar_id: string | null = null, // null for templates
 	event_id: string | null = null // null for new events
 ) {
-	const title = form_data.get('title') as string
-	const description = form_data.get('description') as string
-	const start_time = form_data.get('start_time') as string
-	const end_time = form_data.get('end_time') as string
-	const date = form_data.get('date') as string
-	const location = form_data.get('location') as string
-	const color = form_data.get('color') as string | null
-	const link = form_data.get('link') as string
+	const title = form.get('title') as string
+	const description = form.get('description') as string
+	const start_time = form.get('start_time') as string
+	const end_time = form.get('end_time') as string
+	const date = form.get('date') as string
+	const location = form.get('location') as string
+	const color = form.get('color') as string | null
+	const link = form.get('link') as string
 
 	const fields = {
 		title,

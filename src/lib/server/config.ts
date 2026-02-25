@@ -1,7 +1,6 @@
-import { faCheckCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
-import { faBan } from '@fortawesome/free-solid-svg-icons'
+import type { Color } from './types'
 
-export const EVENT_COLORS = [
+export const EVENT_COLORS: readonly Color[] = [
 	{ id: 'red', value: 'hsl(0deg, 70%, 40%)' },
 	{ id: 'orange', value: 'hsl(35deg, 100%, 45%)' },
 	{ id: 'olive', value: 'hsl(70deg, 100%, 30%)' },
@@ -11,10 +10,7 @@ export const EVENT_COLORS = [
 	{ id: 'indigo', value: 'hsl(240deg, 80%, 30%)' },
 	{ id: 'violet', value: 'hsl(280deg, 80%, 40%)' },
 	{ id: 'pink', value: 'hsl(320deg, 80%, 40%)' }
-] as const satisfies readonly {
-	id: string
-	value: string
-}[]
+]
 
 export const EVENTS_COLORS_DICTIONARY = Object.fromEntries(
 	EVENT_COLORS.map((color) => [color.id, color.value])
@@ -22,12 +18,6 @@ export const EVENTS_COLORS_DICTIONARY = Object.fromEntries(
 
 export const COLOR_IDS = EVENT_COLORS.map((color) => color.id) as [string, ...string[]]
 
-export const DEFAULT_COLOR = 'blue'
+export const DEFAULT_COLOR_ID = 'blue'
 
 export const MINIMAL_EVENT_DURATION = 10 // in minutes
-
-export const PARTICIPATION_ICONS = {
-	pending: faQuestionCircle,
-	accepted: faCheckCircle,
-	declined: faBan
-} as const
