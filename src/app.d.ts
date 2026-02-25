@@ -8,6 +8,7 @@ declare global {
 		}
 		interface PageData {
 			user?: UserLocals
+			number_unread_notifications?: number | null
 		}
 		// interface PageState {}
 		// interface Platform {}

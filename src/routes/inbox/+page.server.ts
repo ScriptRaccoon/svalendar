@@ -38,7 +38,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const [notifications] = results
 
-	return { show_archived, notifications }
+	return { show_archived, notifications, number_unread_notifications: 0 }
 }
 
 export const actions: Actions = {
