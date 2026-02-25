@@ -16,7 +16,7 @@
 
 <a
 	class="event {event.status}"
-	href="/app/calendar/{calendar_id}/event/{event.id}"
+	href="/calendar/{calendar_id}/event/{event.id}"
 	style:--color={color_value}
 >
 	<div class="header">

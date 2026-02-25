@@ -24,7 +24,7 @@
 		{#each data.calendars as calendar}
 			<li>
 				<Fa icon={faCalendar} />&nbsp;
-				<a href="/app/calendar/{calendar.id}">
+				<a href="/calendar/{calendar.id}">
 					{calendar.name}
 				</a>
 				{#if calendar.is_default_calendar}

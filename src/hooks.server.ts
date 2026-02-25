@@ -1,11 +1,14 @@
 import { authenticate } from '$lib/server/auth'
-import { generate_id } from '$lib/server/snowflake'
 import { redirect, type Handle } from '@sveltejs/kit'
+
+const protected_routes = ['/account', '/dashboard', '/calendar']
 
 export const handle: Handle = async ({ event, resolve }) => {
 	authenticate(event)
 
-	const is_protected = event.url.pathname.startsWith('/app')
+	const is_protected = protected_routes.some((route) =>
+		event.url.pathname.startsWith(route)
+	)
 
 	if (is_protected && !event.locals.user) {
 		redirect(302, '/login')

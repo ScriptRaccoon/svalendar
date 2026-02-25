@@ -11,7 +11,7 @@ const login_rate_limiter = new RateLimiter(5, 60 * 1000) // 5 attempts per minut
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
-	if (user) redirect(302, '/app/dashboard')
+	if (user) redirect(302, '/dashboard')
 }
 
 export const actions: Actions = {
@@ -77,8 +77,8 @@ export const actions: Actions = {
 		await query(login_query) // ignore errors on purpose
 
 		const redirect_url = default_calendar_id
-			? `/app/calendar/${default_calendar_id}`
-			: '/app/dashboard'
+			? `/calendar/${default_calendar_id}`
+			: '/dashboard'
 
 		redirect(302, redirect_url)
 	}

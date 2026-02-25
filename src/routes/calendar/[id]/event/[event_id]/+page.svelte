@@ -30,7 +30,7 @@
 	<h1>{title}</h1>
 	<menu class="menu">
 		<IconLink
-			href={`/app/calendar/${data.calendar_id}/${event.event_date}`}
+			href={`/calendar/${data.calendar_id}/${event.event_date}`}
 			aria_label="back to calendar"
 			icon={faXmark}
 		/>
@@ -60,8 +60,7 @@
 			<button
 				class="button"
 				type="button"
-				onclick={() =>
-					goto(`/app/calendar/${data.calendar_id}/${event.event_date}`)}
+				onclick={() => goto(`/calendar/${data.calendar_id}/${event.event_date}`)}
 			>
 				Cancel
 			</button>

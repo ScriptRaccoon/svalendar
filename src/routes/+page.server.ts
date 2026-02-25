@@ -15,8 +15,8 @@ export const load: PageServerLoad = async (event) => {
 
 	const { rows } = await query<{ id: string }>(default_calendar_query)
 
-	if (!rows?.length) redirect(302, '/app/dashboard')
+	if (!rows?.length) redirect(302, '/dashboard')
 
 	const { id } = rows[0]
-	redirect(302, `/app/calendar/${id}`)
+	redirect(302, `/calendar/${id}`)
 }

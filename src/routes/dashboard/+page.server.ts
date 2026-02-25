@@ -77,6 +77,6 @@ export const actions: Actions = {
 			})
 		}
 
-		redirect(302, `/app/calendar/${calendar_id}`)
+		redirect(302, `/calendar/${calendar_id}`)
 	}
 }

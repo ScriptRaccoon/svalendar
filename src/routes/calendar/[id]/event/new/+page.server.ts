@@ -155,6 +155,6 @@ export const actions: Actions = {
 			return fail(500, { error: 'Database error.', ...fields })
 		}
 
-		redirect(302, `/app/calendar/${calendar_id}/${fields.date}`)
+		redirect(302, `/calendar/${calendar_id}/${fields.date}`)
 	}
 }

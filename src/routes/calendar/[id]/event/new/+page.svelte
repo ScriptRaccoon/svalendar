@@ -9,8 +9,8 @@
 
 	let back_url = $derived(
 		data.date
-			? `/app/calendar/${data.calendar_id}/${data.date}`
-			: `/app/calendar/${data.calendar_id}`
+			? `/calendar/${data.calendar_id}/${data.date}`
+			: `/calendar/${data.calendar_id}`
 	)
 </script>
 
@@ -32,7 +32,7 @@
 			{#each data.templates as template}
 				<li>
 					<a
-						href={`/app/calendar/${data.calendar_id}/event/new?template=${template.id}&date=${data.date}`}
+						href={`/calendar/${data.calendar_id}/event/new?template=${template.id}&date=${data.date}`}
 						class="template"
 					>
 						{template.title}

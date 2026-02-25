@@ -104,6 +104,6 @@ export const actions: Actions = {
 		const { err } = await query(delete_query)
 		if (err) return fail(500, { action: 'delete', error: 'Database error.' })
 
-		redirect(302, '/app/dashboard')
+		redirect(302, '/dashboard')
 	}
 }

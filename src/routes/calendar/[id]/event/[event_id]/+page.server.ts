@@ -139,7 +139,7 @@ export const actions: Actions = {
 		const { err } = await query(events_query)
 		if (err) return fail(500, { action: 'update', error: 'Database error.' })
 
-		redirect(302, `/app/calendar/${calendar_id}/${fields.date}`)
+		redirect(302, `/calendar/${calendar_id}/${fields.date}`)
 	},
 
 	delete: async (event) => {
@@ -172,7 +172,7 @@ export const actions: Actions = {
 		const form = await event.request.formData()
 		const date = form.get('date')
 
-		redirect(302, `/app/calendar/${calendar_id}/${date}`)
+		redirect(302, `/calendar/${calendar_id}/${date}`)
 	},
 
 	add_participant: async (event) => {
@@ -331,7 +331,7 @@ export const actions: Actions = {
 			return fail(500, { action: 'update', error: 'Database error.' })
 		}
 
-		redirect(302, `/app/calendar/${calendar_id}`)
+		redirect(302, `/calendar/${calendar_id}`)
 	},
 
 	save_template: async (event) => {
@@ -386,6 +386,6 @@ export const actions: Actions = {
 			})
 		}
 
-		redirect(302, `/app/calendar/${calendar_id}`)
+		redirect(302, `/calendar/${calendar_id}`)
 	}
 }

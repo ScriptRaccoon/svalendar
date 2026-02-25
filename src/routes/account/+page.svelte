@@ -173,7 +173,7 @@
 	<h2>My Data</h2>
 	<div>
 		To download your data in JSON format, follow
-		<a href="/app/account/mydata">this link</a>.
+		<a href="/account/mydata">this link</a>.
 	</div>
 </section>
 

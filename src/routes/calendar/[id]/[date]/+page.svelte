@@ -33,7 +33,7 @@
 				: `${(start_hour + 1).toString().padStart(2, '0')}:00`
 
 		return (
-			`/app/calendar/${calendar.id}/event/new` +
+			`/calendar/${calendar.id}/event/new` +
 			`?start_time=${start_time}` +
 			`&end_time=${end_time}` +
 			`&date=${today}` +
@@ -83,7 +83,7 @@
 		</h2>
 		<menu class="menu">
 			<IconLink
-				href="/app/calendar/{calendar.id}/settings"
+				href="/calendar/{calendar.id}/settings"
 				aria_label="Settings"
 				icon={faCog}
 				scale={1}
@@ -97,12 +97,12 @@
 				/>
 
 				<IconLink
-					href="/app/calendar/{calendar.id}/{yesterday}"
+					href="/calendar/{calendar.id}/{yesterday}"
 					icon={faCaretLeft}
 					aria_label="yesterday"
 				/>
 				<IconLink
-					href="/app/calendar/{calendar.id}/{tomorrow}"
+					href="/calendar/{calendar.id}/{tomorrow}"
 					icon={faCaretRight}
 					aria_label="tomorrow"
 				/>
@@ -147,12 +147,12 @@
 		/>
 
 		<IconLink
-			href="/app/calendar/{calendar.id}/{yesterday}"
+			href="/calendar/{calendar.id}/{yesterday}"
 			icon={faCaretLeft}
 			aria_label="yesterday"
 		/>
 		<IconLink
-			href="/app/calendar/{calendar.id}/{tomorrow}"
+			href="/calendar/{calendar.id}/{tomorrow}"
 			icon={faCaretRight}
 			aria_label="tomorrow"
 		/>

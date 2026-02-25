@@ -25,7 +25,7 @@
 	<h1>Calendar Settings</h1>
 	<menu class="menu">
 		<IconLink
-			href={`/app/calendar/${calendar.id}`}
+			href={`/calendar/${calendar.id}`}
 			aria_label="back to calendar"
 			icon={faXmark}
 		/>
