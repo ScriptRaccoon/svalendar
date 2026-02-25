@@ -1,6 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
-import { batch, query } from '$lib/server/db'
+import { query } from '$lib/server/db'
 import type { CalendarSummary } from '$lib/server/types'
 import { DEFAULT_COLOR_ID } from '$lib/server/config'
 import sql from 'sql-template-tag'
@@ -11,8 +11,6 @@ import { format_error } from '$lib/server/utils'
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
 	if (!user) error(401, 'Unauthorized')
-
-	const users_query = sql`SELECT name FROM users WHERE id = ${user.id}`
 
 	const calendars_query = sql`
 	SELECT
@@ -27,19 +25,10 @@ export const load: PageServerLoad = async (event) => {
 		name ASC
 	`
 
-	const { err, results } = await batch<[{ name: string }, CalendarSummary]>([
-		users_query,
-		calendars_query
-	])
+	const { err, rows: calendars } = await query<CalendarSummary>(calendars_query)
 	if (err) error(500, 'Database error.')
 
-	const [users, calendars] = results
-
-	if (!users.length) error(404, 'User not found.')
-
-	const { name } = users[0]
-
-	return { name, calendars }
+	return { name: user.name, calendars }
 }
 
 export const actions: Actions = {

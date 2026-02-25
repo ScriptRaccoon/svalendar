@@ -1,5 +1,7 @@
 export type UserLocals = {
 	id: string
+	name: string
+	default_calendar_id: string
 }
 
 export type Calendar = {

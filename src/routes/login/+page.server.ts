@@ -27,7 +27,7 @@ export const actions: Actions = {
 		if (!dev && login_rate_limiter.is_rate_limited(ip)) {
 			return fail(429, {
 				error: 'Too many requests. Please try again later.',
-				username: username
+				username
 			})
 		}
 
@@ -46,7 +46,7 @@ export const actions: Actions = {
 		const { rows, err } = await query<{
 			id: string
 			password_hash: string
-			default_calendar_id: string | null
+			default_calendar_id: string
 		}>(user_query)
 
 		if (err) {
@@ -67,7 +67,7 @@ export const actions: Actions = {
 
 		login_rate_limiter.clear(ip)
 
-		set_auth_cookie(event, { id })
+		set_auth_cookie(event, { id, name: username, default_calendar_id })
 
 		const login_query = sql`
 		UPDATE users

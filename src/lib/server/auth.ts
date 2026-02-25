@@ -9,8 +9,11 @@ export function authenticate(event: RequestEvent): void {
 	const token = event.cookies.get(JWT_COOKIE_NAME)
 	if (!token) return
 	try {
-		const { id } = jwt.verify(token, JWT_SECRET) as UserLocals
-		event.locals.user = { id }
+		const { id, name, default_calendar_id } = jwt.verify(
+			token,
+			JWT_SECRET
+		) as UserLocals
+		event.locals.user = { id, name, default_calendar_id }
 	} catch (_) {}
 }
 

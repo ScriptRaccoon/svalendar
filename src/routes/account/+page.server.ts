@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs'
 import sql from 'sql-template-tag'
 import { decrypt } from '$lib/server/encryption'
 import { format_error } from '$lib/server/utils'
+import { set_auth_cookie } from '$lib/server/auth'
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user
@@ -85,6 +86,12 @@ export const actions: Actions = {
 
 			return fail(500, { action: 'username', error: 'Database error.' })
 		}
+
+		set_auth_cookie(event, {
+			id: user.id,
+			name: username,
+			default_calendar_id: user.default_calendar_id
+		})
 
 		return { action: 'username', success: true }
 	},
