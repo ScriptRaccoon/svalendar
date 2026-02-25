@@ -34,9 +34,7 @@ export const GET: RequestHandler = async (event) => {
 	const events_query = sql`
     SELECT
         e.id,
-        title_encrypted, title_iv, title_tag,
-        description_encrypted, description_iv, description_tag,
-        location_encrypted, location_iv, location_tag,
+        title_encrypted, description_encrypted, location_encrypted,
         start_time, end_time, event_date, color, link
     FROM
         calendars c

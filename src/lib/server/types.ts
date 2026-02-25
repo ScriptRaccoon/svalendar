@@ -34,25 +34,14 @@ export type CalendarEventEncrypted = {
 	id: string
 	status: EventParticipant['status']
 	title_encrypted: string
-	title_iv: string
-	title_tag: string
 	description_encrypted: string
-	description_iv: string
-	description_tag: string
 	location_encrypted: string
-	location_iv: string
-	location_tag: string
 	start_time: string
 	end_time: string
 	event_date: string
 	color: string
 	link: string
 }
-
-export type EventTitleEncrypted = Pick<
-	CalendarEventEncrypted,
-	'title_encrypted' | 'title_iv' | 'title_tag'
->
 
 export type CalendarTemplate = Omit<CalendarEvent, 'status' | 'event_date'>
 

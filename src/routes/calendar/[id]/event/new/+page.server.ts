@@ -20,9 +20,8 @@ export const load: PageServerLoad = async (event) => {
 	if (template_id) {
 		const template_query = sql`
 		SELECT
-			id, title_encrypted, title_iv, title_tag,
-			description_encrypted, description_iv, description_tag,		
-			location_encrypted, location_iv, location_tag,
+			id,
+			title_encrypted, description_encrypted, location_encrypted,
 			start_time, end_time, color, link
 		FROM templates
 		WHERE id = ${template_id}
@@ -58,7 +57,7 @@ export const load: PageServerLoad = async (event) => {
 	const color = event.url.searchParams.get('color')
 
 	const templates_query = sql`
-	SELECT id, title_encrypted, title_iv, title_tag
+	SELECT id, title_encrypted
 	FROM templates
 	WHERE user_id = ${user.id}
 	ORDER BY used_count DESC
@@ -67,19 +66,13 @@ export const load: PageServerLoad = async (event) => {
 	const { rows: encrypted_templates, err } = await query<{
 		id: string
 		title_encrypted: string
-		title_iv: string
-		title_tag: string
 	}>(templates_query)
 
 	if (err) error(500, 'Database error.')
 
 	const templates = encrypted_templates.map((template) => ({
 		id: template.id,
-		title: decrypt({
-			data: template.title_encrypted,
-			iv: template.title_iv,
-			tag: template.title_tag
-		})
+		title: decrypt(template.title_encrypted)
 	}))
 
 	return {
@@ -120,21 +113,13 @@ export const actions: Actions = {
 		const insert_query = sql`
         INSERT INTO events
 			(id,
-			title_encrypted, title_iv, title_tag,
-			description_encrypted, description_iv, description_tag,		
-			location_encrypted, location_iv, location_tag,
+			title_encrypted, description_encrypted, location_encrypted,
 			start_time, end_time, event_date, color, link)
         VALUES
             (${event_id},
-			${encrypted_title.data},
-			${encrypted_title.iv},
-			${encrypted_title.tag},
-			${encrypted_description.data},
-			${encrypted_description.iv},
-			${encrypted_description.tag},
-			${encrypted_location.data},
-			${encrypted_location.iv},
-			${encrypted_location.tag},
+			${encrypted_title},
+			${encrypted_description},
+			${encrypted_location},
 			${fields.start_time},
 			${fields.end_time},
 			${fields.date},

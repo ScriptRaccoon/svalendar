@@ -1,18 +1,12 @@
 {
-	"id": "7324016421137027072",
-	"title_encrypted": "7kXuvZWyDE4GEiZfo/g=",
-	"title_iv": "kI0Bms8Gm/J2BN4C",
-	"title_tag": "SnotrLyrV9TOE2gSAka8cA==",
-	"description_encrypted": "4Xra/UO551vp9gMmFLHuxvvivcjN",
-	"description_iv": "CW/WtQDuUY6P4f8U",
-	"description_tag": "JQrPLnNo2jUNFhbXyF4ADA==",
-	"location_encrypted": "LCLdjshpaN+zOhiz",
-	"location_iv": "TYFekQWowbmhrcB+",
-	"location_tag": "wn1UWoZjsd2XZl6FpHG2Iw==",
-	"event_date": "2025-04-26",
-	"start_time": "18:00",
-	"end_time": "18:30",
-	"created_at": "2025-04-25 12:11:36",
+	"id": "7432252809703067648",
+	"title_encrypted": "LyDLx7yf+XjfgxhJ8crYBfDi7D6N9CKqw5zkg34rRBS5X5i12jan+l3Z",
+	"description_encrypted": "upnHK8TPW9A/qBQDPqZb2bGpAYsk0euKk61fiZtkpK0Om3vdsfWpLh/RNvXkYfcNFg==",
+	"location_encrypted": "81YXmp+sC3gtOm+OzPcqCWuXtK8Bm+3SR4BF6P0UMh9CWTwai2Qudw==",
+	"event_date": "2026-02-25",
+	"start_time": "17:00",
+	"end_time": "18:00",
 	"color": "red",
-	"link": "https://www.humaneworld.org"
+	"link": "",
+	"created_at": "2026-02-25 02:39:14"
 }

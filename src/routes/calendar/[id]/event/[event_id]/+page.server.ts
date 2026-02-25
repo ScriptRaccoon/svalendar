@@ -21,9 +21,7 @@ export const load: PageServerLoad = async (event) => {
 	const event_query = sql`
     SELECT
         e.id, p.status,
-		title_encrypted, title_iv, title_tag,
-		description_encrypted, description_iv, description_tag,
-		location_encrypted, location_iv, location_tag,
+		title_encrypted, description_encrypted, location_encrypted, 
 		start_time, end_time, event_date, color, link
     FROM
         event_visibilities v
@@ -118,15 +116,9 @@ export const actions: Actions = {
 		const events_query = sql`
         UPDATE events
             SET
-                title_encrypted = ${encrypted_title.data},
-				title_iv = ${encrypted_title.iv},
-				title_tag = ${encrypted_title.tag},
-                description_encrypted = ${encrypted_description.data},
-				description_iv = ${encrypted_description.iv},
-				description_tag = ${encrypted_description.tag},
-                location_encrypted = ${encrypted_location.data},
-				location_iv = ${encrypted_location.iv},
-				location_tag = ${encrypted_location.tag},
+                title_encrypted = ${encrypted_title},
+                description_encrypted = ${encrypted_description},
+                location_encrypted = ${encrypted_location},
                 start_time = ${fields.start_time},
                 end_time = ${fields.end_time},
 				event_date = ${fields.date},
@@ -357,22 +349,14 @@ export const actions: Actions = {
 		const template_query = sql`
         INSERT INTO templates
 			(id, user_id,
-			title_encrypted, title_iv, title_tag,
-			description_encrypted, description_iv, description_tag,		
-			location_encrypted, location_iv, location_tag,
+			title_encrypted, description_encrypted, location_encrypted,
 			start_time, end_time, color, link)
         VALUES
             (${template_id},
 			${user.id},
-			${encrypted_title.data},
-			${encrypted_title.iv},
-			${encrypted_title.tag},
-			${encrypted_description.data},
-			${encrypted_description.iv},
-			${encrypted_description.tag},
-			${encrypted_location.data},
-			${encrypted_location.iv},
-			${encrypted_location.tag},
+			${encrypted_title},
+			${encrypted_description},
+			${encrypted_location},
 			${fields.start_time},
 			${fields.end_time},
 			${fields.color},

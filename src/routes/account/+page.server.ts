@@ -20,7 +20,7 @@ export const load: PageServerLoad = async (event) => {
 	WHERE blocked_users.user_id = ${user.id}`
 
 	const templates_query = sql`
-	SELECT id, title_encrypted, title_iv, title_tag
+	SELECT id, title_encrypted
 	FROM templates
 	WHERE user_id = ${user.id}
 	ORDER BY created_at DESC
@@ -30,12 +30,7 @@ export const load: PageServerLoad = async (event) => {
 		[
 			{ name: string },
 			{ id: string; name: string },
-			{
-				id: string
-				title_encrypted: string
-				title_iv: string
-				title_tag: string
-			}
+			{ id: string; title_encrypted: string }
 		]
 	>([username_query, blocked_users_query, templates_query])
 
@@ -49,11 +44,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const templates = encrypted_templates.map((template) => ({
 		id: template.id,
-		title: decrypt({
-			data: template.title_encrypted,
-			iv: template.title_iv,
-			tag: template.title_tag
-		})
+		title: decrypt(template.title_encrypted)
 	}))
 
 	return { username, blocked_users, templates }

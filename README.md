@@ -51,14 +51,8 @@ erDiagram
   events {
     TEXT id PK
     TEXT title_encrypted
-    TEXT title_iv
-    TEXT title_tag
     TEXT description_encrypted
-    TEXT description_iv
-    TEXT description_tag
     TEXT location_encrypted
-    TEXT location_iv
-    TEXT location_tag
     TEXT event_date
     TEXT start_time
     TEXT end_time
@@ -93,14 +87,8 @@ erDiagram
     TEXT id PK
     TEXT user_id FK
     TEXT title_encrypted
-    TEXT title_iv
-    TEXT title_tag
     TEXT description_encrypted
-    TEXT description_iv
-    TEXT description_tag
     TEXT location_encrypted
-    TEXT location_iv
-    TEXT location_tag
     TEXT start_time
     TEXT end_time
     TEXT color

@@ -1,31 +1,30 @@
+import crypto from 'node:crypto'
 import { ENCRYPTION_KEY } from '$env/static/private'
-import { randomBytes, createCipheriv, createDecipheriv } from 'node:crypto'
 
-const key = Buffer.from(ENCRYPTION_KEY, 'hex')
+const key = crypto.createHash('sha256').update(ENCRYPTION_KEY).digest()
 
-const algorithm = 'aes-256-gcm'
+export function encrypt(plain_text: string): string {
+	const iv = crypto.randomBytes(12)
+	const cipher = crypto.createCipheriv('aes-256-gcm', key, iv)
 
-type EncryptedData = { data: string; iv: string; tag: string }
+	const encrypted = Buffer.concat([cipher.update(plain_text, 'utf8'), cipher.final()])
 
-export function encrypt(text: string): EncryptedData {
-	const iv = randomBytes(12)
-	const cipher = createCipheriv(algorithm, key, iv)
-	const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()])
 	const tag = cipher.getAuthTag()
 
-	return {
-		data: encrypted.toString('base64'),
-		iv: iv.toString('base64'),
-		tag: tag.toString('base64')
-	}
+	return Buffer.concat([iv, tag, encrypted]).toString('base64')
 }
 
-export function decrypt({ data, iv, tag }: EncryptedData) {
-	const decipher = createDecipheriv(algorithm, key, Buffer.from(iv, 'base64'))
-	decipher.setAuthTag(Buffer.from(tag, 'base64'))
-	const decrypted = Buffer.concat([
-		decipher.update(Buffer.from(data, 'base64')),
-		decipher.final()
-	])
+export function decrypt(cipher_text: string): string {
+	const data = Buffer.from(cipher_text, 'base64')
+
+	const iv = data.subarray(0, 12)
+	const tag = data.subarray(12, 28)
+	const encrypted = data.subarray(28)
+
+	const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv)
+	decipher.setAuthTag(tag)
+
+	const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()])
+
 	return decrypted.toString('utf8')
 }

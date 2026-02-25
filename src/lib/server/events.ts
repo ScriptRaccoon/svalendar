@@ -14,7 +14,6 @@ import type {
 	CalendarEventEncrypted,
 	CalendarTemplate,
 	CalendarTemplateEncrypted,
-	EventTitleEncrypted,
 	EventParticipant
 } from './types'
 import { decrypt } from './encryption'
@@ -145,7 +144,7 @@ export async function get_validated_event(
 
 	const overlap_query = sql`
     SELECT
-        title_encrypted, title_iv, title_tag
+        title_encrypted
     FROM
         event_visibilities v
 	INNER JOIN
@@ -159,8 +158,9 @@ export async function get_validated_event(
     LIMIT 1
     `
 
-	const { rows: overlap_rows, err: overlap_err } =
-		await query<EventTitleEncrypted>(overlap_query)
+	const { rows: overlap_rows, err: overlap_err } = await query<{
+		title_encrypted: string
+	}>(overlap_query)
 
 	if (overlap_err) {
 		return { status: 500, error_message: 'Database error.', fields }
@@ -168,11 +168,7 @@ export async function get_validated_event(
 
 	if (overlap_rows.length) {
 		const overlap = overlap_rows[0]
-		const title_overlap = decrypt({
-			data: overlap.title_encrypted,
-			iv: overlap.title_iv,
-			tag: overlap.title_tag
-		})
+		const title_overlap = decrypt(overlap.title_encrypted)
 
 		return {
 			status: 400,
@@ -198,50 +194,19 @@ type CalendarEntry<T> = {
  */
 type CalendarEntryEncrypted<T> = {
 	title_encrypted: string
-	title_iv: string
-	title_tag: string
 	description_encrypted: string
-	description_iv: string
-	description_tag: string
 	location_encrypted: string
-	location_iv: string
-	location_tag: string
 } & T
 
 /**
  * Decrypts title, description and location of an entry.
  */
 function decrypt_calender_entry<T>(entry: CalendarEntryEncrypted<T>): CalendarEntry<T> {
-	const {
-		title_encrypted,
-		title_iv,
-		title_tag,
-		description_encrypted,
-		description_iv,
-		description_tag,
-		location_encrypted,
-		location_iv,
-		location_tag,
-		...rest
-	} = entry
+	const { title_encrypted, description_encrypted, location_encrypted, ...rest } = entry
 
-	const title = decrypt({
-		data: title_encrypted,
-		iv: title_iv,
-		tag: title_tag
-	})
-
-	const description = decrypt({
-		data: description_encrypted,
-		iv: description_iv,
-		tag: description_tag
-	})
-
-	const location = decrypt({
-		data: location_encrypted,
-		iv: location_iv,
-		tag: location_tag
-	})
+	const title = decrypt(title_encrypted)
+	const description = decrypt(description_encrypted)
+	const location = decrypt(location_encrypted)
 
 	return {
 		title,
