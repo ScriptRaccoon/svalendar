@@ -7,7 +7,12 @@ import { fail } from '@sveltejs/kit'
 import { redirect } from '@sveltejs/kit'
 import { encrypt } from '$lib/server/encryption'
 import sql from 'sql-template-tag'
-import { decrypt_calendar_event, get_role, get_validated_event } from '$lib/server/events'
+import {
+	decrypt_calendar_event,
+	get_organizer,
+	get_role,
+	get_validated_event
+} from '$lib/server/events'
 import { generate_id } from '$lib/server/snowflake'
 import { EVENT_COLORS } from '$lib/server/config'
 
@@ -163,7 +168,7 @@ export const actions: Actions = {
 		}
 
 		const form = await event.request.formData()
-		const date = form.get('date')
+		const date = form.get('date') as string
 
 		redirect(302, `/calendar/${calendar_id}/${date}`)
 	},
@@ -184,6 +189,7 @@ export const actions: Actions = {
 
 		const form = await event.request.formData()
 		const participant_name = form.get('participant_name') as string
+		const event_title = form.get('event_title') as string
 
 		if (!participant_name) {
 			return fail(400, {
@@ -194,7 +200,7 @@ export const actions: Actions = {
 
 		const user_query = sql`
 		SELECT
-			id as participant_id,
+			users.id as participant_id,
 			EXISTS (
 				SELECT 1
 				FROM blocked_users b
@@ -203,7 +209,7 @@ export const actions: Actions = {
 		FROM
 			users
 		WHERE
-			name = ${participant_name}
+			users.name = ${participant_name}
 		`
 
 		const { rows: user_rows, err: err_user } = await query<{
@@ -228,18 +234,35 @@ export const actions: Actions = {
 			})
 		}
 
-		const insert_query = sql`
-		INSERT INTO event_participants (event_id, user_id, role, status)
-		VALUES (${event_id}, ${participant_id}, 'attendee', 'pending')`
+		const participant_query = sql`
+		INSERT INTO event_participants (event_id, user_id)
+		VALUES (${event_id}, ${participant_id})`
 
 		const visibility_query = sql`
 		INSERT INTO event_visibilities (event_id, calendar_id)
 		SELECT ${event_id}, c.id
 		FROM calendars c
-		WHERE c.user_id = ${participant_id} AND c.is_default_calendar = TRUE
+		WHERE c.user_id = ${participant_id} AND c.is_default_calendar = TRUE`
+
+		const invite_message = `You have been invited to the event '${event_title}'.`
+
+		const notification_query = sql`
+		INSERT INTO
+			notifications
+			(type, recipient_id, sender_id, event_id, message)
+		VALUES
+			('event-invite',
+			${participant_id},
+			${user.id},
+			${event_id},
+			${invite_message})
 		`
 
-		const { err } = await batch([insert_query, visibility_query])
+		const { err } = await batch([
+			participant_query,
+			visibility_query,
+			notification_query
+		])
 
 		if (err) {
 			const is_invited = err.code === 'SQLITE_CONSTRAINT_PRIMARYKEY'
@@ -254,7 +277,7 @@ export const actions: Actions = {
 					})
 		}
 
-		return { success: true }
+		return { action: 'add_participant', success: true }
 	},
 
 	accept_event: async (event) => {
@@ -263,17 +286,32 @@ export const actions: Actions = {
 
 		const event_id = event.params.event_id
 
+		const form = await event.request.formData()
+		const event_title = form.get('event_title') as string
+
+		const organizer_id = await get_organizer(event_id)
+		if (!organizer_id) {
+			return fail(500, { action: 'respond', error: 'Database error.' })
+		}
+
 		const accept_query = sql`
 		UPDATE event_participants
 		SET status = 'accepted'
 		WHERE event_id = ${event_id} AND user_id = ${user.id}`
 
-		const { err } = await query(accept_query)
+		const message = `${user.name} has accepted the event '${event_title}'.`
+
+		const notification_query = sql`
+		INSERT INTO notifications (type, recipient_id, sender_id, event_id, message)
+		VALUES ('event-accept', ${organizer_id}, ${user.id}, ${event_id}, ${message})
+		`
+
+		const { err } = await batch([accept_query, notification_query])
 		if (err) {
 			return fail(500, { action: 'respond', error: 'Database error.' })
 		}
 
-		return { success: true }
+		return { action: 'respond', success: true }
 	},
 
 	decline_event: async (event) => {
@@ -282,17 +320,32 @@ export const actions: Actions = {
 
 		const event_id = event.params.event_id
 
+		const form = await event.request.formData()
+		const event_title = form.get('event_title') as string
+
+		const organizer_id = await get_organizer(event_id)
+		if (!organizer_id) {
+			return fail(500, { action: 'respond', error: 'Database error.' })
+		}
+
 		const reject_query = sql`
 		UPDATE event_participants
 		SET status = 'declined'
 		WHERE event_id = ${event_id} AND user_id = ${user.id}`
 
-		const { err } = await query(reject_query)
+		const message = `${user.name} has declined the event '${event_title}'.`
+
+		const notification_query = sql`
+		INSERT INTO notifications (type, recipient_id, sender_id, event_id, message)
+		VALUES ('event-decline', ${organizer_id}, ${user.id}, ${event_id}, ${message})
+		`
+
+		const { err } = await batch([reject_query, notification_query])
 		if (err) {
 			return fail(500, { action: 'respond', error: 'Database error.' })
 		}
 
-		return { success: true }
+		return { action: 'respond', success: true }
 	},
 
 	remove: async (event) => {

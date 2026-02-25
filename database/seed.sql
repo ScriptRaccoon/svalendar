@@ -89,3 +89,21 @@ CREATE TABLE IF NOT EXISTS templates (
 
 -- index for templates by user
 CREATE INDEX IF NOT EXISTS idx_template_user_id ON templates (user_id);
+
+-- table with all notifications for users
+CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER PRIMARY KEY,
+    type TEXT NOT NULL CHECK (
+        type IN ("system", "user-block", "user-unblock", "event-invite", "event-accept", "event-decline")
+    ),
+    recipient_id TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'unread' CHECK (status IN ('unread', 'read', 'archived')),
+    sender_id TEXT,
+    event_id TEXT,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (recipient_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+-- index for notifications by recipient
+CREATE INDEX IF NOT EXISTS idx_notifications_recipient_id ON notifications (recipient_id);

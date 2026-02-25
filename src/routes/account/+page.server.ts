@@ -185,6 +185,14 @@ export const actions: Actions = {
 			return fail(400, { action: 'block', error: 'User not found' })
 		}
 
+		const message = `${user.name} has blocked you from sending event invitations.`
+
+		const notification_query = sql`
+		INSERT INTO notifications (type, recipient_id, sender_id, message)
+		VALUES ('user-block', ${users[0].blocked_user_id}, ${user.id}, ${message})`
+
+		await query(notification_query) // ignore errors on purpose
+
 		return { action: 'block', success: true }
 	},
 
@@ -206,6 +214,14 @@ export const actions: Actions = {
 		const { err } = await query(unblock_query)
 
 		if (err) return fail(500, { action: 'block', error: 'Database error.' })
+
+		const message = `${user.name} has unblocked you.`
+
+		const notification_query = sql`
+		INSERT INTO notifications (type, recipient_id, sender_id, message)
+		VALUES ('user-unblock', ${blocked_user_id}, ${user.id}, ${message})`
+
+		await query(notification_query) // ignore errors on purpose
 
 		return { action: 'block', success: true }
 	},

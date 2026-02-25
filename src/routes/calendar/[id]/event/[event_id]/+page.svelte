@@ -80,6 +80,8 @@
 	<h2>Participants</h2>
 
 	<form method="POST" action="?/accept_event" use:enhance>
+		<input type="hidden" name="event_title" value={event.title} />
+
 		<ul class="list no-bullets">
 			{#each data.participants as participant (participant.id)}
 				<li>
@@ -121,6 +123,8 @@
 
 	{#if my_role == 'organizer'}
 		<form method="POST" action="?/add_participant" use:enhance>
+			<input type="hidden" name="event_title" value={event.title} />
+
 			<div class="input-group">
 				<label for="participant_name">Participant</label>
 				<div class="input-with-button">

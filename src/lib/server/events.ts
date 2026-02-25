@@ -261,3 +261,15 @@ export async function get_role(
 
 	return rows?.length ? rows[0].role : null
 }
+
+/**
+ * Retrieves the id of the organizer of an event.
+ */
+export async function get_organizer(event_id: string): Promise<string | null> {
+	const organizer_query = sql`
+	SELECT user_id FROM event_participants
+	WHERE event_id = ${event_id} AND role = 'organizer'`
+
+	const { rows } = await query<{ user_id: string }>(organizer_query)
+	return rows?.length ? rows[0].user_id : null
+}

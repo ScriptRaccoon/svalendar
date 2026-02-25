@@ -8,6 +8,9 @@ import sql from 'sql-template-tag'
 import { generate_id } from '$lib/server/snowflake'
 import { format_error } from '$lib/server/utils'
 
+const welcome_message =
+	'Welcome to Svalendar! Create events, invite others, and manage everything in one place.'
+
 export const actions: Actions = {
 	default: async (event) => {
 		const form = await event.request.formData()
@@ -52,7 +55,12 @@ export const actions: Actions = {
 		VALUES
 			(${calendar_id}, 'Default', ${user_id}, ${DEFAULT_COLOR_ID}, TRUE)`
 
-		const { err } = await batch([user_query, calendar_query])
+		const welcome_query = sql`
+		INSERT INTO notifications
+			(type, recipient_id, message)
+		VALUES ('system', ${user_id}, ${welcome_message})`
+
+		const { err } = await batch([user_query, calendar_query, welcome_query])
 
 		if (err) {
 			const name_is_taken = err.code === 'SQLITE_CONSTRAINT_UNIQUE'

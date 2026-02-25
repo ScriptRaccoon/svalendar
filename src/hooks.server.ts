@@ -1,7 +1,7 @@
 import { authenticate } from '$lib/server/auth'
 import { redirect, type Handle } from '@sveltejs/kit'
 
-const protected_routes = ['/account', '/dashboard', '/calendar']
+const protected_routes = ['/account', '/dashboard', '/calendar', '/inbox']
 
 export const handle: Handle = async ({ event, resolve }) => {
 	authenticate(event)

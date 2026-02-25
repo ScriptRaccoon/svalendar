@@ -62,3 +62,23 @@ export type Color = {
 export type Arrayed<T extends readonly unknown[]> = {
 	[K in keyof T]: T[K][]
 }
+
+type NotificationType =
+	| 'system'
+	| 'user-block'
+	| 'user-unblock'
+	| 'event-invite'
+	| 'event-accept'
+	| 'event-decline'
+
+type NotificationStatus = 'unread' | 'read' | 'archived'
+
+export type Notification = {
+	id: number
+	type: NotificationType
+	status: NotificationStatus
+	sender_id?: string | null
+	event_id?: string | null
+	message: string
+	created_at: string
+}
