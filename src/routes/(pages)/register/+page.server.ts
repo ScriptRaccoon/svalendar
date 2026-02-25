@@ -2,7 +2,7 @@ import type { Actions } from './$types'
 import { fail } from '@sveltejs/kit'
 import { batch } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
-import { name_schema, password_schema } from '$lib/server/schemas'
+import { username_schema, password_schema } from '$lib/server/schemas'
 import { DEFAULT_COLOR_ID } from '$lib/server/config'
 import sql from 'sql-template-tag'
 import { generate_id } from '$lib/server/snowflake'
@@ -11,16 +11,16 @@ import { format_error } from '$lib/server/utils'
 export const actions: Actions = {
 	default: async (event) => {
 		const form = await event.request.formData()
-		const name = form.get('name') as string
+		const username = form.get('username') as string
 		const password = form.get('password') as string
 		const confirm_password = form.get('confirm_password') as string
 
-		const name_validation = name_schema.safeParse(name)
+		const username_validation = username_schema.safeParse(username)
 
-		if (name_validation.error) {
+		if (username_validation.error) {
 			return fail(400, {
-				error: format_error(name_validation.error),
-				name
+				error: format_error(username_validation.error),
+				username
 			})
 		}
 
@@ -29,12 +29,12 @@ export const actions: Actions = {
 		if (password_validation.error) {
 			return fail(400, {
 				error: format_error(password_validation.error),
-				name
+				username
 			})
 		}
 
 		if (password !== confirm_password) {
-			return fail(400, { error: 'Passwords do not match.', name })
+			return fail(400, { error: 'Passwords do not match.', username })
 		}
 
 		const password_hash = await bcrypt.hash(password, 10)
@@ -44,7 +44,7 @@ export const actions: Actions = {
 
 		const user_query = sql`
 		INSERT INTO users (id, name, password_hash)
-		VALUES (${user_id}, ${name}, ${password_hash})`
+		VALUES (${user_id}, ${username}, ${password_hash})`
 
 		const calendar_query = sql`
 		INSERT INTO calendars
@@ -57,10 +57,13 @@ export const actions: Actions = {
 		if (err) {
 			const name_is_taken = err.code === 'SQLITE_CONSTRAINT_UNIQUE'
 			return name_is_taken
-				? fail(400, { error: 'User with that name already exists.', name })
-				: fail(500, { error: 'Database error.', name })
+				? fail(400, {
+						error: 'User with that name already exists.',
+						username
+					})
+				: fail(500, { error: 'Database error.', username })
 		}
 
-		return { success: true, name }
+		return { success: true, username }
 	}
 }

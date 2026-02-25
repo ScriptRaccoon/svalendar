@@ -1,16 +1,16 @@
 import { z } from 'zod'
 
-export const name_schema = z
-	.string('Name must be a string.')
-	.min(1, 'Name cannot be empty.')
-	.max(50, 'Name must be at most 50 characters long.')
+export const username_schema = z
+	.string('Username must be a string.')
+	.min(1, 'Username cannot be empty.')
+	.max(50, 'Username must be at most 50 characters long.')
 	.regex(
 		/^[a-zA-Z0-9_ -]*$/,
-		'Name can only contain letters, numbers, underscores, spaces, and dashes.'
+		'Username can only contain letters, numbers, underscores, spaces, and dashes.'
 	)
-	.refine((name) => !name.startsWith(' '), 'Name cannot start with a space.')
-	.refine((name) => !name.endsWith(' '), 'Name cannot end with a space.')
-	.refine((name) => !name.includes('  '), 'Name cannot contain consecutive spaces.')
+	.refine((name) => !name.startsWith(' '), 'Username cannot start with a space.')
+	.refine((name) => !name.endsWith(' '), 'Username cannot end with a space.')
+	.refine((name) => !name.includes('  '), 'Username cannot contain consecutive spaces.')
 
 export const password_schema = z
 	.string('Password must be a string.')

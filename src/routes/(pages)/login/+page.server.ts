@@ -17,27 +17,31 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
 	default: async (event) => {
 		const form = await event.request.formData()
-		const name = form.get('name') as string
+		const username = form.get('username') as string
 
-		if (!name) {
-			return fail(400, { error: 'Name is required.', name })
+		if (!username) {
+			return fail(400, { error: 'Username is required.', username })
 		}
 
 		const ip = event.getClientAddress()
 		if (!dev && login_rate_limiter.is_rate_limited(ip)) {
 			return fail(429, {
 				error: 'Too many requests. Please try again later.',
-				name
+				username: username
 			})
 		}
 
 		const password = form.get('password') as string
 
+		if (!password) {
+			return fail(400, { error: 'Password is required.', username })
+		}
+
 		const user_query = sql`
 		SELECT users.id, password_hash, calendars.id as default_calendar_id
 		FROM users
 		LEFT JOIN calendars ON calendars.user_id = users.id
-		WHERE users.name = ${name} and calendars.is_default_calendar = TRUE`
+		WHERE users.name = ${username} and calendars.is_default_calendar = TRUE`
 
 		const { rows, err } = await query<{
 			id: string
@@ -46,11 +50,11 @@ export const actions: Actions = {
 		}>(user_query)
 
 		if (err) {
-			return fail(500, { error: 'Database error.', name })
+			return fail(500, { error: 'Database error.', username })
 		}
 
 		if (!rows.length) {
-			return fail(400, { error: 'Invalid name or password.', name })
+			return fail(400, { error: 'Invalid credentials.', username })
 		}
 
 		const { password_hash, id, default_calendar_id } = rows[0]
@@ -58,7 +62,7 @@ export const actions: Actions = {
 		const pw_is_correct = await bcrypt.compare(password!, password_hash)
 
 		if (!pw_is_correct) {
-			return fail(400, { error: 'Invalid name or password.', name })
+			return fail(400, { error: 'Invalid credentials.', username })
 		}
 
 		login_rate_limiter.clear(ip)

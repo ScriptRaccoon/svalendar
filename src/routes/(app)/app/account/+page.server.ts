@@ -1,6 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
-import { name_schema, password_schema } from '$lib/server/schemas'
+import { username_schema, password_schema } from '$lib/server/schemas'
 import { batch, query } from '$lib/server/db'
 import bcrypt from 'bcryptjs'
 import sql from 'sql-template-tag'
@@ -45,7 +45,7 @@ export const load: PageServerLoad = async (event) => {
 
 	if (!users.length) error(404, 'User not found.')
 
-	const { name } = users[0]
+	const { name: username } = users[0]
 
 	const templates = encrypted_templates.map((template) => ({
 		id: template.id,
@@ -56,46 +56,46 @@ export const load: PageServerLoad = async (event) => {
 		})
 	}))
 
-	return { name, blocked_users, templates }
+	return { username, blocked_users, templates }
 }
 
 export const actions: Actions = {
-	name: async (event) => {
+	username: async (event) => {
 		const user = event.locals.user
 		if (!user) error(401, 'Unauthorized')
 
 		const form = await event.request.formData()
 
-		const name = form.get('name') as string
+		const username = form.get('username') as string
 
-		const name_validation = name_schema.safeParse(name)
+		const username_validation = username_schema.safeParse(username)
 
-		if (name_validation.error) {
+		if (username_validation.error) {
 			return fail(400, {
-				action: 'name',
-				error: format_error(name_validation.error)
+				action: 'username',
+				error: format_error(username_validation.error)
 			})
 		}
 
-		const name_query = sql`
+		const username_query = sql`
 		UPDATE users
-		SET name = ${name}
+		SET name = ${username}
 		WHERE id = ${user.id}`
 
-		const { err } = await query(name_query)
+		const { err } = await query(username_query)
 
 		if (err) {
 			if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
 				return fail(400, {
-					action: 'name',
+					action: 'username',
 					error: 'User with that name already exists.'
 				})
 			}
 
-			return fail(500, { action: 'name', error: 'Database error.' })
+			return fail(500, { action: 'username', error: 'Database error.' })
 		}
 
-		return { action: 'name', success: true }
+		return { action: 'username', success: true }
 	},
 	password: async (event) => {
 		const user = event.locals.user

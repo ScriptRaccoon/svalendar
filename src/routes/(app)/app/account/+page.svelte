@@ -30,21 +30,27 @@
 <section class="card">
 	<h2>Account Details</h2>
 
-	<form method="POST" action="?/name" use:enhance>
+	<form method="POST" action="?/username" use:enhance>
 		<div class="input-group">
-			<label for="name">Name</label>
-			<input type="text" id="name" name="name" required value={data.name} />
+			<label for="username">Username</label>
+			<input
+				type="text"
+				id="username"
+				name="username"
+				required
+				value={data.username}
+			/>
 		</div>
 
-		<button class="button" type="submit">Update Name</button>
+		<button class="button" type="submit">Update Username</button>
 	</form>
 
-	{#if form?.error && form.action === 'name'}
+	{#if form?.error && form.action === 'username'}
 		<div class="error">{form.error}</div>
 	{/if}
 
-	{#if form?.success && form.action === 'name'}
-		<div class="message">Name updated successfully.</div>
+	{#if form?.success && form.action === 'username'}
+		<div class="message">Username updated successfully.</div>
 	{/if}
 
 	<form class="password-form" method="POST" action="?/password" use:enhance>
