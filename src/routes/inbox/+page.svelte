@@ -3,6 +3,10 @@
 	import AppMenu from '$lib/components/AppMenu.svelte'
 
 	let { data, form } = $props()
+
+	let unread_count = $derived(
+		data.notifications.filter((n) => n.status === 'unread').length
+	)
 </script>
 
 <svelte:head>
@@ -21,6 +25,10 @@
 {/if}
 
 <!-- TODO: add proper UI + CRUD -->
+
+{#if unread_count > 0}
+	<p>You have {unread_count} unread notifications.</p>
+{/if}
 
 {#if data.notifications.length > 0}
 	{#each data.notifications as notification (notification.id)}

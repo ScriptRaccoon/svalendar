@@ -1,7 +1,7 @@
 import { error, fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import sql from 'sql-template-tag'
-import { query } from '$lib/server/db'
+import { batch, query } from '$lib/server/db'
 import type { Notification } from '$lib/server/types'
 
 export const load: PageServerLoad = async (event) => {
@@ -26,8 +26,17 @@ export const load: PageServerLoad = async (event) => {
 		? notifications_query_archived
 		: notification_query_unarchived
 
-	const { err, rows: notifications } = await query<Notification>(notifications_query)
+	const mark_read_query = sql`
+	UPDATE notifications SET status = 'read'
+	WHERE status = 'unread' AND recipient_id = ${user.id}`
+
+	const { err, results } = await batch<[Notification, never]>([
+		notifications_query,
+		mark_read_query
+	])
 	if (err) error(500, 'Database error')
+
+	const [notifications] = results
 
 	return { show_archived, notifications }
 }
