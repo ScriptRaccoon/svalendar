@@ -10,6 +10,8 @@ export type Calendar = {
 	is_default_calendar: number // 0 or 1
 }
 
+export type CalendarSummary = Pick<Calendar, 'id' | 'name' | 'is_default_calendar'>
+
 export type EventParticipant = {
 	id: string
 	name: string

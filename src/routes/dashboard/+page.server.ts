@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
-import { query } from '$lib/server/db'
-import type { Calendar } from '$lib/server/types'
+import { batch, query } from '$lib/server/db'
+import type { CalendarSummary } from '$lib/server/types'
 import { DEFAULT_COLOR_ID } from '$lib/server/config'
 import sql from 'sql-template-tag'
 import { generate_id } from '$lib/server/snowflake'
@@ -13,12 +13,6 @@ export const load: PageServerLoad = async (event) => {
 	if (!user) error(401, 'Unauthorized')
 
 	const users_query = sql`SELECT name FROM users WHERE id = ${user.id}`
-
-	const { rows: users } = await query<{ name: string }>(users_query)
-
-	if (!users?.length) error(404, 'User not found.')
-
-	const { name } = users[0]
 
 	const calendars_query = sql`
 	SELECT
@@ -33,12 +27,17 @@ export const load: PageServerLoad = async (event) => {
 		name ASC
 	`
 
-	const { rows: calendars, err } =
-		await query<Pick<Calendar, 'id' | 'name' | 'is_default_calendar'>>(
-			calendars_query
-		)
-
+	const { err, results } = await batch<[{ name: string }, CalendarSummary]>([
+		users_query,
+		calendars_query
+	])
 	if (err) error(500, 'Database error.')
+
+	const [users, calendars] = results
+
+	if (!users.length) error(404, 'User not found.')
+
+	const { name } = users[0]
 
 	return { name, calendars }
 }
