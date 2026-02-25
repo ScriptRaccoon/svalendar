@@ -39,6 +39,7 @@ erDiagram
     TIMESTAMP created_at
     TIMESTAMP last_login
   }
+
   calendars {
     TEXT id PK
     TEXT name
@@ -48,7 +49,9 @@ erDiagram
     INTEGER default_start_hour
     BOOLEAN is_default_calendar
   }
+
   calendars ||--o{ users : "user_id"
+
   events {
     TEXT id PK
     TEXT title_encrypted
@@ -61,13 +64,17 @@ erDiagram
     TEXT link_encrypted
     TIMESTAMP created_at
   }
+
   event_visibilities {
     TEXT event_id PK, FK
     TEXT calendar_id PK, FK
     TIMESTAMP created_at
   }
+
   event_visibilities }o--|| events : "event_id"
+
   event_visibilities }o--|| calendars : "calendar_id"
+
   event_participants {
     TEXT event_id PK, FK
     TEXT user_id PK, FK
@@ -76,14 +83,19 @@ erDiagram
     TIMESTAMP created_at
   }
   event_participants }o--|| events : "event_id"
+
   event_participants }o--|| users : "user_id"
+
   blocked_users {
     TEXT user_id PK, FK
     TEXT blocked_user_id PK, FK
     TIMESTAMP created_at
   }
+
   blocked_users }o--|| users : "user_id"
+
   blocked_users }o--|| users : "blocked_user_id"
+
   templates {
     TEXT id PK
     TEXT user_id FK
@@ -97,5 +109,19 @@ erDiagram
     INTEGER used_count
     TIMESTAMP created_at
   }
+
   templates }o--|| users : "user_id"
+
+  notifications {
+    INTEGER id PK
+    TEXT type
+    TEXT recipient_id FK
+    TEXT status
+    TEXT sender_id
+    TEXT event_id
+    TEXT message
+    TIMESTAMP created_at
+  }
+
+  notifications }o--|| users : recipient_id
 ```
