@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
+	import Header from '$lib/components/Header.svelte'
 
 	let { form } = $props()
 </script>
@@ -7,6 +8,8 @@
 <svelte:head>
 	<title>Register</title>
 </svelte:head>
+
+<Header />
 
 <h2 class="large">Register</h2>
 

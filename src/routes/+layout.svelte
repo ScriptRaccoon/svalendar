@@ -29,4 +29,6 @@
 	/>
 </svelte:head>
 
-{@render children?.()}
+<div class="wrapper">
+	{@render children()}
+</div>

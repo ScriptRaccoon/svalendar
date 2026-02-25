@@ -1,10 +1,13 @@
 <script lang="ts">
-	import sample from './sample.json'
+	import Header from '$lib/components/Header.svelte'
+	import sample from '$lib/client/sample.json'
 </script>
 
 <svelte:head>
 	<title>Svalendar</title>
 </svelte:head>
+
+<Header />
 
 <section aria-label="introduction">
 	<h2 class="large">Welcome to Svalendar</h2>
@@ -47,8 +50,8 @@
 			or Microsoft, so your data stays under your control.
 		</li>
 		<li>
-			<strong>Backup to JSON:</strong> Calendars can be backed up to a JSON file for
-			easy data portability.
+			<strong>Backup to JSON:</strong> Calendars can be backed up to a JSON file for easy
+			data portability.
 		</li>
 		<li>
 			<strong>Block Users:</strong> Block specific users to prevent receiving event invites
@@ -95,9 +98,9 @@
 
 	<p>
 		This app is built with <strong>SvelteKit</strong>, a modern framework for creating
-		fast and lightweight web applications. It uses <strong>SQLite</strong> for data storage,
-		ensuring reliability and simplicity. The combination of these technologies allows the
-		app to function efficiently without unnecessary complexity.
+		fast and lightweight web applications. It uses
+		<strong>SQLite</strong> for data storage, ensuring reliability and simplicity. The combination
+		of these technologies allows the app to function efficiently without unnecessary complexity.
 	</p>
 </section>
 
@@ -106,8 +109,8 @@
 
 	<p>
 		You can <a href="/register">register</a> to create an account and start organizing
-		your schedule. If you already have an account, <a href="/login">log in</a> to access
-		your calendars.
+		your schedule. If you already have an account,
+		<a href="/login">log in</a> to access your calendars.
 	</p>
 </section>
 
