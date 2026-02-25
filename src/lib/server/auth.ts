@@ -21,6 +21,7 @@ export function set_auth_cookie(event: RequestEvent, user: UserLocals) {
 		path: '/',
 		httpOnly: true,
 		secure: true,
+		sameSite: 'lax',
 		maxAge: 60 * 60 * 24 * 7 // 1 week
 	})
 }
